@@ -1,22 +1,42 @@
 import os
 import base64
 import jwt
+import random
 from anime import app
 from time import time
 from flask_login import UserMixin
 from flask import url_for
+from sqlalchemy import and_,not_, or_
+from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from . import db, login_manager
 from .baseModel import BaseModel
 from datetime import datetime, timedelta
 
+#table for followed and following users
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer,
                                db.ForeignKey('user.id')),
                      db.Column('followed_id',
                                db.Integer, db.ForeignKey('user.id'))
-                     )
+                    )
+
+#table for posts user is not interested in
+notInterested = db.Table('notInterested',
+                     db.Column('post_id', db.Integer,
+                               db.ForeignKey('post.id')),
+                     db.Column('person_id', db.Integer,
+                                db.ForeignKey('user.id'))
+                    )
+
+#table for posts reported by user
+reportedPost = db.Table('reportedPost',
+                     db.Column('post_id', db.Integer,
+                               db.ForeignKey('post.id')),
+                     db.Column('person_id', db.Integer,
+                                db.ForeignKey('user.id'))
+                    )
 
 class PaginatedAPIMixin(object):
     @staticmethod
@@ -86,8 +106,45 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         followed = Post.query.join(
             followers, (followers.c.followed_id == Post.user_id)).filter(
                 followers.c.follower_id == self.id)
+                # .filter(notInterested != self.id)
+        # followed = Post.query.join(
+        #     followers, (followers.c.followed_id == Post.user_id)).filter(
+        #         followers.c.follower_id == self.id)
+        # print(Post.query.filter(notInterested.c.person_id == self.id).all())
+        # print(followed.filter(followed.not_interested != self.id))
+        # print(Post.query.filter_by(not_interested=self.id).all())
+        # print(type(followed))
+        # print(type(Post))
+        # print(
+        #     Post.query.join(
+        #     followers, (followers.c.followed_id == Post.user_id)).filter(
+        #         followers.c.follower_id == self.id)
+                # .filter(not_interested != self.id)
+            # Post.query.join(
+            # followers, (followers.c.followed_id == Post.user_id))
+            # .filter(
+            #     followers.c.follower_id == self.id)
+            # Post.query.join(notInterested, (notInterested.c.person_id != Post.user_id)).all()
+            # .filter(
+            #     notInterested.c.person_id == self.id).all()
+                # )
+                # and_(followers.c.follower_id == self.id, ))
         own = Post.query.filter_by(user_id=self.id)
-        return followed.union(own).order_by(Post.timestamp.desc())
+        # print(followed.union(own).order_by(Post.timestamp.desc()))
+        return followed.union(own).order_by(Post.timestamp.desc(), func.random())
+    
+    def filter_posts(self):
+
+        no_intrst_count = db.session.query(
+                            notInterested.c.post_id, func.count('*').label('not_interest_count')
+                            ).group_by(notInterested.c.post_id).subquery()
+
+        explore= db.session.query(Post).filter(Post.user_id != self.id).outerjoin(
+            no_intrst_count).outerjoin(notInterested).filter(
+                or_(notInterested.c.person_id != self.id, notInterested.c.person_id == None)).filter(
+                    or_(no_intrst_count.c.not_interest_count < 2 , notInterested.c.person_id == None))
+
+        return explore.order_by(Post.timestamp.desc())
     
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
@@ -134,14 +191,13 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     def revoke_token(self):
         self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
 
-
+#table for liked posts
 likedPosts = db.Table('likedPosts',
                      db.Column('post_id', db.Integer,
                                db.ForeignKey('post.id')),
                      db.Column('liker_id', db.Integer,
                                 db.ForeignKey('user.id'))
                     )
-
 
 class Post(PaginatedAPIMixin, db.Model):
     __tablename__ = "post"
@@ -152,27 +208,50 @@ class Post(PaginatedAPIMixin, db.Model):
     likes= db.relationship(
         'User', secondary=likedPosts,
         backref=db.backref('likedPosts', lazy='dynamic'), lazy='dynamic')
+    not_interested= db.relationship(
+        'User', secondary=notInterested,
+        backref=db.backref('notInterested', lazy='dynamic'), lazy='dynamic')
+    reported= db.relationship(
+        'User', secondary=reportedPost,
+        backref=db.backref('reportedPost', lazy='dynamic'), lazy='dynamic')
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return '<Post {}>'.format(self.content)
     
+        #         print(
+        #     Post.query.join(Post.not_interested, notInterested).filter(notInterested.c.person_id == self.id).all()
+        # )
+
     def like_state(self, user):
         if not self.liked(user):
             self.likes.append(user)
-        elif self.liked(user):
+        else:
             self.likes.remove(user)
     
     def liked(self, user):
         return self.likes.filter(likedPosts.c.liker_id == user.id).count() > 0
+    
+    def no_interest(self, user):
+        if not self.interested(user):
+            self.not_interested.append(user)
+        else:
+            print("interested")
+            self.not_interested.remove(user)
+
+    
+    def interested(self, user):
+        return self.not_interested.filter(notInterested.c.person_id == user.id).count() > 0
     
     def to_dict(self):
         data = {
             'id': self.id,
             'content': self.content,
             'image': self.image,
-            'likes': self.likes.count()
+            'likes': self.likes.count(),
+            # 'interest': self.not_interested
+            # 'reported' : self.reported
         }
         return data
 
