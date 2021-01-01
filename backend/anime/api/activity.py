@@ -34,7 +34,7 @@ def upload_file():
 	response = {"success":'New post successfully created'}
 		
 	#and then get the url for the transitioned uploaded file and store it in the database
-	file= response.get('eager')
+	file= upload_result.get('eager')
 	file_url= file[0].get('secure_url')
 	new_post = Post(content=post, image=file_url, 
 					timestamp=post_time,
@@ -51,30 +51,30 @@ def search_user():
 	response=user.to_dict()
 	return response
 
-# User posts only
 @api.route('/<pager>/<username>/posts', methods=['GET'])
 def get_posts(username,pager):
 	response = None
 	user = User.query.filter_by(username=username).first_or_404()
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
+	# Display user's posts only
 	if pager == 'profile':
 		response = User.to_collection_dict(user.posts, page, per_page, 
 										'api.get_posts', username=username, pager=pager)
+	# Display user's + followed users's posts 
 	elif pager == 'home':
 		response = User.to_collection_dict(user.followed_posts(), page, per_page, 
 											'api.get_posts', username=username, pager=pager)
 	return response
 
-@api.route('/explore', methods=['GET'])
+@api.route('/explore', methods=['POST'])
 @jwt_required()
 def explore():
-	posts = Post.query.order_by(Post.timestamp.desc()).all()
-	if len(posts) != 0:
-		posts = random.sample(posts, k=len(posts))
+	usrname = request.json.get("username", None).lower()
+	user = User.query.filter_by(username=usrname).first_or_404()
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
-	response = Post.to_collection_dict(Post.query, page, per_page, 
+	response = User.to_collection_dict(user.filter_posts(), page, per_page, 
 										'api.explore')
 	return response
 
@@ -117,4 +117,32 @@ def like(id):
 	db.session.commit()
 	response = {"success": 'Post reacted to'}
 	return response
+
+@api.route('/notinterested/<id>', methods=['POST'])
+@jwt_required()
+def not_interested(id):
+	uzer = request.json.get("username").lower()
+	user = User.query.filter_by(username=uzer).first_or_404()
+	#Get current user that wants to stop seeing the particular post
+	Posts = Post.query.filter_by(id=id).first_or_404()
+	#Make user not interested in post 'true' for the current user 
+	Posts.no_interest(user)
+	db.session.commit()
+	print(Posts)
+	print(Posts.not_interested.all())
+	# response = {"success": 'You wont see post again'}
+	# return response
+
+# @api.route('/report/<id>', methods=['POST'])
+# @jwt_required()
+# def report(id):
+# 	uzer = request.json.get("username").lower()
+# 	user = User.query.filter_by(username=uzer).first_or_404()
+# 	#Get current user that is reporting the post
+# 	Post_reported = Post.query.filter_by(id=id).first_or_404()
+# 	#Check if user has liked the picture before with the "like_state function"
+# 	Post_liked.like_state(user)
+# 	db.session.commit()
+# 	response = {"success": 'Post reported'}
+# 	return response
 
