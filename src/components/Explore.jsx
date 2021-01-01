@@ -33,7 +33,7 @@ function Explore(){
 			if (error.response) {
 			  console.log(error.response);
 			  console.log(error.response.status);
-			  if (error.response.status === 401){
+			  if (error.response.status === 401 || error.response.status === 422){
 				  removeToken()
 			  }
 			  console.log(error.response.headers);
