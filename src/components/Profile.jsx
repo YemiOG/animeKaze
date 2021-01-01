@@ -110,7 +110,7 @@ function Profile() {
               Authorization: 'Bearer ' + token
               }
         }).then((response)=>{
-          getPosts(uzer) // get posts upon successful post submission
+          // getPosts(uzer) // get posts upon successful post submission
           getProfile()  //refresh profile data
           }).catch((error) => {
           if (error.response) {
@@ -195,6 +195,51 @@ function Profile() {
           }
       })
     }
+    function notInterested(id) { 
+      axios({
+        method: "POST",
+        url:"/api/notinterested/" + id,
+        data:{
+          username:usernamer
+         },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      .then((response) => {
+        getPosts(usernamer)
+      }).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          if (error.response.status === 401 || error.response.status === 422){
+            removeToken()
+          }
+          }
+      })
+    }
+    function reportPost(id) { 
+      axios({
+        method: "POST",
+        url:"/api/report/" + id,
+        data:{
+          username:usernamer
+         },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      .then((response) => {
+        getPosts(usernamer)
+      }).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          if (error.response.status === 401 || error.response.status === 422){
+            removeToken()
+          }
+          }
+      })
+    }
+
     
     return (
       <>
@@ -243,7 +288,7 @@ function Profile() {
               </button>
               )
           }
-          {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost}/>)}
+          {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={notInterested} report={reportPost}/>)}
         </>
         :
         <UserNotFound/>}
