@@ -21,3 +21,20 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+#flask
+backend/env
+backend/.env
+
+#db sql
+backend/anime.db
+
+backend/__pycache__
+
+# Python
+*.py[cod]
+*.$py.class
+
+# VS Code
+*.vscode
+**/.vscode/
