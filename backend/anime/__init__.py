@@ -1,7 +1,6 @@
 from flask import Flask
 from config import Config
 from flask_migrate import Migrate
-# from .extensions import db, login_manager, toastr, ma
 import logging
 from logging.handlers import RotatingFileHandler
 import os
@@ -48,3 +47,12 @@ app.register_blueprint(auth_blueprint)
 from .main import main as main_blueprint
 app.register_blueprint(main_blueprint)
 
+# blueprint for app errors
+from .errors import err as err_blueprint
+app.register_blueprint(err_blueprint)
+
+# blueprint for app api
+from .api import api as api_blueprint
+app.register_blueprint(api_blueprint, url_prefix='/api')
+
+from . import errors
