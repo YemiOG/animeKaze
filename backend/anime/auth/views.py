@@ -19,8 +19,9 @@ def register():
     if form.validate_on_submit():                                           # then the email already exists in database
         user = User(email=form.email.data.lower(),
                     username=form.username.data.lower(),
-                    name=form.name.data.lower())
-        print(form.name.data)
+                    name=form.name.data.lower(),
+                    avatar= 'avatar.png'
+                    )
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
