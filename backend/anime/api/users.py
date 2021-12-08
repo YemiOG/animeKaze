@@ -60,6 +60,9 @@ def create_user():
 @api.route('/users/<int:id>', methods=['PUT'])
 @token_auth.login_required
 def update_user(id):
+	if token_auth.current_user().id != id:
+		abort(403)
+
 	user = User.query.get_or_404(id)
 	data = request.get_json() or {}
 	if 'username' in data and data['username'] != user.username and \
