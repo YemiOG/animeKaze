@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_toastr import Toastr
 from flask_marshmallow import Marshmallow
-
+from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
     # app = Flask(__name__, static_folder='./static/dist',
@@ -21,6 +21,7 @@ migrate = Migrate(app, db)
 toastr = Toastr(app)
 login_manager = LoginManager(app)
 ma = Marshmallow(app)
+jwt = JWTManager(app)
 
 login_manager.login_view = 'auth.login'
 
