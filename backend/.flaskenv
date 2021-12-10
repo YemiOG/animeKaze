@@ -1,2 +1,2 @@
-FLASK_APP=recipe.py
+FLASK_APP=anime.py
 FLASK_ENV=development
