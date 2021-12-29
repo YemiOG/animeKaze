@@ -121,10 +121,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
 
 class Post(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    recipe = db.Column(db.String(360))
-    ingredients = db.Column(db.String(360))
-    cookingSteps = db.Column(db.String(360))
-    cookingTime = db.Column(db.String(10))
+    content = db.Column(db.String(360))
     image = db.Column(db.String(360))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -135,8 +132,7 @@ class Post(PaginatedAPIMixin, db.Model):
     def to_dict(self):
         data = {
             'id': self.id,
-            'recipe': self.recipe,
-            'ingredients': self.ingredients,
+            'content': self.content,
             'image': self.image,
         }
         return data
