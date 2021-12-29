@@ -42,12 +42,10 @@ class PaginatedAPIMixin(object):
 class User(PaginatedAPIMixin, db.Model, UserMixin):
     __tablename__ = 'user'
 
-    token = db.Column(db.String(32), index=True, unique=True)
-    token_expiration = db.Column(db.DateTime)
-
     id = db.Column(db.Integer, primary_key=True)  # primary keys are required
     # by SQLAlchemy
-    name = db.Column(db.String(64), index=True)
+    first_name = db.Column(db.String(64), index=True)
+    last_name = db.Column(db.String(64), index=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
@@ -92,6 +90,8 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     def to_dict(self):
         data = {
             'id': self.id,
+            'firstname': self.first_name,
+            'lastname': self.last_name,
             'username': self.username,
             'last_seen': self.last_seen.isoformat() + 'Z',
             'about_me': self.about_me,
@@ -100,41 +100,26 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
             'follower_count': self.followers.count(),
             'followed_count': self.followed.count(),
             '_links': {
-                'self': url_for('api.get_user', id=self.id),
-                'followers': url_for('api.get_followers', id=self.id),
-                'followed': url_for('api.get_followed', id=self.id),
+                'self': url_for('api.get_user', username=self.username),
+                'followers': url_for('api.get_followers', username=self.username),
+                'followed': url_for('api.get_followed', username=self.username),
+                'posts':url_for('api.get_posts')
             }
         }
         return data
 
     def from_dict(self, data, new_user=False):
-        for field in ['name', 'username', 'email', 'about_me']:
+        for field in ['first_name', 'last_name', 'username', 'email', 'about_me']:
             if field in data:
                 setattr(self, field, data[field])
         if new_user and 'password' in data:
             self.set_password(data['password'])
     
-    def get_token(self, expires_in=3600):
-        now = datetime.utcnow()
-        if self.token and self.token_expiration > now + timedelta(seconds=60):
-            return self.token
-        self.token = base64.b64encode(os.urandom(24)).decode('utf-8')
-        self.token_expiration = now + timedelta(seconds=expires_in)
-        db.session.add(self)
-        return self.token
-
     def revoke_token(self):
         self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
 
-    @staticmethod
-    def check_token(token):
-        user = User.query.filter_by(token=token).first()
-        if user is None or user.token_expiration < datetime.utcnow():
-            return None
-        return user
 
-
-class Post(BaseModel):
+class Post(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     recipe = db.Column(db.String(360))
     ingredients = db.Column(db.String(360))
