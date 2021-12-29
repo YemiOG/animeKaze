@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { UserContext } from './contexts/userContext';
-import Home from "./Home"
+import Home from "./Homepage"
+import Base from "./Basepage"
 import CurrentUser from "./getUser"
 import Login from "./Auth/Login"
 import Register from "./Auth/Register"
@@ -62,11 +63,16 @@ function AppRouter() {
 		{console.log(location.pathname)}
 		{/* username: {userInfo.currentUser} */}
 		<Routes>
-			<Route exact path="/" element={<AppLoading />}></Route> 
+			<Route exact path="/" element={<Base />}></Route> 
 			<Route exact path="/login" element={<Login/>}></Route>
 			<Route exact path="/register" element={<Register/>}></Route>
 			{profileLocation &&
 			<Route exact path={`${location.pathname}`} element={<ProfileLoading />} />}
+			<Route exact path="/home" element={
+												<AuthedRoute >
+													<Home />
+												</AuthedRoute >
+											} />
 			{followerLocation &&
 			<Route exact path={`${location.pathname}`} element={
 																<AuthedRoute >
@@ -80,14 +86,9 @@ function AppRouter() {
 																</AuthedRoute >
 																}/>}
 			<Route path='*' element={<PageNotFound />}/>
-			<Route exact path="/home" element={
-												<AuthedRoute >
-													<Home />
-												</AuthedRoute >
-											} />
 		</Routes> 
 		{console.log(appState.loading)}
-		UserId is "{userInfo.cuid}"
+		{/* UserId is "{userInfo.cuid}" */}
 		<Footer />
 		</div>
 		</UserContext.Provider>
