@@ -103,7 +103,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                 'self': url_for('api.get_user', username=self.username),
                 'followers': url_for('api.get_followers', username=self.username),
                 'followed': url_for('api.get_followed', username=self.username),
-                'posts':url_for('api.get_posts')
+                'posts':url_for('api.get_posts', username=self.username)
             }
         }
         return data
@@ -131,6 +131,15 @@ class Post(PaginatedAPIMixin, db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.recipe)
+    
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'recipe': self.recipe,
+            'ingredients': self.ingredients,
+            'image': self.image,
+        }
+        return data
 
 
 @login_manager.user_loader
