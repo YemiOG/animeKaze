@@ -2,7 +2,6 @@ import { useState,useContext } from 'react';
 import axios from "axios";
 import { UserContext } from '../contexts/userContext';
 import { useNavigate,useLocation } from 'react-router';
-import CurrentUser from "../getUser"
 
 function Login() {
     let navigate = useNavigate()
