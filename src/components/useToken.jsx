@@ -16,13 +16,15 @@ function useToken() {
 
   function removeToken() {
 	localStorage.removeItem("token");
+	localStorage.removeItem("cuid");
+	localStorage.removeItem("username");
     setToken(null);
   }
 
   return {
     setToken: saveToken,
     token,
-	removeToken
+	  removeToken
   }
 
 }
