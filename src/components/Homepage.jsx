@@ -2,15 +2,8 @@ import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { UserContext } from './contexts/userContext';
 import Search from "./Search"
+import Posts from "./Posts"
 
-function Posts(props){
-	return (
-            <div className="note">
-                <h1 >  {props.content} </h1>
-				<img alt={""} src={props.image} />
-            </div>
-    )
-}
 function Home(){
 
 	// const [postMessage, setpostMessage] = useState("")
