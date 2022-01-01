@@ -5,6 +5,7 @@ import axios from "axios";
 import { UserContext } from './contexts/userContext';
 import UserNotFound from './error/userNotFound'
 import Search from "./Search"
+import Posts from "./Posts"
 
 function Profile() {
     // let navigate = useNavigate();
@@ -12,6 +13,7 @@ function Profile() {
     const {token, userInfo, setUserInfo, removeToken, setAppState} = useContext(UserContext);
     const [idMatch, setidMatch] = useState(false)
     const [noUser, setNoUser] = useState(false)
+    const [posts, setPosts] = useState("")
     const [profile, setProfile] = useState({
       username:"",
       about_me:"",
@@ -33,15 +35,38 @@ function Profile() {
           setidMatch(true)
       }
     }
+
+    function getPosts(username){
+      console.log(username)
+      axios({
+        method: "GET",
+        url:'/api/'+ username + '/posts',
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+        }).then((response)=>{
+        setPosts(
+                  response.data.items
+          )
+        // setAppState({ loading: false });
+        }).catch((error) => {
+        if (error.response) {
+          console.log(error.response);
+          console.log(error.response.status);
+          if (error.response.status === 401){
+            removeToken()
+          }
+          console.log(error.response.headers);
+          }
+        })}
+
     function getProfile() {
       axios({
           method: "GET",
           url: '/api' + location.pathname,
-          headers: {
-            Authorization: 'Bearer ' + token
-          }
         }).then((response)=>{
           const data = response.data.id
+          const username = response.data.username
           compareId(data)
           setProfile(({
             username:response.data.username,
@@ -52,9 +77,7 @@ function Profile() {
             following_list: response.data._links.followed,
             posts: response.data.post_count
             }))
-            // setUserInfo(prevDetails => ({
-            //   ...prevDetails, currentUser:location.pathname
-            //   }))
+            username && getPosts(username) //if user exists check for posts
         }).catch((error) => {
           if (error.response) {
             console.log(error.response)
@@ -91,6 +114,7 @@ function Profile() {
               Edit Profile
             </button>
           }
+          {posts && posts.map(posts => <Posts key={posts.id} content={posts.content} image={posts.image}/>)}
         </>
         :
         <UserNotFound/>}
