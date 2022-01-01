@@ -1,9 +1,11 @@
 from flask import Flask
 from config import Config
 from flask_migrate import Migrate
+import cloudinary
 import logging
 from logging.handlers import RotatingFileHandler
 import os
+from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_toastr import Toastr
@@ -11,8 +13,6 @@ from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
-    # app = Flask(__name__, static_folder='./static/dist',
-    #             template_folder='./static')
 
 app.config.from_object(Config)
 
@@ -22,8 +22,11 @@ toastr = Toastr(app)
 login_manager = LoginManager(app)
 ma = Marshmallow(app)
 jwt = JWTManager(app)
+mail = Mail(app)
 
 login_manager.login_view = 'auth.login'
+cloudinary.config(cloud_name = os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'), 
+                    api_secret=os.getenv('API_SECRET'))
 
 if not app.debug:
 
