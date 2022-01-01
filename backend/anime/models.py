@@ -1,5 +1,8 @@
 import os
 import base64
+import jwt
+from anime import app
+from time import time
 from flask_login import UserMixin
 from flask import url_for
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,7 +10,6 @@ from datetime import datetime
 from . import db, login_manager
 from .baseModel import BaseModel
 from datetime import datetime, timedelta
-
 
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer,
@@ -87,6 +89,21 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
     
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode(
+            {'reset_password': self.id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256')
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'],
+                            algorithms=['HS256'])['reset_password']
+        except:
+            return
+        return User.query.get(id)
+
+
     def to_dict(self):
         data = {
             'id': self.id,
