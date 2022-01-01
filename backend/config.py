@@ -15,5 +15,15 @@ class Config(object):
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'you-will-never-know'
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES')))
+    # CLOUD_NAME= os.environ.get('CLOUD_NAME')
+    # API_KEY= os.environ.get('API_KEY')
+    # API_SECRET=os.environ.get('API_SECRET')
+    MAIL_SERVER = os.environ.get('MAIL_SERVER')
+    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('SENDGRID_API_KEY')
+    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER')
+    ADMINS = os.environ.get('MAIL_ADMIN')
 
 
