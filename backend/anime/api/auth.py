@@ -5,6 +5,7 @@ from ..models import User
 from .errors import bad_request
 from flask_jwt_extended import create_access_token,get_jwt_identity,jwt_required
 from datetime import datetime, timedelta, timezone
+from .email import send_password_reset_email
 from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
 							   set_access_cookies, unset_jwt_cookies
 
@@ -24,7 +25,6 @@ def refresh_expiring_jwts(response):
 @api.route('/createuser', methods=['POST'])
 def create_user():
 	data = request.get_json() or {}
-	print(data)
 	if data['first_name'] == '' or data['last_name'] == '' or data['username'] == '' or data['email'] == '' or data['password'] == '':
 		return bad_request('Please make sure all fields are filled in correctly')
 	if User.query.filter_by(email=data['email'].lower()).first():
@@ -41,10 +41,11 @@ def create_user():
 
 @api.route("/token", methods=["POST"])
 def create_token():
-    email = request.json.get("email", None)
+    email = request.json.get("email", None).lower()
     password = request.json.get("password", None)
     user = User.query.filter_by(email=email).first()
     if user is not None and user.check_password(password):
+        print(user.check_password(password))
         access_token = create_access_token(identity=email)
         response = {"access_token":access_token,
 					"userID":user.id,
@@ -59,3 +60,29 @@ def logout():
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
     return response
+
+@api.route('/reset_password_request', methods=['POST'])
+def reset_password_request():
+    response = None
+    if request.json.get("token"):
+        return bad_request('user is logged in')
+    email = request.json.get("email", None).lower()
+    user = User.query.filter_by(email=email).first()
+    if user:
+        send_password_reset_email(user)
+        response = {"confirmation":'Check your email for the instructions to reset your password'}
+    return response
+
+@api.route('/reset_password/<token>', methods=['POST'])
+def reset_password(token):
+    if request.json.get("token"):
+        return bad_request('user is logged in')
+    user = User.verify_reset_password_token(token)
+    if not user:
+        return bad_request('user is logged in')
+    else:
+        password = request.json.get("password", None)
+        user.set_password(password)
+        db.session.commit()
+        response = {"success":'Your password has been reset.'}
+        return response
