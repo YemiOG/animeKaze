@@ -5,11 +5,10 @@ function App() {
 
   return (
     <BrowserRouter>
-      <AppRouter />
+      <AppRouter/>
     </BrowserRouter>
 
   );
 }
 
 export default App;
-
