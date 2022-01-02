@@ -1,22 +1,30 @@
 import { useState } from 'react';
-import { UserContext } from './contexts/userContext';
-import Home from "./Homepage"
-import Base from "./Basepage"
-import CurrentUser from "./getUser"
-import Login from "./Auth/Login"
-import Register from "./Auth/Register"
 import { Routes, Route, useLocation } from 'react-router-dom'
-import Profile from "./Profile"
-import Follow from "./follow/followerList"
+import { UserContext } from './contexts/userContext';
+
+//Application
+import Home from "./Homepage"
+import Explore from "./Explore"
+import Base from "./Basepage"
 import Header from "./Header"
 import Footer from "./Footer"
+// import CurrentUser from "./getUser"
+
+// Auth
+import AuthedRoute from './Auth/AuthedRoute'
 import useToken from './useToken'
+import Login from "./Auth/Login"
+import Register from "./Auth/Register"
+import RequestPasswordChange from "./Auth/RequestChangePassword"
+
+//Profile
+import Profile from "./Profile"
+import Follow from "./follow/followerList"
+
 //error page
 import PageNotFound from './error/pageNotFound'
 
 import Loading from './Loading'
-
-import AuthedRoute from './Auth/AuthedRoute'
 
 function AppRouter() {
 
@@ -66,25 +74,30 @@ function AppRouter() {
 			<Route exact path="/" element={<Base />}></Route> 
 			<Route exact path="/login" element={<Login/>}></Route>
 			<Route exact path="/register" element={<Register/>}></Route>
+			<Route exact path="/explore" element={<Explore/>}></Route>
+			<Route exact path="/accounts/password/reset/" element={<RequestPasswordChange/>}></Route>
+			<Route exact path="/home" 
+				element={
+						<AuthedRoute >
+							<Home />
+						</AuthedRoute >
+						} />
 			{profileLocation &&
 			<Route exact path={`${location.pathname}`} element={<ProfileLoading />} />}
-			<Route exact path="/home" element={
-												<AuthedRoute >
-													<Home />
-												</AuthedRoute >
-											} />
 			{followerLocation &&
-			<Route exact path={`${location.pathname}`} element={
-																<AuthedRoute >
-																	<FollowLoading />
-																</AuthedRoute >
-																}/>}
+			<Route exact path={`${location.pathname}`} 
+				element={
+					<AuthedRoute >
+						<FollowLoading />
+					</AuthedRoute >
+					}/>}
 			{followingLocation &&
-			<Route exact path={`${location.pathname}`} element={
-																<AuthedRoute >
-																	<FollowLoading />
-																</AuthedRoute >
-																}/>}
+			<Route exact path={`${location.pathname}`} 
+				element={
+						<AuthedRoute >
+							<FollowLoading />
+						</AuthedRoute >
+						}/>}
 			<Route path='*' element={<PageNotFound />}/>
 		</Routes> 
 		{console.log(appState.loading)}
