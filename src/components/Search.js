@@ -1,10 +1,9 @@
 import React,{useState} from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import axios from "axios";
 import UserNotFound from './error/userNotFound'
 
 function Search() {
-	let navigate = useNavigate();
     const [searchs , setNewSearch] = useState("")
     const [searchresult , setNewSearchResult] = useState("")
 	const [noUser, setNoUser] = useState(false)
@@ -37,13 +36,6 @@ function Search() {
         event.preventDefault()
       }
 	
-	
-    function goToProfile() {
-		const user = {searchresult}
-		const profile = "/user/" + user.searchresult
-		navigate(profile)
-	}
-
     function Display(props) {
 		const user = {searchresult}
 		const profile = "/user/" + user.searchresult
@@ -53,7 +45,6 @@ function Search() {
         className="nav-link">
         {searchresult}
         </Link> 
-		// <p onClick={goToProfile}>{searchresult} </p>
 		)}
         else {return ( (noUser ? <UserNotFound/> : null )
 			)
