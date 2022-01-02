@@ -7,8 +7,10 @@ from datetime import datetime
 from .. import db
 from .errors import bad_request
 import cloudinary.uploader
+import random
 
 @api.route('/upload', methods=['POST'])
+@jwt_required()
 # @cross_origin()
 def upload_file():
 	upload_result = None
@@ -42,23 +44,59 @@ def search_user():
 	response=user
 	return response
 
-@api.route('/<username>/posts', methods=['GET'])
-@jwt_required()
-def get_posts(username):
+# User posts only
+@api.route('/<pager>/<username>/posts', methods=['GET'])
+# @jwt_required()
+def get_posts(username,pager):
+	response = None
 	user = User.query.filter_by(username=username).first_or_404()
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
-	response = User.to_collection_dict(user.posts, page, per_page, 
-										'api.get_posts', username=username)
+	if pager == 'home':
+		response = User.to_collection_dict(user.posts, page, per_page, 
+										'api.get_posts', username=username, pager=pager)
+	elif pager == 'profile':
+		response = User.to_collection_dict(user.followed_posts(), page, per_page, 
+											'api.get_posts', username=username, pager=pager)
 	return response
 
 @api.route('/explore', methods=['GET'])
 @jwt_required()
 def explore():
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-    if len(posts) != 0:
-        if len(posts) > 100:
-            posts = random.sample(posts, k=50)
-        else:
-            posts = random.sample(posts, k=len(posts))
-    return render_template('main/explore.html', posts=posts)
+	posts = Post.query.order_by(Post.timestamp.desc()).all()
+	if len(posts) != 0:
+		posts = random.sample(posts, k=len(posts))
+	page = request.args.get('page', 1, type=int)
+	per_page = min(request.args.get('per_page', 10, type=int), 100)
+	response = Post.to_collection_dict(Post.query, page, per_page, 
+										'api.explore')
+	return response
+
+@api.route('/follow/<username>', methods=['POST'])
+@jwt_required()
+def follow(username):
+	currentUzer = request.json.get("username", None).lower()
+	currentUser = User.query.filter_by(username=currentUzer).first_or_404()
+	if request.method == 'POST':
+		user = User.query.filter_by(username=username).first_or_404()
+		if user == currentUser:
+			return bad_request('You cannot follow yourself')
+		currentUser.follow(user)
+		db.session.commit()
+		response = {"success":'You are now following {}!'.format(username)}
+		return response
+
+
+@api.route('/unfollow/<username>', methods=['POST'])
+@jwt_required()
+def unfollow(username):
+	currentUzer = request.json.get("username", None).lower()
+	currentUser = User.query.filter_by(username=currentUzer).first_or_404()
+    if request.method == 'POST':
+        user = User.query.filter_by(username=username).first_or_404()
+        if user == currentUser:
+			return bad_request('You cannot unfollow yourself')
+        currentUser.unfollow(user)
+        db.session.commit()
+		response = {"success":'You have unfollowed {}!'.format(username)}
+		return response
