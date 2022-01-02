@@ -38,12 +38,20 @@ function Header(props) {
       navigate("/login")
     }
 
+    function registerMe(){
+      navigate("/register")
+    }
+
   return (
     <header>
       <h1>Accent</h1>
-      {(!token && token!=="" && token !== undefined) ? <button onClick={logMeIn}> Login </button> 
+      {(!token && token!=="" && token !== undefined) ? 
+        <>
+        <button onClick={logMeIn}> Login </button> 
+        <button onClick={registerMe}> Register </button>
+        </>
        :
-       <button onClick={logMeOut}> Logout </button>
+        <button onClick={logMeOut}> Logout </button>
       }
       {username ?
         <button onClick={goToProfile}> 
