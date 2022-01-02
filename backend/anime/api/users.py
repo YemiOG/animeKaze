@@ -61,7 +61,6 @@ def get_followed(username):
 @jwt_required()
 def update_user(username):
 	data = request.get_json() or {}
-	print(data['id'])
 	if int(data['id']) != id:
 		return bad_request('unauthorized')
 

@@ -119,8 +119,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
             '_links': {
                 'self': url_for('api.get_user', username=self.username),
                 'followers': url_for('api.get_followers', username=self.username),
-                'followed': url_for('api.get_followed', username=self.username),
-                'posts':url_for('api.get_posts', username=self.username)
+                'followed': url_for('api.get_followed', username=self.username)
             }
         }
         return data
@@ -128,7 +127,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     def from_dict(self, data, new_user=False):
         for field in ['first_name', 'last_name', 'username', 'email', 'about_me']:
             if field in data:
-                setattr(self, field, data[field])
+                setattr(self, field, data[field].lower())
         if new_user and 'password' in data:
             self.set_password(data['password'])
     
