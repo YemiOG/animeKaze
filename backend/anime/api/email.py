@@ -9,8 +9,6 @@ def send_email(subject, recipients, text_body):
 
 def send_password_reset_email(user):
 	token = user.get_reset_password_token()
-	print(token)
-	print(user.email)
 	send_email('[animeKaze] Reset Your Password',
 				recipients=[user.email],
 				text_body=render_template('reset_password.txt',

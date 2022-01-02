@@ -54,7 +54,6 @@ def create_token():
     else:
         return {"msg": "Wrong email or password"}, 401
 
-
 @api.route("/logout", methods=["POST"])
 def logout():
     response = jsonify({"msg": "logout successful"})
@@ -65,21 +64,24 @@ def logout():
 def reset_password_request():
     response = None
     if request.json.get("token"):
-        return bad_request('user is logged in')
+        return bad_request('User is logged in')
     email = request.json.get("email", None).lower()
     user = User.query.filter_by(email=email).first()
     if user:
         send_password_reset_email(user)
         response = {"confirmation":'Check your email for the instructions to reset your password'}
+    else:
+        return bad_request('Email address not registered')
+
     return response
 
 @api.route('/reset_password/<token>', methods=['POST'])
 def reset_password(token):
     if request.json.get("token"):
-        return bad_request('user is logged in')
+        return bad_request('User is logged in')
     user = User.verify_reset_password_token(token)
     if not user:
-        return bad_request('user is logged in')
+        return bad_request('User is logged in')
     else:
         password = request.json.get("password", None)
         user.set_password(password)
