@@ -13,9 +13,11 @@ function Profile() {
     const {token, removeToken, setAppState} = useContext(UserContext);
     const usernamer = window.localStorage.getItem('username')
     const [idMatch, setidMatch] = useState(false)
+    const [following, setFollowing] = useState(false)
     const [noUser, setNoUser] = useState(false)
     const [content, setContent] = useState("")
     const [posts, setPosts] = useState("")
+    const [count, setCount] = useState("")
     const [profile, setProfile] = useState({
       username:"",
       about_me:"",
@@ -43,11 +45,10 @@ function Profile() {
       setContent(post)
     }
 
-    function getPosts(usernames){
-      console.log(usernames)
+    function getPosts(uzername){
       axios({
         method: "GET",
-        url:'/api/profile/'+ usernames + '/posts',
+        url:'/api/profile/'+ uzername + '/posts',
         headers: {
           Authorization: 'Bearer ' + token
         }
@@ -69,20 +70,24 @@ function Profile() {
 
     function getProfile() {
       axios({
-          method: "GET",
+          method: "POST",
           url: '/api' + location.pathname,
+          data:{
+            username:usernamer
+           },
         }).then((response)=>{
-          const data = response.data.id
-          const username = response.data.username
+          const data = response.data.user.id
+          const username = response.data.user.username
           compareId(data)
           setProfile(({
-            username:response.data.username,
-            about_me: response.data.about_me,
-            followers_cnt: response.data.follower_count,
-            following_cnt: response.data.followed_count,
-            posts: response.data.post_count
+            username:response.data.user.username,
+            about_me: response.data.user.about_me,
+            followers_cnt: response.data.user.follower_count,
+            following_cnt: response.data.user.followed_count,
+            posts: response.data.user.post_count
             }))
             username && getPosts(username) //if user exists check for posts
+            setFollowing(response.data.following) //set user following status
         }).catch((error) => {
           if (error.response) {
             console.log(error.response)
@@ -96,6 +101,7 @@ function Profile() {
       
     function submitForm (event){
       const formData = new FormData(event.target)
+      const uzer = location.pathname.split("/")[2]
       axios({
         method: "POST",
         url: '/api/upload',
@@ -104,7 +110,8 @@ function Profile() {
               Authorization: 'Bearer ' + token
               }
         }).then((response)=>{
-          getPosts() // get posts upon successful post submission
+          getPosts(uzer) // get posts upon successful post submission
+          getProfile()  //refresh profile data
           }).catch((error) => {
           if (error.response) {
             console.log(error.response)
@@ -115,8 +122,9 @@ function Profile() {
       event.preventDefault()
       }
 
-  function followUser(event) {
+  function followUser() {
     const uzer = location.pathname.split("/")[2]
+    console.log(uzer)
         axios({
           method: "POST",
           url:"/api/follow/" + uzer,
@@ -128,7 +136,7 @@ function Profile() {
           }
         })
         .then((response) => {
-            console.log(response)
+            getProfile()
         }).catch((error) => {
           if (error.response) {
             console.log(error.response)
@@ -136,14 +144,13 @@ function Profile() {
             console.log(error.response.headers)
             }
         })  
-        event.preventDefault()
     }
 
   function unfollowUser(event) {
     const uzer = location.pathname.split("/")[2]
         axios({
           method: "POST",
-          url:"/api/follow/" + uzer,
+          url:"/api/unfollow/" + uzer,
           data:{
             username:usernamer
            },
@@ -152,7 +159,7 @@ function Profile() {
           }
         })
         .then((response) => {
-            console.log(response)
+             getProfile()
         }).catch((error) => {
           if (error.response) {
             console.log(error.response)
@@ -163,6 +170,30 @@ function Profile() {
         event.preventDefault()
     }
 
+    function handlePost(id) { 
+      axios({
+        method: "POST",
+        url:"/api/likepost/" + id,
+        data:{
+          username:usernamer
+         },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      .then((response) => {
+        // setCount(post)
+        console.log(response)
+      }).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          if (error.response.status === 401 || error.response.status === 422){
+            removeToken()
+          }
+          }
+      })
+    }
+    
     return (
       <>
         <Search />
@@ -172,7 +203,7 @@ function Profile() {
             <form onSubmit={submitForm} encType="multipart/form-data" className="create-note">
               <input  type="text" onChange={handleChange} name="content" placeholder="What's happening?" value={content} required/>
               <input type="file" id="image" name="file" accept="image/*" className="file-custom" required/>
-              <input  name="uid" value={userId} hidden readOnly={true}/>
+              {userId && <input  name="uid" value={userId} hidden readOnly={true}/>}
               <button
                 className="btn btn-lg btn-primary pull-xs-right"
                 type="submit">
@@ -195,16 +226,22 @@ function Profile() {
           <p style={{ textAlign: 'center', fontSize: '30px' }}>
             Posts:{profile.posts}
           </p>
-          {idMatch ? 
+          {idMatch ?
               <button>
                 Edit Profile
+              </button>
+              :
+              token && (following ? 
+              <button onClick={unfollowUser}>
+                Following
               </button>
               :
               <button onClick={followUser}>
                 Follow
               </button>
+              )
           }
-          {posts && posts.map(posts => <Posts key={posts.id} content={posts.content} image={posts.image}/>)}
+          {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.count} image={posts.image} like={handlePost}/>)}
         </>
         :
         <UserNotFound/>}
