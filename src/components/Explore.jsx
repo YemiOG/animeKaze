@@ -65,7 +65,7 @@ function Explore(){
         <div className='App'>
             <h1>Explore</h1>
 			<Search />
-			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} likeCount={posts.count} content={posts.content} image={posts.image} like={handlePost}/>)}
+			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost}/>)}
         </div>
     )
 }
