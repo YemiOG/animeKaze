@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function useToken() {
+
+  const location = useLocation();
+  let navigate = useNavigate();
 
   function getToken() {
 	const userToken = localStorage.getItem('token');
@@ -18,7 +22,8 @@ function useToken() {
 	localStorage.removeItem("token");
 	localStorage.removeItem("cuid");
 	localStorage.removeItem("username");
-    setToken(null);
+  setToken(null);
+  navigate("/login",{state :{ from : location}})
   }
 
   return {
