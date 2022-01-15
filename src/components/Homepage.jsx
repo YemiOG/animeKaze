@@ -24,7 +24,6 @@ function Home(){
 	}
 
     function getPosts(){
-		console.log(username)
 		axios({
 			method: "GET",
 			url:'/api/home/'+ username + '/posts',
@@ -58,15 +57,41 @@ function Home(){
 			  		}
 			}).then((response)=>{
 				getPosts() // get posts upon successful post submission
-			  }).catch((error) => {
+			}).catch((error) => {
 				if (error.response) {
 				  console.log(error.response)
+				  if (error.response.status === 401){
+					removeToken()
+					}
 				  }
-			  })
+			  	})
 		setContent("")
 		event.target.reset()
 		event.preventDefault()
-		}
+	}
+
+	function handlePost(id) { 
+		axios({
+		  method: "POST",
+		  url:"/api/likepost/" + id,
+		  data:{
+			username:username
+		   },
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		})
+		.then((response) => {
+			getPosts()
+		}).catch((error) => {
+		  if (error.response) {
+			console.log(error.response)
+			if (error.response.status === 401 || error.response.status === 422){
+			  removeToken()
+			}
+			}
+		})
+	}
 		
     return (
         <>
@@ -84,7 +109,7 @@ function Home(){
 					Post
 				</button>
 			</form>
-			{posts && posts.map(posts => <Posts key={posts.id} content={posts.content} image={posts.image}/>)}
+			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost}/>)}
         </>
     )
 }
