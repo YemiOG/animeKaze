@@ -6,6 +6,7 @@ import Posts from "./Posts"
 
 function Explore(){
     const {token, removeToken, setAppState} = useContext(UserContext);
+	const usernamer = window.localStorage.getItem('username')
 	const [posts, setPosts] = useState("")
 
 	useEffect(() => {
@@ -21,10 +22,9 @@ function Explore(){
 			  Authorization: 'Bearer ' + token
 			}
 		  }).then((response)=>{
-			  console.log(response.data.items)
-			// setPosts(
-            //     response.data.items
-			//   )
+			setPosts(
+                response.data.items
+			  )
 			// setAppState({ loading: false });
 		  }).catch((error) => {
 			if (error.response) {
@@ -36,12 +36,36 @@ function Explore(){
 			  console.log(error.response.headers);
 			  }
 		  })}
+	
+    function handlePost(id) { 
+      axios({
+        method: "POST",
+        url:"/api/likepost/" + id,
+        data:{
+          username:usernamer
+         },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      .then((response) => {
+        // setCount(post)
+        console.log(response)
+      }).catch((error) => {
+        if (error.response) {
+          console.log(error.response)
+          if (error.response.status === 401 || error.response.status === 422){
+            removeToken()
+          }
+          }
+      })
+    }
 
     return (
         <div className='App'>
             <h1>Explore</h1>
 			<Search />
-			{posts && posts.map(posts => <Posts key={posts.id} content={posts.content} image={posts.image}/>)}
+			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} likeCount={posts.count} content={posts.content} image={posts.image} like={handlePost}/>)}
         </div>
     )
 }
