@@ -8,6 +8,8 @@ import FollowList from './followList'
 function Follow() {
 
 	const location = useLocation();
+	const usernamer = window.localStorage.getItem('username')
+	const [following, setFollowing] = useState([])
 	const FollowLoading = Loading(FollowList);
 	const {token, removeToken, setAppState}= useContext(UserContext);
 	const [followers, setFollowers] = useState({
@@ -17,19 +19,22 @@ function Follow() {
     useEffect(() => {
 		// setAppState({ loading: true });
         getfollowers()
-		// console.log("here")
     },[])
 
 	function getfollowers(){
 		axios({
-			method: "GET",
+			method: "POST",
 			url:'/api' + location.pathname,
+			data:{
+				username:usernamer
+			   },
 			headers: {
 			  Authorization: 'Bearer ' + token
 			}
 		  }).then((response)=>{
+			setFollowing(response.data.following)
 			setFollowers(({
-				follwrs:response.data.items
+				follwrs:response.data.user.items
 			  }))
 			// setAppState({ loading: false });
 		  }).catch((error) => {
@@ -43,11 +48,9 @@ function Follow() {
 			  }
 		  })}
 
-		  let list
-		  followers.follwrs && (list = followers.follwrs.map(a => a))
   return (
 	<div>
-		<FollowLoading followers={list}/>
+		{followers.follwrs && followers.follwrs.map( (lists,index) => <FollowLoading key={lists.id} isFollowing={following[index]} setFollowing={getfollowers} follow={lists}/> )}
 	</div>
   );
 }
