@@ -49,8 +49,7 @@ function Explore(){
         }
       })
       .then((response) => {
-        // setCount(post)
-        console.log(response)
+        getExplore()
       }).catch((error) => {
         if (error.response) {
           console.log(error.response)
