@@ -135,21 +135,44 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
 
 
+likedPosts = db.Table('likedPosts',
+                     db.Column('post_id', db.Integer,
+                               db.ForeignKey('post.id')),
+                     db.Column('liker_id', db.Integer,
+                                db.ForeignKey('user.id'))
+                    )
+
+
 class Post(PaginatedAPIMixin, db.Model):
+    __tablename__ = "post"
+
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(360))
     image = db.Column(db.String(360))
+    likes= db.relationship(
+        'User', secondary=likedPosts,
+        backref=db.backref('likedPosts', lazy='dynamic'), lazy='dynamic')
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return '<Post {}>'.format(self.recipe)
+        return '<Post {}>'.format(self.content)
+    
+    def like_state(self, user):
+        if not self.liked(user):
+            self.likes.append(user)
+        elif self.liked(user):
+            self.likes.remove(user)
+    
+    def liked(self, user):
+        return self.likes.filter(likedPosts.c.liker_id == user.id).count() > 0
     
     def to_dict(self):
         data = {
             'id': self.id,
             'content': self.content,
             'image': self.image,
+            'likes': self.likes.count()
         }
         return data
 
