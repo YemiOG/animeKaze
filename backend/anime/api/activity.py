@@ -7,27 +7,37 @@ from ..models import User, Post
 from datetime import datetime
 from .. import db
 from .errors import bad_request
-import cloudinary.uploader
+from cloudinary.uploader import upload
 import random
 
 @api.route('/upload', methods=['POST'])
 @jwt_required()
 # @cross_origin()
 def upload_file():
-	upload_result = None
-	postTime = datetime.utcnow()
+	response = None
+	post_time = datetime.utcnow() #set time post was submitted 
+	#get post content from POST request
 	post = request.form['content']
-	user = request.form['uid']
+	user_id = request.form['uid']
 	if 'file' not in request.files:
 		return bad_request('No image attached')
 	file_to_upload = request.files['file']
-	current_user = User.query.get_or_404(user)
-	if file_to_upload:
-		upload_result = cloudinary.uploader.upload(file_to_upload)
-		response = upload_result
-	filename= response.get('secure_url')
-	new_post = Post(content=post, image=filename, 
-					timestamp=postTime,
+	current_user = User.query.get_or_404(user_id)
+	#upload media file to cloudinary 
+	if not file_to_upload:
+		return bad_request('Post failed, please try again')
+	upload_result = upload(file_to_upload, eager= [
+	{	"width": 400, 
+		"height": 300,
+		"crop": "fit"
+	}])
+	response = {"success":'New post successfully created'}
+		
+	#and then get the url for the transitioned uploaded file and store it in the database
+	file= response.get('eager')
+	file_url= file[0].get('secure_url')
+	new_post = Post(content=post, image=file_url, 
+					timestamp=post_time,
 					author=current_user)
 	db.session.add(new_post)
 	db.session.commit()
@@ -100,10 +110,11 @@ def unfollow(username):
 def like(id):
 	uzer = request.json.get("username").lower()
 	user = User.query.filter_by(username=uzer).first_or_404()
-	Postliked = Post.query.filter_by(id=id).first_or_404()
-	Postliked.like_state(user)
+	#Get current user that liked the post
+	Post_liked = Post.query.filter_by(id=id).first_or_404()
+	#Check if user has liked the picture before with the "like_state function"
+	Post_liked.like_state(user)
 	db.session.commit()
-	print(Postliked.likes.all())
-	# 	response = {"success":'You have unfollowed {}!'.format(username)}
-	# 	return response
+	response = {"success": 'Post reacted to'}
+	return response
 
