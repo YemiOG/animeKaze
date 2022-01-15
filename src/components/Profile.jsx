@@ -165,6 +165,9 @@ function Profile() {
             console.log(error.response)
             console.log(error.response.status)
             console.log(error.response.headers)
+            if (error.response.status === 401 || error.response.status === 422){
+              removeToken()
+            }
             }
         })  
         event.preventDefault()
@@ -182,8 +185,7 @@ function Profile() {
         }
       })
       .then((response) => {
-        // setCount(post)
-        console.log(response)
+        getPosts(usernamer)
       }).catch((error) => {
         if (error.response) {
           console.log(error.response)
@@ -241,7 +243,7 @@ function Profile() {
               </button>
               )
           }
-          {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.count} image={posts.image} like={handlePost}/>)}
+          {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost}/>)}
         </>
         :
         <UserNotFound/>}
