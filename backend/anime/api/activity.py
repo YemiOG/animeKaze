@@ -1,5 +1,6 @@
 from . import api
 from flask import request,url_for
+from sqlalchemy import or_
 # from flask_cors import CORS, cross_origin
 from flask_jwt_extended import jwt_required
 from ..models import User, Post
@@ -15,47 +16,42 @@ import random
 def upload_file():
 	upload_result = None
 	postTime = datetime.utcnow()
-	if request.method == 'POST':
-		post = request.form['content']
-		user = request.form['uid']
-		if 'file' not in request.files:
-			return bad_request('No image attached')
-		file_to_upload = request.files['file']
-		current_user = User.query.get_or_404(user)
-		if file_to_upload:
-			upload_result = cloudinary.uploader.upload(file_to_upload)
-			response = upload_result
-			filename= response.get('secure_url')
-			new_post = Post(content=post, image=filename, 
-							timestamp=postTime,
-							author=current_user)
-			db.session.add(new_post)
-			db.session.commit()
-			return response
+	post = request.form['content']
+	user = request.form['uid']
+	if 'file' not in request.files:
+		return bad_request('No image attached')
+	file_to_upload = request.files['file']
+	current_user = User.query.get_or_404(user)
+	if file_to_upload:
+		upload_result = cloudinary.uploader.upload(file_to_upload)
+		response = upload_result
+	filename= response.get('secure_url')
+	new_post = Post(content=post, image=filename, 
+					timestamp=postTime,
+					author=current_user)
+	db.session.add(new_post)
+	db.session.commit()
+	return response
 
 @api.route('/search', methods=['POST'])
 def search_user():
 	usrname = request.json.get("username", None).lower()
-	user = User.query.filter_by(username = usrname).first_or_404().to_dict()
-	if user is None:
-		user = User.query.filter_by(first_name == usrname).first_or_404().to_dict()
-	if user is None:
-		user = User.query.filter(User.last_name == usrname).first_or_404().to_dict()
-	response=user
+	print(usrname)
+	user = User.query.filter(or_(User.username == usrname, User.first_name == usrname, User.last_name == usrname)).first()
+	response=user.to_dict()
 	return response
 
 # User posts only
 @api.route('/<pager>/<username>/posts', methods=['GET'])
-# @jwt_required()
 def get_posts(username,pager):
 	response = None
 	user = User.query.filter_by(username=username).first_or_404()
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
-	if pager == 'home':
+	if pager == 'profile':
 		response = User.to_collection_dict(user.posts, page, per_page, 
 										'api.get_posts', username=username, pager=pager)
-	elif pager == 'profile':
+	elif pager == 'home':
 		response = User.to_collection_dict(user.followed_posts(), page, per_page, 
 											'api.get_posts', username=username, pager=pager)
 	return response
@@ -77,14 +73,13 @@ def explore():
 def follow(username):
 	currentUzer = request.json.get("username", None).lower()
 	currentUser = User.query.filter_by(username=currentUzer).first_or_404()
-	if request.method == 'POST':
-		user = User.query.filter_by(username=username).first_or_404()
-		if user == currentUser:
-			return bad_request('You cannot follow yourself')
-		currentUser.follow(user)
-		db.session.commit()
-		response = {"success":'You are now following {}!'.format(username)}
-		return response
+	user = User.query.filter_by(username=username).first_or_404()
+	if user == currentUser:
+		return bad_request('You cannot follow yourself')
+	currentUser.follow(user)
+	db.session.commit()
+	response = {"success":'You are now following {}!'.format(username)}
+	return response
 
 
 @api.route('/unfollow/<username>', methods=['POST'])
@@ -92,11 +87,23 @@ def follow(username):
 def unfollow(username):
 	currentUzer = request.json.get("username", None).lower()
 	currentUser = User.query.filter_by(username=currentUzer).first_or_404()
-    if request.method == 'POST':
-        user = User.query.filter_by(username=username).first_or_404()
-        if user == currentUser:
-			return bad_request('You cannot unfollow yourself')
-        currentUser.unfollow(user)
-        db.session.commit()
-		response = {"success":'You have unfollowed {}!'.format(username)}
-		return response
+	user = User.query.filter_by(username=username).first_or_404()
+	if user == currentUser:
+		return bad_request('You cannot unfollow yourself')
+	currentUser.unfollow(user)
+	db.session.commit()
+	response = {"success":'You have unfollowed {}!'.format(username)}
+	return response
+
+@api.route('/likepost/<id>', methods=['POST'])
+@jwt_required()
+def like(id):
+	uzer = request.json.get("username").lower()
+	user = User.query.filter_by(username=uzer).first_or_404()
+	Postliked = Post.query.filter_by(id=id).first_or_404()
+	Postliked.like_state(user)
+	db.session.commit()
+	print(Postliked.likes.all())
+	# 	response = {"success":'You have unfollowed {}!'.format(username)}
+	# 	return response
+
