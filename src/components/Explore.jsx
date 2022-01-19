@@ -5,7 +5,7 @@ import Search from "./Search"
 import Posts from "./Posts"
 
 function Explore(){
-    const {token, removeToken, setAppState} = useContext(UserContext);
+  const {token, removeToken, setAppState} = useContext(UserContext);
 	const usernamer = window.localStorage.getItem('username')
 	const [posts, setPosts] = useState("")
 
@@ -16,8 +16,11 @@ function Explore(){
 
 	function getExplore(){
 		axios({
-			method: "GET",
+			method: "POST",
 			url:'/api/explore',
+      data:{
+        username:usernamer
+           },
 			headers: {
 			  Authorization: 'Bearer ' + token
 			}
