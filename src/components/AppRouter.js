@@ -74,8 +74,12 @@ function AppRouter() {
 			<Route exact path="/" element={<Base />}></Route> 
 			<Route exact path="/login" element={<Login/>}></Route>
 			<Route exact path="/register" element={<Register/>}></Route>
-			<Route exact path="/explore" element={<Explore/>}></Route>
 			<Route exact path="/accounts/password/reset/" element={<RequestPasswordChange/>}></Route>
+			<Route exact path="/explore" element={
+						<AuthedRoute >
+							<Explore/>
+						</AuthedRoute>
+						} />
 			<Route exact path="/home" 
 				element={
 						<AuthedRoute >
@@ -101,7 +105,6 @@ function AppRouter() {
 			<Route path='*' element={<PageNotFound />}/>
 		</Routes> 
 		{console.log(appState.loading)}
-		{/* UserId is "{userInfo.cuid}" */}
 		<Footer />
 		</div>
 		</UserContext.Provider>
