@@ -70,10 +70,13 @@ def get_posts(username,pager):
 @api.route('/explore', methods=['POST'])
 @jwt_required()
 def explore():
+	#get current user
 	usrname = request.json.get("username", None).lower()
 	user = User.query.filter_by(username=usrname).first_or_404()
+
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
+	#filter posts and return only the posts user has not marked as not interested
 	response = User.to_collection_dict(user.filter_posts(), page, per_page, 
 										'api.explore')
 	return response
