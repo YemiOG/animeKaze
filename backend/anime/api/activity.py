@@ -65,6 +65,9 @@ def get_posts(username,pager):
 	elif pager == 'home':
 		response = User.to_collection_dict(user.followed_posts(), page, per_page, 
 											'api.get_posts', username=username, pager=pager)
+	else:
+		return bad_request('Failed to load posts')
+
 	return response
 
 @api.route('/explore', methods=['POST'])
