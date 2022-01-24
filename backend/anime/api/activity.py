@@ -51,24 +51,29 @@ def search_user():
 	response=user.to_dict()
 	return response
 
-@api.route('/<pager>/<username>/posts', methods=['GET'])
-def get_posts(username,pager):
-	response = None
-	user = User.query.filter_by(username=username).first_or_404()
-	page = request.args.get('page', 1, type=int)
-	per_page = min(request.args.get('per_page', 10, type=int), 100)
-	# Display user's posts only
-	if pager == 'profile':
-		response = User.to_collection_dict(user.posts, page, per_page, 
-										'api.get_posts', username=username, pager=pager)
-	# Display user's + followed users's posts 
-	elif pager == 'home':
-		response = User.to_collection_dict(user.followed_posts(), page, per_page, 
-											'api.get_posts', username=username, pager=pager)
-	else:
-		return bad_request('Failed to load posts')
+@api.route('/profile/<username>/posts', methods=['GET'])
+def get_profile_posts(username):
+    response = None
+    user = User.query.filter_by(username=username).first_or_404()
+    page = request.args.get('page', 1, type=int)
+    per_page = min(request.args.get('per_page', 10, type=int), 100)
+    # Display user's posts only
+    response = User.to_collection_dict(user.posts, page, per_page, 
+                                        'api.get_profile_posts', username=username)
+    return response
 
-	return response
+@api.route('/home/<username>/posts', methods=['GET'])
+@jwt_required()
+def get_home_posts(username):
+    response = None
+    user = User.query.filter_by(username=username).first_or_404()
+    page = request.args.get('page', 1, type=int)
+    per_page = min(request.args.get('per_page', 10, type=int), 100)
+
+    # Display user's + followed users's posts 
+    response = User.to_collection_dict(user.followed_posts(), page, per_page, 
+                                            'api.get_home_posts', username=username)
+    return response
 
 @api.route('/explore', methods=['POST'])
 @jwt_required()
