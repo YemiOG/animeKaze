@@ -11,11 +11,11 @@ function Posts(props){
 	return (
             <div className="note">
                 <h1 >  {props.content} </h1>
-				<img alt={""} src={props.image} />
+				        <img alt={""} src={props.image} />
                 <p> {props.likeCount} </p>
                 <button onClick={handleClick}> Like </button>
-                <button onClick={handleReport}> Report </button>
-                <button onClick={handleInterest}> Not interested </button>
+                {props.report && <button onClick={handleReport}> Report </button>}
+                {props.interested && <button onClick={handleInterest}> Not interested </button>}
             </div>
     )
 }
