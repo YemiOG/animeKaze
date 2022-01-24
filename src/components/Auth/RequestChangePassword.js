@@ -6,6 +6,7 @@ function RequestPasswordChange() {
 
 	const [email , setNewEmail] = useState("")
 	const [noUser, setNoUser] = useState("")
+	const [sent, setSent] = useState("")
 	const {token} = useContext(UserContext);
 
 	function handleChange(event) {
@@ -23,10 +24,12 @@ function RequestPasswordChange() {
 			 }
 		})
 		.then((response) => {
-			console.log(response)
+			setNoUser("")
+			setSent(response.data.confirmation)
 		}).catch((error) => {
 			if (error.response) {
 				if (error.response.status === 400){
+					setSent("")
 					setNoUser(error.response.data.message)
 				}
 			}
@@ -49,6 +52,7 @@ function RequestPasswordChange() {
           	<button onClick={Recover}>Submit</button>
         	</form>
 			{noUser && <p>{noUser}</p>}
+			{sent && <p>{sent}</p>}
 		</div>
     );
   };
