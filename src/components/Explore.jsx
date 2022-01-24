@@ -74,7 +74,8 @@ function Explore(){
         }
       })
       .then((response) => {
-        getExplore()
+        console.log(response.data.success)
+        // getExplore()
       }).catch((error) => {
         if (error.response) {
           console.log(error.response)
@@ -108,11 +109,11 @@ function Explore(){
     }
 
     return (
-        <div className='App'>
-            <h1>Explore</h1>
-			<Search />
-			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={notInterested} report={reportPost}/>)}
-        </div>
+      <div className='App'>
+        <h1>Explore</h1>
+			  <Search />
+		    {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={notInterested} report={reportPost}/>)}
+      </div>
     )
 }
 
