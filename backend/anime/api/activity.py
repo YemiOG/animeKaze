@@ -108,30 +108,34 @@ def unfollow(username):
 @api.route('/likepost/<id>', methods=['POST'])
 @jwt_required()
 def like(id):
+	#Get current user that liked the post
 	uzer = request.json.get("username").lower()
 	user = User.query.filter_by(username=uzer).first_or_404()
-	#Get current user that liked the post
+
+	#Get the liked post by its id
 	Post_liked = Post.query.filter_by(id=id).first_or_404()
+
 	#Check if user has liked the picture before with the "like_state function"
 	Post_liked.like_state(user)
 	db.session.commit()
-	response = {"success": 'Post reacted to'}
+	response = {"success": True}
 	return response
 
 @api.route('/notinterested/<id>', methods=['POST'])
 @jwt_required()
 def not_interested(id):
+	#Get current user that wants to stop seeing the particular post
 	uzer = request.json.get("username").lower()
 	user = User.query.filter_by(username=uzer).first_or_404()
-	#Get current user that wants to stop seeing the particular post
+
+	#Get the particular post the user wants to stop seeing
 	Posts = Post.query.filter_by(id=id).first_or_404()
-	#Make user not interested in post 'true' for the current user 
+
+	#Filter out the post user does wants to stop seeing
 	Posts.no_interest(user)
 	db.session.commit()
-	print(Posts)
-	print(Posts.not_interested.all())
-	# response = {"success": 'You wont see post again'}
-	# return response
+	response = {"success": True}
+	return response
 
 # @api.route('/report/<id>', methods=['POST'])
 # @jwt_required()
