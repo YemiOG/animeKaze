@@ -195,52 +195,7 @@ function Profile() {
           }
       })
     }
-    function notInterested(id) { 
-      axios({
-        method: "POST",
-        url:"/api/notinterested/" + id,
-        data:{
-          username:usernamer
-         },
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-      .then((response) => {
-        getPosts(usernamer)
-      }).catch((error) => {
-        if (error.response) {
-          console.log(error.response)
-          if (error.response.status === 401 || error.response.status === 422){
-            removeToken()
-          }
-          }
-      })
-    }
-    function reportPost(id) { 
-      axios({
-        method: "POST",
-        url:"/api/report/" + id,
-        data:{
-          username:usernamer
-         },
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-      .then((response) => {
-        getPosts(usernamer)
-      }).catch((error) => {
-        if (error.response) {
-          console.log(error.response)
-          if (error.response.status === 401 || error.response.status === 422){
-            removeToken()
-          }
-          }
-      })
-    }
-
-    
+     
     return (
       <>
         <Search />
