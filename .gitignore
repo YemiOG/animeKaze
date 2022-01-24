@@ -31,6 +31,8 @@ backend/.env
 backend/anime.db
 
 backend/__pycache__
+backend/anime/__pycache__
+backend/anime/api/__pycache__
 
 # Python
 *.py[cod]
