@@ -134,11 +134,12 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         return followed.union(own).order_by(Post.timestamp.desc(), func.random())
     
     def filter_posts(self):
-
+        
+        #get count of not interested posts by post id 
         no_intrst_count = db.session.query(
                             notInterested.c.post_id, func.count('*').label('not_interest_count')
                             ).group_by(notInterested.c.post_id).subquery()
-
+    
         explore= db.session.query(Post).filter(Post.user_id != self.id).outerjoin(
             no_intrst_count).outerjoin(notInterested).filter(
                 or_(notInterested.c.person_id != self.id, notInterested.c.person_id == None)).filter(
