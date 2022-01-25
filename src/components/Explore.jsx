@@ -75,7 +75,6 @@ function Explore(){
       })
       .then((response) => {
         console.log(response.data.success)
-        // getExplore()
       }).catch((error) => {
         if (error.response) {
           console.log(error.response)
@@ -97,7 +96,6 @@ function Explore(){
         }
       })
       .then((response) => {
-        getExplore()
       }).catch((error) => {
         if (error.response) {
           console.log(error.response)
