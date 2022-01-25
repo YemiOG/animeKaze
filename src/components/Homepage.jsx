@@ -93,28 +93,6 @@ function Home(){
 		})
 	}
 
-	function notInterested(id) { 
-		axios({
-		  method: "POST",
-		  url:"/api/notinterested/" + id,
-		  data:{
-			username:username
-		   },
-		  headers: {
-			Authorization: 'Bearer ' + token
-		  }
-		})
-		.then((response) => {
-		  getPosts()
-		}).catch((error) => {
-		  if (error.response) {
-			console.log(error.response)
-			if (error.response.status === 401 || error.response.status === 422){
-			  removeToken()
-			}
-			}
-		})
-	  }
 	  function reportPost(id) { 
 		axios({
 		  method: "POST",
