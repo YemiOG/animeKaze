@@ -53,7 +53,7 @@ def search_user():
 
 @api.route('/profile/<username>/posts', methods=['GET'])
 def get_profile_posts(username):
-    response = None
+	#get current user
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
@@ -65,12 +65,12 @@ def get_profile_posts(username):
 @api.route('/home/<username>/posts', methods=['GET'])
 @jwt_required()
 def get_home_posts(username):
-    response = None
+	#get current user
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
 
-    # Display user's + followed users's posts 
+    # Display user's + followed users' posts 
     response = User.to_collection_dict(user.followed_posts(), page, per_page, 
                                             'api.get_home_posts', username=username)
     return response
@@ -142,22 +142,25 @@ def not_interested(id):
 	#Get the particular post the user wants to stop seeing
 	Posts = Post.query.filter_by(id=id).first_or_404()
 
-	#Filter out the post user does wants to stop seeing
+	#Add user to list of people not interested in this post
 	Posts.no_interest(user)
 	db.session.commit()
 	response = {"success": True}
 	return response
 
-# @api.route('/report/<id>', methods=['POST'])
-# @jwt_required()
-# def report(id):
-# 	uzer = request.json.get("username").lower()
-# 	user = User.query.filter_by(username=uzer).first_or_404()
-# 	#Get current user that is reporting the post
-# 	Post_reported = Post.query.filter_by(id=id).first_or_404()
-# 	#Check if user has liked the picture before with the "like_state function"
-# 	Post_liked.like_state(user)
-# 	db.session.commit()
-# 	response = {"success": 'Post reported'}
-# 	return response
+@api.route('/report/<id>', methods=['POST'])
+@jwt_required()
+def report(id):
+	#Get current user that is reporting a particular post
+	uzer = request.json.get("username").lower()
+	user = User.query.filter_by(username=uzer).first_or_404()
+
+	#Get the particular post being reported
+	Post_reported = Post.query.filter_by(id=id).first_or_404()
+
+	#Add user to list of people who have reported this posts
+	Post_reported.report(user)
+	db.session.commit()
+	response = {"success": True}
+	return response
 
