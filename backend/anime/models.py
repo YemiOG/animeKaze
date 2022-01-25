@@ -103,10 +103,19 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
 
     def followed_posts(self):
-        #get posts from users followers
-        followed = Post.query.join(
-            followers, (followers.c.followed_id == Post.user_id)).filter(
-                followers.c.follower_id == self.id)
+
+        #get count of reported posts by post id 
+        reported_count = db.session.query(
+                            reportedPost.c.post_id, func.count('*').label('reporting')
+                            ).group_by(reportedPost.c.post_id).subquery()
+
+        #get posts from user's followers minus reported posts
+        followed = db.session.query(Post).join(
+            followers, (followers.c.followed_id == Post.user_id)).outerjoin(
+                reported_count).outerjoin(reportedPost).filter(
+                followers.c.follower_id == self.id).filter(
+                or_(reportedPost.c.person_id != self.id, reportedPost.c.person_id == None)).filter(
+                    or_(reported_count.c.reporting < 2 , reportedPost.c.person_id == None))
 
         #get user's own posts 
         own = Post.query.filter_by(user_id=self.id)
@@ -115,7 +124,6 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         return followed.union(own).order_by(Post.timestamp.desc(), func.random())
     
     def filter_posts(self):
-        
         #get count of not interested posts by post id 
         no_intrst_count = db.session.query(
                             notInterested.c.post_id, func.count('*').label('not_interest_count')
@@ -127,6 +135,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                     or_(no_intrst_count.c.not_interest_count < 2 , notInterested.c.person_id == None))
 
         return explore.order_by(Post.timestamp.desc())
+    
     
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
@@ -202,10 +211,6 @@ class Post(PaginatedAPIMixin, db.Model):
     def __repr__(self):
         return '<Post {}>'.format(self.content)
     
-        #         print(
-        #     Post.query.join(Post.not_interested, notInterested).filter(notInterested.c.person_id == self.id).all()
-        # )
-
     def like_state(self, user):
         if not self.liked(user):
             self.likes.append(user)
@@ -219,12 +224,20 @@ class Post(PaginatedAPIMixin, db.Model):
         if not self.interested(user):
             self.not_interested.append(user)
         else:
-            print("interested")
             self.not_interested.remove(user)
-
     
     def interested(self, user):
         return self.not_interested.filter(notInterested.c.person_id == user.id).count() > 0
+
+    def report(self, user):
+        if not self.post_reported(user):
+            self.reported.append(user)
+        else:
+            print('no longer reported')
+            self.reported.remove(user)
+
+    def post_reported(self, user):
+        return self.reported.filter(reportedPost.c.person_id == user.id).count() > 0
     
     def to_dict(self):
         data = {
