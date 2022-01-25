@@ -7,6 +7,7 @@ function FollowList(props){
     const usernamer = window.localStorage.getItem('username')
     const {token, removeToken}= useContext(UserContext)
     const userId = JSON.parse(window.localStorage.getItem("cuid"))
+    const [buttonState, setButtonState] = useState(props.isFollowing)
     // console.log(props.isFollowing)
     let idMatch = false
 
@@ -15,7 +16,6 @@ function FollowList(props){
       }
 
     function followUser() {
-        console.log(props.follow.username)
         axios({
           method: "POST",
           url:"/api/follow/" + props.follow.username,
@@ -27,7 +27,7 @@ function FollowList(props){
           }
         })
         .then((response) => {
-            props.setFollowing()
+          setButtonState(true)
         }).catch((error) => {
           if (error.response) {
             console.log(error.response)
@@ -39,7 +39,7 @@ function FollowList(props){
         })  
     }
     
-    function unfollowUser(event) {
+    function unfollowUser() {
             axios({
               method: "POST",
               url:"/api/unfollow/" + props.follow.username,
@@ -51,7 +51,7 @@ function FollowList(props){
               }
             })
             .then((response) => {
-                props.setFollowing()
+              setButtonState(false)
             }).catch((error) => {
               if (error.response) {
                 console.log(error.response)
@@ -61,9 +61,8 @@ function FollowList(props){
                 console.log(error.response.headers)
                 }
             })  
-            event.preventDefault()
         }
-
+    
     const uzer = "/user/" + props.follow.username
     return (
         <div className="note">
@@ -75,7 +74,7 @@ function FollowList(props){
             {/* if current user id matched follower id, 
             follow/unfollow button should be hdden*/}
             {!idMatch &&
-            (props.isFollowing ? 
+            (buttonState ? 
               <button onClick={unfollowUser}>
                 Following
               </button>
