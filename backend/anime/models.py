@@ -103,34 +103,15 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
 
     def followed_posts(self):
+        #get posts from users followers
         followed = Post.query.join(
             followers, (followers.c.followed_id == Post.user_id)).filter(
                 followers.c.follower_id == self.id)
-                # .filter(notInterested != self.id)
-        # followed = Post.query.join(
-        #     followers, (followers.c.followed_id == Post.user_id)).filter(
-        #         followers.c.follower_id == self.id)
-        # print(Post.query.filter(notInterested.c.person_id == self.id).all())
-        # print(followed.filter(followed.not_interested != self.id))
-        # print(Post.query.filter_by(not_interested=self.id).all())
-        # print(type(followed))
-        # print(type(Post))
-        # print(
-        #     Post.query.join(
-        #     followers, (followers.c.followed_id == Post.user_id)).filter(
-        #         followers.c.follower_id == self.id)
-                # .filter(not_interested != self.id)
-            # Post.query.join(
-            # followers, (followers.c.followed_id == Post.user_id))
-            # .filter(
-            #     followers.c.follower_id == self.id)
-            # Post.query.join(notInterested, (notInterested.c.person_id != Post.user_id)).all()
-            # .filter(
-            #     notInterested.c.person_id == self.id).all()
-                # )
-                # and_(followers.c.follower_id == self.id, ))
+
+        #get user's own posts 
         own = Post.query.filter_by(user_id=self.id)
-        # print(followed.union(own).order_by(Post.timestamp.desc()))
+
+        #combine and return both filtered post queries
         return followed.union(own).order_by(Post.timestamp.desc(), func.random())
     
     def filter_posts(self):
@@ -139,7 +120,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         no_intrst_count = db.session.query(
                             notInterested.c.post_id, func.count('*').label('not_interest_count')
                             ).group_by(notInterested.c.post_id).subquery()
-    
+        #filter out posts user doesn't want to see
         explore= db.session.query(Post).filter(Post.user_id != self.id).outerjoin(
             no_intrst_count).outerjoin(notInterested).filter(
                 or_(notInterested.c.person_id != self.id, notInterested.c.person_id == None)).filter(
