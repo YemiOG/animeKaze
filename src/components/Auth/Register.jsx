@@ -37,7 +37,9 @@ function Register(props) {
           setRegisterForm(({
             fname:"",
             lname:"",
-            username:""
+            username:"",
+            email: "",
+            password: ""
           }))
           setError(null)
           navigate('/login')
