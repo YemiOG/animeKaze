@@ -140,7 +140,7 @@ def like(id):
 	#Get the liked post by its id
 	Post_liked = Post.query.filter_by(id=id).first_or_404()
 
-	#Check if user has liked the picture before with the "like_state function"
+	#Check if user has liked the picture before with the "like_state" function
 	Post_liked.like_state(user)
 	db.session.commit()
 	response = {"success": True}
@@ -217,4 +217,21 @@ def get_comments():
     # Display user's posts only
 	response = Post.to_collection_dict(post.comments, page, per_page, 
                                     'api.get_comments')
+	return response
+
+@api.route('/likecomment/<id>', methods=['POST'])
+@jwt_required()
+def likeComment(id):
+	#Get current user that liked the comment
+	uzer = request.json.get("username").lower()
+	user = User.query.filter_by(username=uzer).first_or_404()
+
+	#Get the liked comment by its id
+	Comment_liked = Comment.query.filter_by(id=id).first_or_404()
+
+	#Check if user has liked the comment before with the "like_comment_state" function
+	#Then like or unlike based on the response to the check
+	Comment_liked.like_comment_state(user)
+	db.session.commit()
+	response = {"success": True}
 	return response
