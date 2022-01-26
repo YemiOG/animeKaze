@@ -3,7 +3,7 @@ from flask import request,url_for
 from sqlalchemy import or_
 # from flask_cors import CORS, cross_origin
 from flask_jwt_extended import jwt_required
-from ..models import User, Post
+from ..models import User, Post, Comment
 from datetime import datetime
 from .. import db
 from .errors import bad_request
@@ -14,28 +14,38 @@ import random
 @jwt_required()
 # @cross_origin()
 def upload_file():
-	response = None
-	post_time = datetime.utcnow() #set time post was submitted 
+	#set time post was submitted 
+	post_time = datetime.utcnow() 
+
 	#get post content from POST request
 	post = request.form['content']
 	user_id = request.form['uid']
+
+	#confirm that a file was sent with the POST request
 	if 'file' not in request.files:
 		return bad_request('No image attached')
 	file_to_upload = request.files['file']
+
+	#get current user
 	current_user = User.query.get_or_404(user_id)
+
 	#upload media file to cloudinary 
 	if not file_to_upload:
 		return bad_request('Post failed, please try again')
+
 	upload_result = upload(file_to_upload, eager= [
 	{	"width": 400, 
 		"height": 300,
 		"crop": "fit"
 	}])
+
 	response = {"success":'New post successfully created'}
 		
 	#and then get the url for the transitioned uploaded file and store it in the database
 	file= upload_result.get('eager')
 	file_url= file[0].get('secure_url')
+
+	#finally store the new post in the db
 	new_post = Post(content=post, image=file_url, 
 					timestamp=post_time,
 					author=current_user)
@@ -92,8 +102,10 @@ def explore():
 @api.route('/follow/<username>', methods=['POST'])
 @jwt_required()
 def follow(username):
+	#Get current user 
 	currentUzer = request.json.get("username", None).lower()
 	currentUser = User.query.filter_by(username=currentUzer).first_or_404()
+	#Get user to be followed 
 	user = User.query.filter_by(username=username).first_or_404()
 	if user == currentUser:
 		return bad_request('You cannot follow yourself')
@@ -106,8 +118,10 @@ def follow(username):
 @api.route('/unfollow/<username>', methods=['POST'])
 @jwt_required()
 def unfollow(username):
+	#Get current user 
 	currentUzer = request.json.get("username", None).lower()
 	currentUser = User.query.filter_by(username=currentUzer).first_or_404()
+	#Get user to be unfollowed 
 	user = User.query.filter_by(username=username).first_or_404()
 	if user == currentUser:
 		return bad_request('You cannot unfollow yourself')
@@ -164,3 +178,43 @@ def report(id):
 	response = {"success": True}
 	return response
 
+@api.route('/comment', methods=['GET','POST'])
+@jwt_required()
+def commenting():
+	#set time post was submitted 
+	comment_time = datetime.utcnow() 
+	#get comment, userId and postId from POST request
+	comment = request.json.get('content')
+	user_id = request.json.get('uid')
+	post_id = request.json.get('pid')
+
+	#get current user
+	current_user = User.query.get_or_404(user_id)
+	#get post 
+	Posts = Post.query.filter_by(id=post_id).first_or_404()
+
+	#finally store the new comment in the db
+	new_comment = Comment(comments=comment,
+							post = Posts,
+							timestamps=comment_time,
+							author=current_user)
+	print(new_comment.user_id)
+	db.session.add(new_comment)
+	db.session.commit()
+	response = {"success": True}
+	return response
+
+@api.route('/post/comments', methods=['POST'])
+@jwt_required()
+def get_comments():	
+	#get postId from POST request
+	post_id = request.json.get('pid')	
+	#get post 
+	post = Post.query.filter_by(id=post_id).first_or_404()
+	# print(post.comments.all())
+	page = request.args.get('page', 1, type=int)
+	per_page = min(request.args.get('per_page', 10, type=int), 100)
+    # Display user's posts only
+	response = Post.to_collection_dict(post.comments, page, per_page, 
+                                    'api.get_comments')
+	return response
