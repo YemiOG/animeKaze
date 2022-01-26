@@ -42,9 +42,9 @@ function Search() {
         if (props.lookup) {
             return (
 			<Link to={profile}
-        className="nav-link">
-        {searchresult}
-        </Link> 
+                className="nav-link">
+                {searchresult}
+            </Link> 
 		)}
         else {return ( (noUser ? <UserNotFound/> : null )
 			)
@@ -71,7 +71,7 @@ function Search() {
                         </button>
                     </fieldset>
                 </form>
-					<Display lookup={searchresult}/>
+				<Display lookup={searchresult}/>
             </div>
         );
 }
