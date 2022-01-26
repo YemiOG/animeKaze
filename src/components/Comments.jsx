@@ -108,6 +108,7 @@ function Comments(props){
 					{comm.username}
 				</Link> 
 				<h1 > {comm.content} </h1>
+				<p> {comm.likeCount} </p>
 				<button onClick={LikeComment}> Like </button>
 			</div>
 		)
@@ -115,7 +116,8 @@ function Comments(props){
 
 	return (
 		<div>
-			{allComment && allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} likeCount={comments.likes} like={handleLikeComment} username={comments.username}/>)}
+			{allComment && allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
+														likeCount={comments.likes} like={handleLikeComment} username={comments.username} />)}
 
 			{/* Comments posting form */}
 			<div>

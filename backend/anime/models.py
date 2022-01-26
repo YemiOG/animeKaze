@@ -287,6 +287,7 @@ class Comment(PaginatedAPIMixin, db.Model):
             'id': self.id,
             'content': self.comments,
             'username': user[0].username,
+            'likes': self.likes.count(),
         }
         return data
 

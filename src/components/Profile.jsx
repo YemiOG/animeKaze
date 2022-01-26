@@ -124,7 +124,6 @@ function Profile() {
 
   function followUser() {
     const uzer = location.pathname.split("/")[2]
-    console.log(uzer)
         axios({
           method: "POST",
           url:"/api/follow/" + uzer,
@@ -173,6 +172,7 @@ function Profile() {
         event.preventDefault()
     }
 
+    const uzer = location.pathname.split("/")[2]
     function handlePost(id) { 
       axios({
         method: "POST",
@@ -185,7 +185,7 @@ function Profile() {
         }
       })
       .then((response) => {
-        getPosts(usernamer)
+        getPosts(uzer)
       }).catch((error) => {
         if (error.response) {
           console.log(error.response)
