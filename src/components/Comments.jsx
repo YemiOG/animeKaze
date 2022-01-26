@@ -70,16 +70,35 @@ function Comments(props){
         event.preventDefault()
       }
 
-	function handleLikeComment(id){
-        // props.like(props.id);
+	function handleLikeComment(id, username){
 		console.log(id)
+		axios({
+			method: "POST",
+			url:"/api/likecomment/" + id,
+			data:{
+			  username:username
+			 },
+			headers: {
+			  Authorization: 'Bearer ' + token
+			}
+		  })
+		  .then((response) => {
+			getComments()
+		  }).catch((error) => {
+			if (error.response) {
+			  console.log(error.response)
+			  if (error.response.status === 401 || error.response.status === 422){
+				removeToken()
+			  }
+			  }
+		  })
     }
 
 	function DisplayComments(comm) {
 		const profile = "/user/" + comm.username
 		
 		function LikeComment(){
-			comm.like(comm.id);
+			comm.like(comm.id, comm.username);
 		}
 
         return (
