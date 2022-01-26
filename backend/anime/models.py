@@ -247,16 +247,24 @@ class Post(PaginatedAPIMixin, db.Model):
             'content': self.content,
             'image': self.image,
             'likes': self.likes.count(),
-            # 'comments': self.comments,
-            # 'reported' : self.reported
         }
         return data
 
+#table for liked comments
+likedComments = db.Table('likedComments',
+                     db.Column('comment_id', db.Integer,
+                               db.ForeignKey('comment.id')),
+                     db.Column('liker_id', db.Integer,
+                                db.ForeignKey('user.id'))
+                    )
 class Comment(PaginatedAPIMixin, db.Model):
     __tablename__ = "comment"
 
     id = db.Column(db.Integer, primary_key=True)
     comments= db.Column(db.String(360))
+    likes= db.relationship(
+            'User', secondary=likedComments,
+            backref=db.backref('likedComments', lazy='dynamic'), lazy='dynamic')
     timestamps = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -264,13 +272,21 @@ class Comment(PaginatedAPIMixin, db.Model):
     def __repr__(self):
         return '<Comment from user {}>'.format(self.user_id)
     
+    def like_comment_state(self, user):
+        if not self.liked_comment(user):
+            self.likes.append(user)
+        else:
+            self.likes.remove(user)
+    
+    def liked_comment(self, user):
+        return self.likes.filter(likedComments.c.liker_id == user.id).count() > 0
+    
     def to_dict(self):
         user = db.session.query(User).filter_by(id=self.user_id).all()
         data = {
             'id': self.id,
             'content': self.comments,
             'username': user[0].username,
-            # 'reported' : self.reported
         }
         return data
 
