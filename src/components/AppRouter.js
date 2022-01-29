@@ -24,8 +24,6 @@ import Follow from "./follow/followerList"
 //error page
 import PageNotFound from './error/pageNotFound'
 
-import Loading from './Loading'
-
 function AppRouter() {
 
 	const location = useLocation();
@@ -33,13 +31,10 @@ function AppRouter() {
 	const followerLocation = location.pathname.includes('user') && location.pathname.includes('follower')
 	const followingLocation = location.pathname.includes('user') && location.pathname.includes('followed')
 
-	console.log(profileLocation)
-	console.log(followerLocation)
-	console.log(followingLocation)
+	// console.log(profileLocation)
+	// console.log(followerLocation)
+	// console.log(followingLocation)
 	
-	const AppLoading = Loading(Home);
-	const ProfileLoading = Loading(Profile);
-	const FollowLoading = Loading(Follow);
 
 	const { token, removeToken, setToken } = useToken();
 
@@ -87,19 +82,19 @@ function AppRouter() {
 						</AuthedRoute >
 						} />
 			{profileLocation &&
-			<Route exact path={`${location.pathname}`} element={<ProfileLoading />} />}
+			<Route exact path={`${location.pathname}`} element={<Profile />} />}
 			{followerLocation &&
 			<Route exact path={`${location.pathname}`} 
 				element={
 					<AuthedRoute >
-						<FollowLoading />
+						<Follow />
 					</AuthedRoute >
 					}/>}
 			{followingLocation &&
 			<Route exact path={`${location.pathname}`} 
 				element={
 						<AuthedRoute >
-							<FollowLoading />
+							<Follow />
 						</AuthedRoute >
 						}/>}
 			<Route path='*' element={<PageNotFound />}/>
