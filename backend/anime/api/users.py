@@ -22,13 +22,13 @@ def user_profile():
 	response.headers['Location'] = url_for('api.get_user', id=user.id)
 	return response
 
-@api.route('/user/<username>', methods=['POST'])
-def get_user(username):
+@api.route('/user/<uzername>', methods=['POST'])
+def get_user(uzername):
 	following = False
 	if(request.json.get("username")):
 		currentUzer = request.json.get("username").lower()
 		currentUser = User.query.filter_by(username=currentUzer).first_or_404()
-		uzer = User.query.filter_by(username=username).first_or_404()
+		uzer = User.query.filter_by(username=uzername).first_or_404()
 		if currentUser.is_following(uzer):
 			following = True
 		response = {
@@ -37,7 +37,7 @@ def get_user(username):
 			}
 	else:
 		response = {
-			"user":User.query.filter_by(username=username).first_or_404().to_dict(),
+			"user":User.query.filter_by(username=uzername).first_or_404().to_dict(),
 			"following":following
 			}
 	return response
@@ -50,20 +50,36 @@ def get_users():
 	response = User.to_collection_dict(User.query, page, per_page, 'api.get_users')
 	return response
 
-@api.route('/user/<username>/followers', methods=['POST'])
+@api.route('/user/<uzername>/followers', methods=['POST'])
 @jwt_required()
-def get_followers(username):
+def get_followers(uzername):
 	following = []
+
+	#confirm that a username was sent with the post request
+
 	if(request.json.get("username")):
+		#get current user with the username
 		currentUzer = request.json.get("username").lower()
+
 		currentUser = User.query.filter_by(username=currentUzer).first_or_404()
-		user = User.query.filter_by(username=username).first_or_404()
+		
+		#get the user whose profile is being viewed
+		user = User.query.filter_by(username=uzername).first_or_404()
+	else:
+		return bad_request('Cannot get followers list for null user')
 
 	page = request.args.get('page', 1, type=int)
+
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
+
 	userData = User.to_collection_dict(user.followers, page, per_page,
-                                   'api.get_followers', username=username)
+                                   'api.get_followers', uzername=uzername)
+
+	#Get the state of the relationship (following or not following)
+	# between logged in user and the user 
+	# whose profile page is being viewed ()
 	for follow in userData['items']:
+		
 		flw= follow['username']
 		follower= User.query.filter_by(username=flw).first_or_404()
 		following.append(currentUser.is_following(follower))
@@ -74,18 +90,33 @@ def get_followers(username):
 		}
 	return response
 
-@api.route('/user/<username>/followed', methods=['POST'])
+@api.route('/user/<uzername>/followed', methods=['POST'])
 @jwt_required()
-def get_followed(username):
+def get_followed(uzername):
 	following = []
+
+	#confirm that a username was sent with the post request
 	if(request.json.get("username")):
+		#get current user with the username
 		currentUzer = request.json.get("username").lower()
+
 		currentUser = User.query.filter_by(username=currentUzer).first_or_404()
-		user = User.query.filter_by(username=username).first_or_404()
+		
+		#get the user whose profile is being viewed
+		user = User.query.filter_by(username=uzername).first_or_404()
+	else:
+		return bad_request('Cannot get followed list for null user')
+
 	page = request.args.get('page', 1, type=int)
+
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
+
 	userData = User.to_collection_dict(user.followed, page, per_page,
-                                   'api.get_followed', username=username)
+                                   'api.get_followed', uzername=uzername)
+
+	#Get the state of the relationship (following or not following)
+	# between logged in user and the user 
+	# whose profile page is being viewed ()
 	for follow in userData['items']:
 		flw= follow['username']
 		follower= User.query.filter_by(username=flw).first_or_404()
