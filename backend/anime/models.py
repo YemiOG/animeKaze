@@ -74,6 +74,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     avatar = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comment = db.relationship('Comment', backref='author', lazy='dynamic')
+    child_comment = db.relationship('ChildComment', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     followed = db.relationship(
@@ -166,9 +167,9 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
             'follower_count': self.followers.count(),
             'followed_count': self.followed.count(),
             '_links': {
-                'self': url_for('api.get_user', username=self.username),
-                'followers': url_for('api.get_followers', username=self.username),
-                'followed': url_for('api.get_followed', username=self.username)
+                'self': url_for('api.get_user', uzername=self.username),
+                'followers': url_for('api.get_followers', uzername=self.username),
+                'followed': url_for('api.get_followed', uzername=self.username)
             }
         }
         return data
@@ -261,13 +262,15 @@ class Comment(PaginatedAPIMixin, db.Model):
     __tablename__ = "comment"
 
     id = db.Column(db.Integer, primary_key=True)
-    comments= db.Column(db.String(360))
+    content= db.Column(db.String(360))
+    comments = db.relationship('ChildComment', backref='comment', lazy='dynamic')
     likes= db.relationship(
             'User', secondary=likedComments,
             backref=db.backref('likedComments', lazy='dynamic'), lazy='dynamic')
     timestamps = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    parent = db.Column(db.Boolean, unique=False, default=True)
 
     def __repr__(self):
         return '<Comment from user {}>'.format(self.user_id)
@@ -285,7 +288,53 @@ class Comment(PaginatedAPIMixin, db.Model):
         user = db.session.query(User).filter_by(id=self.user_id).all()
         data = {
             'id': self.id,
-            'content': self.comments,
+            'content': self.content,
+            'username': user[0].username,
+            'likes': self.likes.count(),
+            'parent': self.parent,
+            'child': self.comments.count(),
+        }
+        return data
+
+
+#table for liked child comments
+likedChildComments = db.Table('likedChildComments',
+                     db.Column('comment_id', db.Integer,
+                               db.ForeignKey('childcomment.id')),
+                     db.Column('liker_id', db.Integer,
+                                db.ForeignKey('user.id'))
+                            )
+class ChildComment(PaginatedAPIMixin, db.Model):
+    __tablename__ = "childcomment"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content= db.Column(db.String(360))
+    comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    likes= db.relationship(
+            'User', secondary=likedChildComments,
+            backref=db.backref('likedChildComments', lazy='dynamic'), lazy='dynamic')
+    timestamps = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    parent = db.Column(db.Boolean, unique=False, default=False)
+
+    def __repr__(self):
+        return '<Child Comment from user {}>'.format(self.user_id)
+    
+    def like_child_comment(self, user):
+        if not self.liked_comment(user):
+            self.likes.append(user)
+        else:
+            self.likes.remove(user)
+    
+    def liked_comment(self, user):
+        return self.likes.filter(likedChildComments.c.liker_id == user.id).count() > 0
+    
+    def to_dict(self):
+        user = db.session.query(User).filter_by(id=self.user_id).all()
+        data = {
+            'id': self.id,
+            'content': self.content,
+            'comment': self.comment_id,
             'username': user[0].username,
             'likes': self.likes.count(),
         }
