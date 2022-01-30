@@ -211,7 +211,9 @@ function Comments(props){
 				{childComment  && childComment.map(child => 
 					<div key={child.id} className="">
 						{(child.comment === comm.id ) && <>
-							<Link to={profile}
+							{console.log()}
+							{/* `user/${child.username}` */}
+							<Link to={'/user/'+child.username}
 								className="nav-link">
 								{child.username}
 							</Link> 
