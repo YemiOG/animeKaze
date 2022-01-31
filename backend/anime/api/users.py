@@ -5,23 +5,6 @@ from ..models import User
 from .. import db
 from .errors import bad_request
 
-
-@api.route('/profile', methods=['POST'])
-def user_profile():
-	data = request.get_json() or {}
-	if 'username' not in data:
-		return bad_request('Please choose a username')
-	if User.query.filter_by(username=data['username'].lower()).first():
-		return bad_request('Username not available')
-	user = User()
-	user.from_dict(data)
-	db.session.add(user)
-	db.session.commit()
-	response = jsonify(user.to_dict())
-	response.status_code = 201
-	response.headers['Location'] = url_for('api.get_user', id=user.id)
-	return response
-
 @api.route('/user/<uzername>', methods=['POST'])
 def get_user(uzername):
 	following = False
@@ -128,20 +111,25 @@ def get_followed(uzername):
 		}
 	return response
 
-@api.route('/user/<username>', methods=['PUT'])
+@api.route('/user/<uzername>', methods=['PUT'])
 @jwt_required()
-def update_user(username):
+def update(uzername):
 	data = request.get_json() or {}
-	if int(data['id']) != id:
+
+	# Confirm that the user editing the profile page is the 
+	# owner of the page
+	if  uzername != data['currentUzer']:
 		return bad_request('unauthorized')
 
-	user = User.query.get_or_404(id)
+	user = User.query.filter_by(username=uzername).first_or_404()
 	if 'username' in data and data['username'] != user.username and \
 			User.query.filter_by(username=data['username'].lower()).first():
 		return bad_request('username already exists')
 	if 'email' in data and data['email'] != user.email and \
 			User.query.filter_by(email=data['email'].lower()).first():
 		return bad_request('email address already registered')
+	
+	#Update profile with new info
 	user.from_dict(data, new_user=False)
 	db.session.commit()
 	response = user.to_dict()

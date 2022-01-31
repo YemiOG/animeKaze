@@ -41,8 +41,8 @@ def create_user():
 
 @api.route("/token", methods=["POST"])
 def create_token():
-    email = request.json.get("email", None).lower()
-    password = request.json.get("password", None)
+    email = request.json.get("email").lower()
+    password = request.json.get("password")
     user = User.query.filter_by(email=email).first()
     if user is not None and user.check_password(password):
         print(user.check_password(password))
