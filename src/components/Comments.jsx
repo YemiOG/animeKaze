@@ -99,7 +99,6 @@ function Comments(props){
         event.preventDefault()
       }
 
-	console.log(childCommentId)
 	function submitChildComment(event){
 		const contnt = event.target.content.value;
 		console.log(childCommentId)
@@ -212,7 +211,6 @@ function Comments(props){
 					<div key={child.id} className="">
 						{(child.comment === comm.id ) && <>
 							{console.log()}
-							{/* `user/${child.username}` */}
 							<Link to={'/user/'+child.username}
 								className="nav-link">
 								{child.username}
