@@ -143,7 +143,8 @@ def like(id):
 	#Get the liked post by its id
 	Post_liked = Post.query.filter_by(id=id).first_or_404()
 
-	#Check if user has liked the picture before with the "like_state" function
+	#Check if user has previously liked the picture with the "like_state" function
+	#If true, unlike the post  #If false, like the post
 	Post_liked.like_state(user)
 	db.session.commit()
 	response = {"success": True}

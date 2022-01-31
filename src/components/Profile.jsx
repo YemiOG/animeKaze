@@ -76,10 +76,8 @@ function Profile() {
           const data = response.data.user.id
           const username = response.data.user.username
           if(userId === data){
-            console.log("here we go")
             setidMatch(true)
           }
-          // compareId(data)
           setProfile(({
             username:response.data.user.username,
             about_me: response.data.user.about_me,
