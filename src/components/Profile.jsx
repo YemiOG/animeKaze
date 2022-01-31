@@ -36,14 +36,6 @@ function Profile() {
         };
     },[uzer])
     
-    // function compareId(data){
-    //   console.log(data)
-    //   console.log(userId)
-
-    // }
-
-    console.log(idMatch)
-
     function handleChange(event) { 
       const post = event.target.value
       setContent(post)
@@ -83,8 +75,6 @@ function Profile() {
         }).then((response)=>{
           const data = response.data.user.id
           const username = response.data.user.username
-          console.log(data)
-          console.log(userId)
           if(userId === data){
             console.log("here we go")
             setidMatch(true)
@@ -203,7 +193,6 @@ function Profile() {
       })
     }
      
-    console.log(idMatch)
     return (
       <>
         <Search />
