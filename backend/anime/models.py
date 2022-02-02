@@ -11,7 +11,6 @@ from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from . import db, login_manager
-from .baseModel import BaseModel
 from datetime import datetime, timedelta
 
 #table for followed and following users
@@ -86,6 +85,12 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+    
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
@@ -97,12 +102,6 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     def is_following(self, user):
         return self.followed.filter(
             followers.c.followed_id == user.id).count() > 0
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
 
     def followed_posts(self):
 
