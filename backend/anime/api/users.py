@@ -1,9 +1,10 @@
 from . import api
-from flask import request,url_for,jsonify
+from flask import request, jsonify
 from flask_jwt_extended import jwt_required
 from ..models import User
 from .. import db
 from .errors import bad_request
+
 
 @api.route('/user/<uzername>', methods=['POST'])
 def get_user(uzername):
@@ -15,15 +16,16 @@ def get_user(uzername):
 		if currentUser.is_following(uzer):
 			following = True
 		response = {
-			"user":uzer.to_dict(),
-			"following":following
+			"user": uzer.to_dict(),
+			"following": following
 			}
 	else:
 		response = {
-			"user":User.query.filter_by(username=uzername).first_or_404().to_dict(),
-			"following":following
+			"user": User.query.filter_by(username=uzername).first_or_404().to_dict(),
+			"following": following
 			}
 	return response
+
 
 @api.route('/users', methods=['GET'])
 @jwt_required()
@@ -33,20 +35,21 @@ def get_users():
 	response = User.to_collection_dict(User.query, page, per_page, 'api.get_users')
 	return response
 
+
 @api.route('/user/<uzername>/followers', methods=['POST'])
 @jwt_required()
 def get_followers(uzername):
 	following = []
 
-	#confirm that a username was sent with the post request
+	# confirm that a username was sent with the post request
 
 	if(request.json.get("username")):
-		#get current user with the username
+		# get current user with the username
 		currentUzer = request.json.get("username").lower()
 
 		currentUser = User.query.filter_by(username=currentUzer).first_or_404()
 		
-		#get the user whose profile is being viewed
+		# get the user whose profile is being viewed
 		user = User.query.filter_by(username=uzername).first_or_404()
 	else:
 		return bad_request('Cannot get followers list for null user')
@@ -58,8 +61,8 @@ def get_followers(uzername):
 	userData = User.to_collection_dict(user.followers, page, per_page,
                                    'api.get_followers', uzername=uzername)
 
-	#Get the state of the relationship (following or not following)
-	# between logged in user and the user 
+	# Get the state of the relationship (following or not following)
+	# between logged in user and the user
 	# whose profile page is being viewed ()
 	for follow in userData['items']:
 		
@@ -116,8 +119,7 @@ def get_followed(uzername):
 def update(uzername):
 	data = request.get_json() or {}
 
-	# Confirm that the user editing the profile page is the 
-	# owner of the page
+	# Confirm that the user editing the profile page is the owner of the page
 	if  uzername != data['currentUzer']:
 		return bad_request('unauthorized')
 

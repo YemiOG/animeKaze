@@ -1,5 +1,5 @@
 from . import api
-from flask import request,url_for
+from flask import request
 from sqlalchemy import or_
 # from flask_cors import CORS, cross_origin
 from flask_jwt_extended import jwt_required
@@ -8,14 +8,14 @@ from datetime import datetime
 from .. import db
 from .errors import bad_request
 from cloudinary.uploader import upload
-import random
+
 
 @api.route('/upload', methods=['POST'])
 @jwt_required()
 # @cross_origin()
 def upload_file():
-	#set time post was submitted 
-	post_time = datetime.utcnow() 
+	# set time post was submitted
+	post_time = datetime.utcnow()
 
 	#get post content from POST request
 	post = request.form['content']
@@ -29,23 +29,23 @@ def upload_file():
 	#get current user
 	current_user = User.query.get_or_404(user_id)
 
-	#upload media file to cloudinary 
+	#upload media file to cloudinary
 	if not file_to_upload:
 		return bad_request('Post failed, please try again')
 
-	upload_result = upload(file_to_upload, eager= [
-	{	"width": 400, 
-		"height": 300,
+	upload_result = upload(file_to_upload, eager=[
+	{	"width": 400,
+    	"height": 300,
 		"crop": "fit"
 	}])
 
-	response = {"success":'New post successfully created'}
+	response = {"success": 'New post successfully created'}
 		
-	#and then get the url for the transitioned uploaded file and store it in the database
+	# and then get the url for the transitioned uploaded file and store it in the database
 	file= upload_result.get('eager')
 	file_url= file[0].get('secure_url')
 
-	#finally store the new post in the db
+	# finally store the new post in the db
 	new_post = Post(content=post, image=file_url, 
 					timestamp=post_time,
 					author=current_user)
@@ -60,55 +60,60 @@ def search_user():
 	# print(user.all())
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
-	response = User.to_collection_dict(user, page, per_page, 
-										'api.search_user')
+	response = User.to_collection_dict(user, page, per_page, 'api.search_user')
 	return response
+
 
 @api.route('/profile/<username>/posts', methods=['GET'])
 def get_profile_posts(username):
-	#get current user
+	# get current user
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
     # Display user's posts only
-    response = User.to_collection_dict(user.posts, page, per_page, 
-                                        'api.get_profile_posts', username=username)
+    response = User.to_collection_dict(user.posts, page, per_page,
+                                       'api.get_profile_posts',
+										username=username)
     return response
+
 
 @api.route('/home/<username>/posts', methods=['GET'])
 @jwt_required()
 def get_home_posts(username):
-	#get current user
+	# Getget current user
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
 
-    # Display user's + followed users' posts 
-    response = User.to_collection_dict(user.followed_posts(), page, per_page, 
-                                            'api.get_home_posts', username=username)
+    # Display user's + followed users' posts
+    response = User.to_collection_dict(user.followed_posts(), page, per_page,
+                                       'api.get_home_posts',
+									    username=username)
     return response
+
 
 @api.route('/explore', methods=['POST'])
 @jwt_required()
 def explore():
-	#get current user
+	# get current user
 	usrname = request.json.get("username", None).lower()
 	user = User.query.filter_by(username=usrname).first_or_404()
 
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
-	#filter posts and return only the posts user has not marked as not interested
-	response = User.to_collection_dict(user.filter_posts(), page, per_page, 
-										'api.explore')
+	# filter posts and return only the posts user has not marked as not interested
+	response = User.to_collection_dict(user.filter_posts(), page, per_page,
+									   'api.explore')
 	return response
+
 
 @api.route('/follow/<username>', methods=['POST'])
 @jwt_required()
 def follow(username):
-	#Get current user 
+	# Get current user
 	currentUzer = request.json.get("username", None).lower()
 	currentUser = User.query.filter_by(username=currentUzer).first_or_404()
-	#Get user to be followed 
+	# Get user to be followed
 	user = User.query.filter_by(username=username).first_or_404()
 	if user == currentUser:
 		return bad_request('You cannot follow yourself')
