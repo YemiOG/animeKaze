@@ -6,6 +6,7 @@ import { UserContext } from './contexts/userContext';
 import UserNotFound from './error/userNotFound'
 import Search from "./Search"
 import Posts from "./Posts"
+import EditProfile from "./EditProfile"
 
 function Profile() {
     // let navigate = useNavigate();
@@ -15,6 +16,7 @@ function Profile() {
     const [idMatch, setidMatch] = useState(false)
     const [following, setFollowing] = useState(false)
     const [noUser, setNoUser] = useState(false)
+    const [editProfile, setEditProfile] = useState(false)
     const [content, setContent] = useState("")
     const [posts, setPosts] = useState("")
     // const [count, setCount] = useState("")
@@ -75,6 +77,7 @@ function Profile() {
         }).then((response)=>{
           const data = response.data.user.id
           const username = response.data.user.username
+          console.log(response.data.user)
           if(userId === data){
             setidMatch(true)
           }
@@ -190,6 +193,10 @@ function Profile() {
           }
       })
     }
+
+    function displayEdit() {
+      editProfile? setEditProfile(false) : setEditProfile(true)
+    }
      
     return (
       <>
@@ -224,7 +231,7 @@ function Profile() {
             Posts:{profile.posts}
           </p>
           {idMatch  ?
-              <button>
+              <button onClick={displayEdit}>
                 Edit Profile
               </button>
               :
@@ -239,6 +246,7 @@ function Profile() {
               )
           }
           {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} report={null}/>)}
+          {editProfile && <EditProfile key={profile.id} username={profile.username} fname={profile.firstname} lname={profile.lastname} bio={profile.about_me} email={profile.email}/>}
         </>
         :
         <UserNotFound/>}
