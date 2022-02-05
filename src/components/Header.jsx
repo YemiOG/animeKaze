@@ -44,7 +44,7 @@ function Header(props) {
 
   return (
     <header>
-      <h1>Accent</h1>
+      <h1>bankai</h1>
       {(!token && token!=="" && token !== undefined) ? 
         <>
         <button onClick={logMeIn}> Login </button> 
