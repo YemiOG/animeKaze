@@ -25,7 +25,7 @@ def refresh_expiring_jwts(response):
 @api.route('/createuser', methods=['POST'])
 def create_user():
 	data = request.get_json() or {}
-	if data['first_name'] == '' or data['last_name'] == '' or data['username'] == '' or data['email'] == '' or data['password'] == '':
+	if data['username'] == '' or data['email'] == '' or data['password'] == '':
 		return bad_request('Please make sure all fields are filled in correctly')
 	if User.query.filter_by(email=data['email'].lower()).first():
 		return bad_request('email address already registered')
