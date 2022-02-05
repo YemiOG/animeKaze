@@ -13,10 +13,16 @@ def get_user(uzername):
 		currentUzer = request.json.get("username").lower()
 		currentUser = User.query.filter_by(username=currentUzer).first_or_404()
 		uzer = User.query.filter_by(username=uzername).first_or_404()
+		# Check if authenticated user is following the user
 		if currentUser.is_following(uzer):
 			following = True
+		# If authenticated user is requesting for his profile, add his email to the dict response
+		if (currentUser==uzer):
+			user_dict = uzer.to_dict(include_email=True)
+		else:
+			user_dict = uzer.to_dict()
 		response = {
-			"user": uzer.to_dict(),
+			"user": user_dict,
 			"following": following
 			}
 	else:
@@ -136,6 +142,5 @@ def update(uzername):
 	db.session.commit()
 	response = user.to_dict()
 	return response
-
 
 
