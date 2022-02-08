@@ -1,7 +1,7 @@
 from . import api
 from flask import request, jsonify
 from flask_jwt_extended import jwt_required
-from ..models import User
+from ..models import User, delete_account
 from .. import db
 from .errors import bad_request
 
@@ -34,7 +34,7 @@ def get_user(uzername):
 
 
 @api.route('/users', methods=['GET'])
-@jwt_required()
+# @jwt_required()
 def get_users():
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
@@ -143,4 +143,19 @@ def update(uzername):
 	response = user.to_dict()
 	return response
 
+@api.route('/deleteuser/<id>', methods=['DELETE'])
+@jwt_required()
+def delete_user(id):
+	data = request.get_json()
+	# Confirm that the user trying to delete the account is the owner of the account
+	if int(id) != data['uid']:
+		return bad_request('unauthorized')
 
+	user_id = data['uid']
+
+	#delete all the data for this user
+	status = delete_account(user_id)
+
+	response = {"success": status}
+	status_code = 200
+	return response, status_code
