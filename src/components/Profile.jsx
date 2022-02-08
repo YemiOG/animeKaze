@@ -10,14 +10,14 @@ import Posts from "./Posts"
 function Profile() {
     // let navigate = useNavigate();
     const location = useLocation();
-    const {token, removeToken, setAppState} = useContext(UserContext);
+    const {token, removeToken} = useContext(UserContext);
     const usernamer = window.localStorage.getItem('username')
     const [idMatch, setidMatch] = useState(false)
     const [following, setFollowing] = useState(false)
     const [noUser, setNoUser] = useState(false)
     const [content, setContent] = useState("")
     const [posts, setPosts] = useState("")
-    const [count, setCount] = useState("")
+    // const [count, setCount] = useState("")
     const [profile, setProfile] = useState({
       username:"",
       about_me:"",
@@ -26,20 +26,16 @@ function Profile() {
       posts:null
     })
     const userId = JSON.parse(window.localStorage.getItem("cuid"))
+    const uzer = location.pathname.split("/")[2]
+
 
     useEffect(() => {
         getProfile()
         return () => {
           setidMatch({})
         };
-    },[])
+    },[uzer])
     
-    function compareId(data){
-      if(userId === data){
-          setidMatch(true)
-      }
-    }
-
     function handleChange(event) { 
       const post = event.target.value
       setContent(post)
@@ -69,6 +65,7 @@ function Profile() {
         })}
 
     function getProfile() {
+      setidMatch(false)
       axios({
           method: "POST",
           url: '/api' + location.pathname,
@@ -78,7 +75,9 @@ function Profile() {
         }).then((response)=>{
           const data = response.data.user.id
           const username = response.data.user.username
-          compareId(data)
+          if(userId === data){
+            setidMatch(true)
+          }
           setProfile(({
             username:response.data.user.username,
             about_me: response.data.user.about_me,
@@ -101,7 +100,6 @@ function Profile() {
       
     function submitForm (event){
       const formData = new FormData(event.target)
-      const uzer = location.pathname.split("/")[2]
       axios({
         method: "POST",
         url: '/api/upload',
@@ -123,7 +121,6 @@ function Profile() {
       }
 
   function followUser() {
-    const uzer = location.pathname.split("/")[2]
         axios({
           method: "POST",
           url:"/api/follow/" + uzer,
@@ -146,7 +143,6 @@ function Profile() {
     }
 
   function unfollowUser(event) {
-    const uzer = location.pathname.split("/")[2]
         axios({
           method: "POST",
           url:"/api/unfollow/" + uzer,
@@ -172,7 +168,6 @@ function Profile() {
         event.preventDefault()
     }
 
-    const uzer = location.pathname.split("/")[2]
     function handlePost(id) { 
       axios({
         method: "POST",
@@ -228,7 +223,7 @@ function Profile() {
           <p style={{ textAlign: 'center', fontSize: '30px' }}>
             Posts:{profile.posts}
           </p>
-          {idMatch ?
+          {idMatch  ?
               <button>
                 Edit Profile
               </button>

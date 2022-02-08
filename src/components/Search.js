@@ -10,7 +10,8 @@ function Search() {
 
     function handleChange(event) {
         const newValue = event.target.value
-        setNewSearch(newValue);
+        setNewSearch(newValue)
+        setNewSearchResult("")
     }
 
     function submitSearch(event){
@@ -20,35 +21,35 @@ function Search() {
 			url: '/api/search',
 			data:{
 				username: searched,
-			   }
+			    }
 		  }).then((response)=>{
-			const data = response.data.username
-			setNewSearchResult(data)
+			const data = response.data.items
+            (response.data.items[0] ?
+			(setNewSearchResult(response.data.items),
+            setNoUser(false))
+            :
+            setNoUser(true),
+            )
 		  }).catch((error) => {
 			if (error.response) {
-			  if (error.response.status === 404){
-				setNoUser(true)
-				setNewSearchResult("")
-			  }
+			//   if (error.response.status === 404){
+			// 	setNewSearchResult("")
+			//   }
 			  }
 		  })
         setNewSearch("")
         event.preventDefault()
-      }
+    }
 	
     function Display(props) {
-		const user = {searchresult}
-		const profile = "/user/" + user.searchresult
-        if (props.lookup) {
-            return (
-			<Link to={profile}
-                className="nav-link">
-                {searchresult}
-            </Link> 
-		)}
-        else {return ( (noUser ? <UserNotFound/> : null )
-			)
-			}
+		const profile = "/user/" + props.username
+        return (
+            <Link to={profile} className="nav-link">
+                    <h1>{props.username}</h1>
+                    <h1>{props.f_name}</h1>
+                    <h1>{props.l_name}</h1>
+			</Link> 
+		)
     }
     
         return (
@@ -71,7 +72,11 @@ function Search() {
                         </button>
                     </fieldset>
                 </form>
-				<Display lookup={searchresult}/>
+				{searchresult[0] ? searchresult.map(search => <Display key={search.id} f_name={search.firstname} 
+                                                              l_name={search.lastname} username={search.username} />)
+                                                    :
+                                    (noUser ? <UserNotFound/> : null )
+                }
             </div>
         );
 }

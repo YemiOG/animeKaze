@@ -1,21 +1,21 @@
 from . import api
-from flask import request,url_for
+from flask import request
 from sqlalchemy import or_
 # from flask_cors import CORS, cross_origin
 from flask_jwt_extended import jwt_required
-from ..models import User, Post, Comment
+from ..models import User, Post, Comment, ChildComment
 from datetime import datetime
 from .. import db
 from .errors import bad_request
 from cloudinary.uploader import upload
-import random
+
 
 @api.route('/upload', methods=['POST'])
 @jwt_required()
 # @cross_origin()
 def upload_file():
-	#set time post was submitted 
-	post_time = datetime.utcnow() 
+	# set time post was submitted
+	post_time = datetime.utcnow()
 
 	#get post content from POST request
 	post = request.form['content']
@@ -29,23 +29,23 @@ def upload_file():
 	#get current user
 	current_user = User.query.get_or_404(user_id)
 
-	#upload media file to cloudinary 
+	#upload media file to cloudinary
 	if not file_to_upload:
 		return bad_request('Post failed, please try again')
 
-	upload_result = upload(file_to_upload, eager= [
-	{	"width": 400, 
-		"height": 300,
+	upload_result = upload(file_to_upload, eager=[
+	{	"width": 400,
+    	"height": 300,
 		"crop": "fit"
 	}])
 
-	response = {"success":'New post successfully created'}
+	response = {"success": 'New post successfully created'}
 		
-	#and then get the url for the transitioned uploaded file and store it in the database
+	# and then get the url for the transitioned uploaded file and store it in the database
 	file= upload_result.get('eager')
 	file_url= file[0].get('secure_url')
 
-	#finally store the new post in the db
+	# finally store the new post in the db
 	new_post = Post(content=post, image=file_url, 
 					timestamp=post_time,
 					author=current_user)
@@ -56,56 +56,64 @@ def upload_file():
 @api.route('/search', methods=['POST'])
 def search_user():
 	usrname = request.json.get("username", None).lower()
-	print(usrname)
-	user = User.query.filter(or_(User.username == usrname, User.first_name == usrname, User.last_name == usrname)).first()
-	response=user.to_dict()
+	user = User.query.filter(or_(User.username == usrname, User.first_name == usrname, User.last_name == usrname))
+	# print(user.all())
+	page = request.args.get('page', 1, type=int)
+	per_page = min(request.args.get('per_page', 10, type=int), 100)
+	response = User.to_collection_dict(user, page, per_page, 'api.search_user')
 	return response
+
 
 @api.route('/profile/<username>/posts', methods=['GET'])
 def get_profile_posts(username):
-	#get current user
+	# get current user
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
     # Display user's posts only
-    response = User.to_collection_dict(user.posts, page, per_page, 
-                                        'api.get_profile_posts', username=username)
+    response = User.to_collection_dict(user.posts, page, per_page,
+                                       'api.get_profile_posts',
+										username=username)
     return response
+
 
 @api.route('/home/<username>/posts', methods=['GET'])
 @jwt_required()
 def get_home_posts(username):
-	#get current user
+	# Getget current user
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
 
-    # Display user's + followed users' posts 
-    response = User.to_collection_dict(user.followed_posts(), page, per_page, 
-                                            'api.get_home_posts', username=username)
+    # Display user's + followed users' posts
+    response = User.to_collection_dict(user.followed_posts(), page, per_page,
+                                       'api.get_home_posts',
+									    username=username)
     return response
+
 
 @api.route('/explore', methods=['POST'])
 @jwt_required()
 def explore():
-	#get current user
+	# get current user
 	usrname = request.json.get("username", None).lower()
 	user = User.query.filter_by(username=usrname).first_or_404()
 
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
-	#filter posts and return only the posts user has not marked as not interested
-	response = User.to_collection_dict(user.filter_posts(), page, per_page, 
-										'api.explore')
+	# filter posts and return only the posts user has not marked as not interested
+	response = User.to_collection_dict(user.filter_posts(), page, per_page,
+									   'api.explore')
 	return response
+
 
 @api.route('/follow/<username>', methods=['POST'])
 @jwt_required()
 def follow(username):
-	#Get current user 
+	# Get current user
 	currentUzer = request.json.get("username", None).lower()
 	currentUser = User.query.filter_by(username=currentUzer).first_or_404()
-	#Get user to be followed 
+	# Get user to be followed
 	user = User.query.filter_by(username=username).first_or_404()
 	if user == currentUser:
 		return bad_request('You cannot follow yourself')
@@ -140,7 +148,8 @@ def like(id):
 	#Get the liked post by its id
 	Post_liked = Post.query.filter_by(id=id).first_or_404()
 
-	#Check if user has liked the picture before with the "like_state" function
+	#Check if user has previously liked the picture with the "like_state" function
+	#If true, unlike the post  #If false, like the post
 	Post_liked.like_state(user)
 	db.session.commit()
 	response = {"success": True}
@@ -181,7 +190,7 @@ def report(id):
 @api.route('/comment', methods=['GET','POST'])
 @jwt_required()
 def commenting():
-	#set time post was submitted 
+	#set time comment was submitted 
 	comment_time = datetime.utcnow() 
 	#get comment, userId and postId from POST request
 	comment = request.json.get('content')
@@ -194,29 +203,67 @@ def commenting():
 	Posts = Post.query.filter_by(id=post_id).first_or_404()
 
 	#finally store the new comment in the db
-	new_comment = Comment(comments=comment,
+	new_comment = Comment(content=comment,
 							post = Posts,
 							timestamps=comment_time,
 							author=current_user)
-	print(new_comment.user_id)
+	db.session.add(new_comment)
+	db.session.commit()
+	response = {"success": True}
+	return response
+
+@api.route('/child/comment', methods=['POST'])
+@jwt_required()
+def child_commenting():
+	#set time comment was submitted 
+	comment_time = datetime.utcnow() 
+
+	#get comment content, userId and postId from POST request
+	content = request.json.get('content')
+	user_id = request.json.get('uid')
+	comment_id = request.json.get('cid')
+
+	#get current user
+	current_user = User.query.get_or_404(user_id)
+	#get comment 
+	comment = Comment.query.filter_by(id=comment_id).first_or_404()
+
+	#finally store the new comment in the db
+	new_comment = ChildComment(content=content,
+						comment= comment,
+						timestamps=comment_time,
+						author=current_user)
 	db.session.add(new_comment)
 	db.session.commit()
 	response = {"success": True}
 	return response
 
 @api.route('/post/comments', methods=['POST'])
-@jwt_required()
 def get_comments():	
 	#get postId from POST request
 	post_id = request.json.get('pid')	
 	#get post 
 	post = Post.query.filter_by(id=post_id).first_or_404()
-	# print(post.comments.all())
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
-    # Display user's posts only
+    # Display all comments attached to post
 	response = Post.to_collection_dict(post.comments, page, per_page, 
                                     'api.get_comments')
+	return response
+
+@api.route('/comment/comments', methods=['POST'])
+def get_child_comments():	
+	#get id of the comment from POST request
+	comment_id = request.json.get('cid')	
+	#get comment 
+	comment = Comment.query.filter_by(id=comment_id).first_or_404()
+	# for p in comment.comments.all():
+	# 	print(p.comment_id)
+	page = request.args.get('page', 1, type=int)
+	per_page = min(request.args.get('per_page', 10, type=int), 100)
+    # Display all comments attached to particular comment
+	response = Comment.to_collection_dict(comment.comments, page, per_page, 
+                                          'api.get_child_comments')
 	return response
 
 @api.route('/likecomment/<id>', methods=['POST'])
@@ -233,5 +280,24 @@ def likeComment(id):
 	#Then like or unlike based on the response to the check
 	Comment_liked.like_comment_state(user)
 	db.session.commit()
+	response = {"success": True}
+	return response
+
+@api.route('/likechildcomment/<id>', methods=['POST'])
+@jwt_required()
+def likeChildComment(id):
+	#Get current user that liked the comment
+	uzer = request.json.get("username").lower()
+	user = User.query.filter_by(username=uzer).first_or_404()
+
+	#Get the liked child comment by its id
+	comment = ChildComment.query.filter_by(id=id).first_or_404()
+
+	#Check if user has liked the comment before with the "like_child_comment" function
+	#Then like or unlike based on the response to the check
+	comment.like_child_comment(user)
+	db.session.commit()
+	print(comment)
+	print(comment.likes.all())
 	response = {"success": True}
 	return response

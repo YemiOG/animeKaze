@@ -25,15 +25,15 @@ jwt = JWTManager(app)
 mail = Mail(app)
 
 login_manager.login_view = 'auth.login'
-cloudinary.config(cloud_name = os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'), 
-                    api_secret=os.getenv('API_SECRET'))
+cloudinary.config(cloud_name=os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'), 
+                  api_secret=os.getenv('API_SECRET'))
 
 if not app.debug:
 
     if not os.path.exists('logs'):
         os.mkdir('logs')
     file_handler = RotatingFileHandler('logs/recipe.log', maxBytes=10240,
-                                           backupCount=10)
+                                       backupCount=10)
     file_handler.setFormatter(logging.Formatter(
       '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
         ))
@@ -43,20 +43,6 @@ if not app.debug:
     app.logger.setLevel(logging.INFO)
     app.logger.info('Anime world')
 
-# # blueprint for auth routes in our app
-# from .auth import auth as auth_blueprint
-# app.register_blueprint(auth_blueprint)
-
-# # blueprint for non-auth parts of app
-# from .main import main as main_blueprint
-# app.register_blueprint(main_blueprint)
-
-# # blueprint for app errors
-# from .errors import err as err_blueprint
-# app.register_blueprint(err_blueprint)
-
 # blueprint for app api
 from .api import api as api_blueprint
 app.register_blueprint(api_blueprint, url_prefix='/api')
-
-from . import errors
