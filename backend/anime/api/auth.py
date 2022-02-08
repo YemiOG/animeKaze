@@ -49,7 +49,9 @@ def create_token():
         access_token = create_access_token(identity=email)
         response = {"access_token":access_token,
 					"userID":user.id,
-					"userName":user.username}
+					"userName":user.username,
+                    "avatar":user.avatar
+                    }
         return response
     else:
         return {"msg": "Wrong email or password"}, 401
