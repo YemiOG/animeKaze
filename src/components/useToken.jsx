@@ -22,6 +22,7 @@ function useToken() {
 	localStorage.removeItem("token");
 	localStorage.removeItem("cuid");
 	localStorage.removeItem("username");
+	localStorage.removeItem("avatar");
   setToken(null);
   navigate("/login",{state :{ from : location}})
   }
