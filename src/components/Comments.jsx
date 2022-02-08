@@ -8,7 +8,7 @@ function Comments(props){
 	const [allComment , setAllComment] = useState("")
 	const [childCommentForm, setchildCommentForm]= useState(false)
 	const [childComment , setchildComment] = useState("")
-	const [childCommentId , setchildCommentId] = useState(null)
+	const [commentId , setCommentId] = useState(null)
 	const {token, removeToken, setAppState}= useContext(UserContext)
 	const userId = JSON.parse(window.localStorage.getItem("cuid"))
 	const uzername = window.localStorage.getItem('username')
@@ -34,6 +34,7 @@ function Comments(props){
 			  Authorization: 'Bearer ' + token
 			}
 		  }).then((response)=>{
+			console.log(response.data.items)
 			setAllComment(
                 response.data.items
 			  )
@@ -101,20 +102,20 @@ function Comments(props){
 
 	function submitChildComment(event){
 		const contnt = event.target.content.value;
-		console.log(childCommentId)
+		console.log(commentId)
 		axios({
 			method: "POST",
 			url: '/api/child/comment',
 			data:{
 				content: contnt,
 				uid: userId,
-				cid: childCommentId,
+				cid: commentId,
 			   },
 			headers: {
 				Authorization: 'Bearer ' + token
 			  }
 			}).then((response)=>{
-				getComments()
+				getChildComments(commentId)
 			}).catch((error) => {
 				if (error.response) {
 					if (error.response.status === 401 || error.response.status === 422){
@@ -123,6 +124,7 @@ function Comments(props){
 				}
 			 })
 		setComment("")
+		setchildCommentForm(false)
 		event.preventDefault()
 	  }
 
@@ -160,7 +162,6 @@ function Comments(props){
 			comm.submit(id)
 			comm.reply(true);
 		}
-
 		function likeChildComment(id){
 			console.log(id)
 			axios({
@@ -225,12 +226,12 @@ function Comments(props){
 			</>
 		)
 	}
-
+	console.log(childCommentForm)
 	return (
 		<div>
 			{allComment && allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
 														likeCount={comments.likes} like={handleLikeComment} username={comments.username} 
-														child= {comments.child} reply={setchildCommentForm} submit={setchildCommentId}/>)}
+														child= {comments.child} reply={setchildCommentForm} submit={setCommentId}/>)}
 
 			{/* Comments posting form */}
 			<div>
