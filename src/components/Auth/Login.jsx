@@ -32,6 +32,10 @@ function Login() {
         window.localStorage.setItem(
           "username", response.data.userName)
 
+        // store avatar in web storage
+        window.localStorage.setItem(
+          "avatar", response.data.avatar)
+
         // store token in web storage
         setToken(response.data.access_token)
 
