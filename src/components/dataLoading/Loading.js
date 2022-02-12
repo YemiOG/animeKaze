@@ -1,6 +1,6 @@
 import React from 'react';
 import { useContext } from 'react';
-import { UserContext } from './contexts/userContext';
+import { UserContext } from '../contexts/userContext';
 
 function Loading(Component) {
   return function LoadingComponent(props) {

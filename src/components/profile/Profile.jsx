@@ -2,10 +2,9 @@ import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import { Link, useLocation } from 'react-router-dom'
 import axios from "axios";
-import { UserContext } from './contexts/userContext';
-import UserNotFound from './error/userNotFound'
-import Search from "./Search"
-import Posts from "./Posts"
+import { UserContext } from '../contexts/userContext';
+import UserNotFound from '../error/userNotFound'
+import Posts from "../posts/Posts"
 import EditProfile from "./EditProfile"
 
 function Profile() {
@@ -23,6 +22,9 @@ function Profile() {
     const [profile, setProfile] = useState({
       username:"",
       about_me:"",
+      email:"",
+      firstname:"",
+      lastname:"",
       followers_cnt:null,
       following_cnt:null,
       posts:null
@@ -75,14 +77,17 @@ function Profile() {
             username:usernamer
            },
         }).then((response)=>{
+          console.log(response.data.user)
           const data = response.data.user.id
           const username = response.data.user.username
-          console.log(response.data.user)
           if(userId === data){
             setidMatch(true)
           }
           setProfile(({
             username:response.data.user.username,
+            email:response.data.user.email,
+            firstname:response.data.user.firstname,
+            lastname:response.data.user.lastname,
             about_me: response.data.user.about_me,
             followers_cnt: response.data.user.follower_count,
             following_cnt: response.data.user.followed_count,
@@ -116,6 +121,9 @@ function Profile() {
           }).catch((error) => {
           if (error.response) {
             console.log(error.response)
+            if (error.response.status === 401 || error.response.status === 422){
+              removeToken()
+            }
             }
           })
       setContent("")
@@ -200,7 +208,6 @@ function Profile() {
      
     return (
       <>
-        <Search />
         {(!noUser) ?
         <>
           {idMatch && 
@@ -211,7 +218,7 @@ function Profile() {
               <button
                 className="btn btn-lg btn-primary pull-xs-right"
                 type="submit">
-                Post
+                Upload
               </button>
             </form>
           }
@@ -246,7 +253,8 @@ function Profile() {
               )
           }
           {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} report={null}/>)}
-          {editProfile && <EditProfile key={profile.id} username={profile.username} fname={profile.firstname} lname={profile.lastname} bio={profile.about_me} email={profile.email}/>}
+          {editProfile && <EditProfile key={profile.id} username={profile.username} fname={profile.firstname} lname={profile.lastname} bio={profile.about_me} email={profile.email} 
+                            cancel={displayEdit} update={getProfile}/>}
         </>
         :
         <UserNotFound/>}

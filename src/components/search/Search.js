@@ -1,7 +1,7 @@
 import React,{useState} from 'react'
 import { Link } from 'react-router-dom'
 import axios from "axios";
-import UserNotFound from './error/userNotFound'
+import UserNotFound from '../error/userNotFound'
 
 function Search() {
     const [searchs , setNewSearch] = useState("")
@@ -54,23 +54,19 @@ function Search() {
     
         return (
             <div className="profile-page">
-                <form onSubmit={submitSearch}>
-                    <fieldset>
-                        <fieldset className="form-group">
-                            <input
-                                className="form-control form-control-lg"
-                                type="text"
-                                name="searchy"
-                                placeholder="Search for name or username"
-                                value={searchs}
-                                onChange={handleChange} />
-                        </fieldset>
+                <form onSubmit={submitSearch} className="searchForm">
+                        <input
+                            className="form-control form-control-lg"
+                            type="text"
+                            name="searchy"
+                            placeholder="Search for anything here"
+                            value={searchs}
+                            onChange={handleChange} />
                         <button
                             className="btn btn-lg btn-primary pull-xs-right"
                             type="submit">
                             Search
                         </button>
-                    </fieldset>
                 </form>
 				{searchresult[0] ? searchresult.map(search => <Display key={search.id} f_name={search.firstname} 
                                                               l_name={search.lastname} username={search.username} />)

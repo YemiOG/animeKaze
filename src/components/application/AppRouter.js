@@ -1,28 +1,30 @@
 import { useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { UserContext } from './contexts/userContext';
+import { UserContext } from '../contexts/userContext';
 
 //Application
-import Home from "./Homepage"
-import Explore from "./Explore"
-import Base from "./Basepage"
-import Header from "./Header"
-import Footer from "./Footer"
+import Home from "../Homepage"
+import Explore from "../explore/Explore"
+import Base from "../Basepage"
+import Header from "../topBottom/Header"
+import Footer from "../topBottom/Footer"
+import Sidebar from "../sideBar/SideBar"
+
 // import CurrentUser from "./getUser"
 
 // Auth
-import AuthedRoute from './Auth/AuthedRoute'
-import useToken from './useToken'
-import Login from "./Auth/Login"
-import Register from "./Auth/Register"
-import RequestPasswordChange from "./Auth/RequestChangePassword"
+import AuthedRoute from '../Auth/AuthedRoute'
+import useToken from '../Auth/useToken'
+import Login from "../Auth/Login"
+import Register from "../Auth/Register"
+import RequestPasswordChange from "../Auth/RequestChangePassword"
 
 //Profile
-import Profile from "./Profile"
-import Follow from "./follow/followerList"
+import Profile from "../profile/Profile"
+import Follow from "../follow/followerList"
 
 //error page
-import PageNotFound from './error/pageNotFound'
+import PageNotFound from '../error/pageNotFound'
 
 function AppRouter() {
 
@@ -61,14 +63,15 @@ function AppRouter() {
 		<UserContext.Provider value={{token, userInfo, appState, setAppState, setUserInfo, removeToken, setToken}}>
 		<div className='App'>
 		<Header/>  
+		<Sidebar/>  
 
 		{/* {console.log(userInfo.uzer)} */}
 		{console.log(location.pathname)}
 		{/* username: {userInfo.currentUser} */}
 		<Routes>
-			<Route exact path="/" element={<Base />}></Route> 
 			<Route exact path="/login" element={<Login/>}></Route>
 			<Route exact path="/register" element={<Register/>}></Route>
+			<Route exact path="/" element={<Base />}></Route> 
 			<Route exact path="/accounts/password/reset/" element={<RequestPasswordChange/>}></Route>
 			<Route exact path="/explore" element={
 						<AuthedRoute >
@@ -79,7 +82,7 @@ function AppRouter() {
 				element={
 						<AuthedRoute >
 							<Home />
-						</AuthedRoute >
+						</AuthedRoute>
 						} />
 			{profileLocation &&
 			<Route exact path={`${location.pathname}`} element={<Profile />} />}
@@ -88,14 +91,14 @@ function AppRouter() {
 				element={
 					<AuthedRoute >
 						<Follow />
-					</AuthedRoute >
+					</AuthedRoute>
 					}/>}
 			{followingLocation &&
 			<Route exact path={`${location.pathname}`} 
 				element={
 						<AuthedRoute >
 							<Follow />
-						</AuthedRoute >
+						</AuthedRoute>
 						}/>}
 			<Route path='*' element={<PageNotFound />}/>
 		</Routes> 

@@ -1,8 +1,7 @@
 import {useState, useEffect, useContext} from "react";
 import axios from "axios";
-import { UserContext } from './contexts/userContext';
-import Search from "./Search"
-import Posts from "./Posts"
+import { UserContext } from '../contexts/userContext';
+import Posts from "../posts/Posts"
 
 function Explore(){
   const {token, removeToken, setAppState} = useContext(UserContext);
@@ -109,7 +108,6 @@ function Explore(){
     return (
       <div className='App'>
         <h1>Explore</h1>
-			  <Search />
 		    {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={notInterested} report={reportPost}/>)}
       </div>
     )

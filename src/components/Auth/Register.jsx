@@ -14,8 +14,6 @@ function Register(props) {
       : '';
 
     const [registerForm, setRegisterForm] = useState({
-      fname: "",
-      lname: "",
       username:"",
       email: "",
       password: ""
@@ -26,8 +24,6 @@ function Register(props) {
         method: "POST",
         url:"/api/createuser",
         data:{
-          first_name:registerForm.fname,
-          last_name:registerForm.lname,
           username:registerForm.username,
           email: registerForm.email,
           password: registerForm.password
@@ -35,8 +31,6 @@ function Register(props) {
       })
       .then((response) => {
           setRegisterForm(({
-            fname:"",
-            lname:"",
             username:"",
             email: "",
             password: ""
@@ -64,18 +58,6 @@ function Register(props) {
       <div>
         <h1>Register</h1>
           <form className="register">
-            <input onChange={handleChange} 
-                  type="text"
-                  text={registerForm.fname} 
-                  name="fname" 
-                  placeholder="First name" 
-                  value={registerForm.fname} />
-            <input onChange={handleChange} 
-                  type="text"
-                  text={registerForm.lname} 
-                  name="lname" 
-                  placeholder="Last name" 
-                  value={registerForm.lname} />
             <input onChange={handleChange} 
                   type="text"
                   text={registerForm.username} 

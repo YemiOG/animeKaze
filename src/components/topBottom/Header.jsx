@@ -1,12 +1,15 @@
 import axios from "axios"
 import { useContext } from 'react'
-import { UserContext } from './contexts/userContext'
+import { UserContext } from '../contexts/userContext'
 import { useNavigate } from 'react-router';
+import Search from "../search/Search"
 
 function Header(props) {
   let navigate = useNavigate();
   const {setUserInfo,setAppState, userInfo, removeToken, token}= useContext(UserContext);
   const username = window.localStorage.getItem('username')
+  const avatar = window.localStorage.getItem('avatar')
+
 
   function logMeOut() {
     axios({
@@ -44,24 +47,16 @@ function Header(props) {
 
   return (
     <header>
-      <h1>bankai</h1>
-      {(!token && token!=="" && token !== undefined) ? 
+      <Search />
+      {(!token && token !== "" && token !== undefined) ? 
         <>
-        <button onClick={logMeIn}> Login </button> 
-        <button onClick={registerMe}> Register </button>
+          <button onClick={logMeIn}> Login </button> 
+          <button onClick={registerMe}> Sign Up </button>
         </>
        :
-        <button onClick={logMeOut}> Logout </button>
+        null
       }
-      {username ?
-        <button onClick={goToProfile}> 
-          Profile
-        </button>
-            :
-        <button onClick={logMeIn}> 
-          Profile
-        </button>
-      }
+      <button onClick={logMeOut}> Logout </button>
     </header>
   );
 }
