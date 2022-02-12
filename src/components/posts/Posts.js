@@ -1,4 +1,4 @@
-import Comments from "./Comments"
+import Comments from "../comments/Comments"
 
 function Posts(props){
     function handleClick(){

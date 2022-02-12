@@ -334,14 +334,14 @@ class PostModelCase(unittest.TestCase):
         p1.like_state(u1)
         p1.like_state(u2)
         p1.like_state(u3)
-        # post 1 reported by luffy and users 2 and 3
+        # post 1 liked by luffy and users 2 and 3
         p2.like_state(u2)
         p2.like_state(u3)
         # post 2 liked by sabo and user 3
         p4.like_state(u2)
-        # post 4 reported by user2
+        # post 4 liked by user2
         p3.like_state(u1)
-        # post 3 reported by user1
+        # post 3 liked by user1
         db.session.commit()
 
         # check the posts liked by the users
@@ -447,14 +447,14 @@ class CommentModelCase(unittest.TestCase):
         c1.like_comment_state(u1)
         c1.like_comment_state(u2)
         c1.like_comment_state(u3)
-        # comment 1 reported by luffy and users 2 and 3
+        # comment 1 liked by luffy and users 2 and 3
         c2.like_comment_state(u2)
         c2.like_comment_state(u3)
         # comment 2 liked by sabo and user 3
         c4.like_comment_state(u2)
-        # comment 4 reported by user2
+        # comment 4 liked by user2
         c3.like_comment_state(u1)
-        # comment 3 reported by user1
+        # comment 3 liked by user1
         db.session.commit()
 
         # check the comments liked by the users

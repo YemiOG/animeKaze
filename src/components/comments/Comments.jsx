@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
-import { UserContext } from './contexts/userContext';
+import { UserContext } from '../contexts/userContext';
 import { Link } from 'react-router-dom'
 
 function Comments(props){

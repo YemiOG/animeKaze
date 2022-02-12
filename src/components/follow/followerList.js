@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom'
 import axios from "axios";
 import { UserContext } from '../contexts/userContext';
-import Loading from '../Loading'
+import Loading from '../dataLoading/Loading'
 import FollowList from './followList'
 
 function Follow() {

@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { UserContext } from './contexts/userContext';
-import Search from "./Search"
-import Posts from "./Posts"
+import Search from "./search/Search"
+import Posts from "./posts/Posts"
 
 function Home(){
 
@@ -121,7 +121,6 @@ function Home(){
 			<div className="note">
                 <h1 >  Welcome to AnimeKaze </h1>
             </div>
-            <Search />
 			<form onSubmit={submitForm} encType="multipart/form-data" className="create-note">
 				<input  type="text" onChange={handleChange} name="content" placeholder="What's happening?" value={content} required/>
 				<input type="file" id="image" name="file" accept="image/*" className="file-custom" required/>
