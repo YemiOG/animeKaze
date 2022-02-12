@@ -257,8 +257,6 @@ def get_child_comments():
 	comment_id = request.json.get('cid')	
 	#get comment 
 	comment = Comment.query.filter_by(id=comment_id).first_or_404()
-	# for p in comment.comments.all():
-	# 	print(p.comment_id)
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
     # Display all comments attached to particular comment

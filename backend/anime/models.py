@@ -3,7 +3,7 @@ from anime import app
 from time import time
 from flask_login import UserMixin
 from flask import url_for
-from sqlalchemy import or_
+from sqlalchemy import or_,delete
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db, login_manager
@@ -57,7 +57,8 @@ class PaginatedAPIMixin(object):
         }
         return data
 
-
+#default image
+image = 'https://res.cloudinary.com/nagatodev/image/upload/v1644138637/no_picture.png'
 class User(PaginatedAPIMixin, db.Model, UserMixin):
     __tablename__ = 'user'
 
@@ -68,7 +69,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    avatar = db.Column(db.String(128))
+    avatar = db.Column(db.String(128), default=image)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comment = db.relationship('Comment', backref='author', lazy='dynamic')
     child_comment = db.relationship('ChildComment', backref='author',
@@ -119,6 +120,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                     reportedPost.c.person_id == None)).filter(
                     or_(reported_count.c.reporting < 2, reportedPost.c.person_id == None))
 
+
         # get user's own posts
         own = Post.query.filter_by(user_id=self.id)
 
@@ -156,7 +158,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
             return
         return User.query.get(id)
 
-    def to_dict(self):
+    def to_dict(self, include_email=False):
         data = {
             'id': self.id,
             'firstname': self.first_name,
@@ -174,6 +176,8 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                 'followed': url_for('api.get_followed', uzername=self.username)
             }
         }
+        if include_email:
+            data['email'] = self.email
         return data
 
     def from_dict(self, data, new_user=False):
@@ -293,6 +297,7 @@ class Comment(PaginatedAPIMixin, db.Model):
 
     def to_dict(self):
         user = db.session.query(User).filter_by(id=self.user_id).all()
+        # print(user)
         data = {
             'id': self.id,
             'content': self.content,
@@ -340,6 +345,7 @@ class ChildComment(PaginatedAPIMixin, db.Model):
 
     def to_dict(self):
         user = db.session.query(User).filter_by(id=self.user_id).all()
+        # print(user)
         data = {
             'id': self.id,
             'content': self.content,
@@ -348,6 +354,51 @@ class ChildComment(PaginatedAPIMixin, db.Model):
             'likes': self.likes.count(),
         }
         return data
+
+def delete_account(user_id):
+    user = User.query.filter_by(id=user_id)
+    user_posts = Post.query.filter_by(user_id=user_id)
+    user_comments = Comment.query.filter_by(user_id=user_id)
+    user_child_comments = ChildComment.query.filter_by(user_id=user_id)
+
+    for p in user_posts.all():
+        related_comments = Comment.query.filter_by(post_id=p.id)
+        for c in related_comments:
+            child_comments = ChildComment.query.filter_by(comment_id=c.id)
+            if child_comments.all():
+                child_comments.delete()
+                db.session.commit()
+        related_comments.delete()
+        db.session.commit()
+
+    for com in user_comments.all():
+        child_comments = ChildComment.query.filter_by(comment_id=com.id)
+        if child_comments.all():
+            child_comments.delete()
+            db.session.commit()
+
+    #Delete all liked posts
+    delete_posts= delete(likedPosts).where(
+        likedPosts.c.liker_id == user_id)
+    db.session.execute(delete_posts)
+
+    #Delete all liked comments
+    delete_comments= delete(likedComments).where(
+        likedComments.c.liker_id == user_id)
+    db.session.execute(delete_comments)
+
+    #Delete all liked child comments
+    delete_child_comments= delete(likedChildComments).where(
+        likedChildComments.c.liker_id == user_id)
+    db.session.execute(delete_child_comments)
+
+    user.delete()
+    user_posts.delete()
+    user_comments.delete()
+    user_child_comments.delete()
+    db.session.commit()
+
+    return True
 
 @login_manager.user_loader
 def load_user(user_id):
