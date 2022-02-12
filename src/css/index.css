@@ -4,7 +4,7 @@
     box-sizing: border-box;
   }
   html {
-    font-family: "Montserrat", sans-serif;
+    font-family: "Rubik";
   }
   body {
     background: #eee;
@@ -12,6 +12,8 @@
   }
   
   header {
+    display:flex;
+    justify-content: space-between;
     background-color: #f5ba13;
     margin: auto -16px;
     padding: 16px 32px;
@@ -20,9 +22,11 @@
   
   header h1 {
     color: #fff;
-    font-family: "McLaren", cursive;
+    font-family: inherit;
     font-weight: 200;
   }
+  
+
   
   footer {
     position: absolute;
@@ -35,6 +39,63 @@
   footer p {
     color: #ccc;
   }
+
+  .searchForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 16px;
+    position: absolute;
+    width: 378px;
+    height: 41px;
+    left: 209px;
+    top: 18px;
+    background: rgba(236, 239, 241, 0.81);
+    border-radius: 8px;
+  }
+
+  .searchForm input{
+    width: 100%;
+    border: none;
+    padding: 4px;
+    outline: none;
+    resize: none;
+    background-color: #ffffff00;
+    font-family: inherit;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 12px;
+    color: #707070;
+  }
+
+  .myProfile{
+    display: flex;
+    width: 166px;
+    height:40px;
+    justify-content: flex-end;
+  }
+
+  .myProfile p{
+    align-self: center;
+    margin-right: 16px;
+  }
+
+  .myProfile .profileImage{
+    border-radius: 4px;
+    background-color: #C4C4C4;
+    width:40px;
+    height:40px;
+  }
+
+  .myProfile img{
+    border-radius: 50%;
+    width: inherit;
+    height: inherit;
+    backface-visibility: hidden;
+  }
+
   .note {
     background: #fff;
     border-radius: 7px;
@@ -67,7 +128,8 @@
     outline: none;
   }
   
-  form {
+
+  /* form {
     position: relative;
     width: 480px;
     margin: 30px auto 20px auto;
@@ -75,7 +137,8 @@
     padding: 15px;
     border-radius: 7px;
     box-shadow: 0 1px 5px rgb(138, 137, 137);
-  }
+  } */
+
   form input,
   form textarea {
     width: 100%;
@@ -87,7 +150,7 @@
     resize: none;
   }
   form button {
-    position: absolute;
+    /* position: absolute; */
     right: 18px;
     bottom: -18px;
     background: #f5ba13;
