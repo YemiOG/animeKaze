@@ -1,42 +1,13 @@
-import axios from "axios"
 import { useContext } from 'react'
 import { UserContext } from '../contexts/userContext'
 import { useNavigate } from 'react-router';
 import Search from "../search/Search"
+import logo from '../../images/logo.png'
 
 function Header(props) {
   let navigate = useNavigate();
-  const {setUserInfo,setAppState, userInfo, removeToken, token}= useContext(UserContext);
-  const username = window.localStorage.getItem('username')
-  const avatar = window.localStorage.getItem('avatar')
-
-
-  function logMeOut() {
-    axios({
-      method: "POST",
-      url:"/api/logout",
-    })
-    .then((response) => {
-        removeToken()
-        setUserInfo({
-          uid:null
-        })
-        navigate("/")
-        setAppState({ loading: false });
-    }).catch((error) => {
-      if (error.response) {
-        console.log(error.response)
-        console.log(error.response.status)
-        console.log(error.response.headers)
-        }
-    })}
+  const {token}= useContext(UserContext);
   
-    function goToProfile(){
-      const user = {username}
-      const profile = "/user/" + user.username
-      navigate(profile)
-    }
-
     function logMeIn(){
       navigate("/login")
     }
@@ -47,7 +18,13 @@ function Header(props) {
 
   return (
     <header>
-      <Search />
+      <div className="topHeader">
+        <div className="logo">
+          <img src={logo} alt=""/>
+          <p>BANKAI</p>
+        </div>
+        <Search />
+      </div>
       {(!token && token !== "" && token !== undefined) ? 
         <>
           <button onClick={logMeIn}> Login </button> 
@@ -56,7 +33,6 @@ function Header(props) {
        :
         null
       }
-      <button onClick={logMeOut}> Logout </button>
     </header>
   );
 }
