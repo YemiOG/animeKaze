@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Rubik');
+
 * {
     padding: 0;
     margin: 0;
@@ -7,17 +9,22 @@
     font-family: "Rubik";
   }
   body {
-    background: #eee;
+    background: #ffffff;
     padding: 0 16px;
+    height: 100%;
+    width: 100%;
   }
-  
+
+/* header */
+
+.topHeader{
+  display: flex;
+  justify-content: space-between;
+  }
+
   header {
-    display:flex;
-    justify-content: space-between;
-    background-color: #f5ba13;
     margin: auto -16px;
-    padding: 16px 32px;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+    padding: 21px 69px 16px 85px;
   }
   
   header h1 {
@@ -25,9 +32,127 @@
     font-family: inherit;
     font-weight: 200;
   }
-  
 
+  header .logo{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0px;
+    width: 95px;
+    height: 29px;
+    left: 73px;
+    top: 21px;
+  }
   
+  header .logo img{
+    margin-right: 4px;
+  }
+  
+  header .logo p{
+    position: static;
+    width: 64px;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 14px;
+    line-height: 17px;
+    /* color: rgba(255, 255, 255, 0.9); */
+    }
+
+/* Dark and Light mode */
+.dark{
+  color: rgba(255, 255, 255, 0.9);
+}
+.light{
+  color:rgba(255, 255, 255, 1);
+}
+
+/* Start Side bar styling */
+.side-bar{
+  margin-left: 72px;
+  width:15%;
+}
+
+.bar-contents{
+    max-width: 178px;
+}
+
+.bar-content{
+  margin-top:50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.bar-content div{
+  width:100%;
+}
+
+.bar-content button .icons{
+  margin-right: 8px;
+}
+
+.bar-content button{
+  width:100%;
+  font-family: inherit;
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  color: #575757;
+  background:inherit;
+  border: none;
+}
+
+.side-text{
+  position: static;
+  height: 19px;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+  /* display: none; */
+}
+
+.bar-content .active-button{
+  background:#446271;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.myProfile{
+  display: flex;
+  padding: 8px 0px;
+  margin-left: 13px;
+  margin-top: 50%;
+  position: absolute;
+  text-align: center;
+  bottom: 35px;
+}
+
+.myProfile p{
+  align-self: center;
+  margin-left: 12px;
+}
+
+.myProfile .profileImage{
+  border-radius: 4px;
+  background-color: #C4C4C4;
+  width:40px;
+  height:40px;
+}
+
+.myProfile img{
+  margin-right: 12px;
+  border-radius: 50%;
+  width: inherit;
+  height: inherit;
+  backface-visibility: hidden;
+}
+/* End Side bar styling */
+
   footer {
     position: absolute;
     text-align: center;
@@ -40,19 +165,22 @@
     color: #ccc;
   }
 
+/* search form */
   .searchForm{
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 8px 16px;
-    position: absolute;
-    width: 378px;
+    width: 263px;
     height: 41px;
     left: 209px;
     top: 18px;
     background: rgba(236, 239, 241, 0.81);
     border-radius: 8px;
+  }
+
+  .search-btn{
+      border: none;
   }
 
   .searchForm input{
@@ -69,32 +197,7 @@
     line-height: 12px;
     color: #707070;
   }
-
-  .myProfile{
-    display: flex;
-    width: 166px;
-    height:40px;
-    justify-content: flex-end;
-  }
-
-  .myProfile p{
-    align-self: center;
-    margin-right: 16px;
-  }
-
-  .myProfile .profileImage{
-    border-radius: 4px;
-    background-color: #C4C4C4;
-    width:40px;
-    height:40px;
-  }
-
-  .myProfile img{
-    border-radius: 50%;
-    width: inherit;
-    height: inherit;
-    backface-visibility: hidden;
-  }
+/* search form */
 
   .note {
     background: #fff;
@@ -151,7 +254,7 @@
   }
   form button {
     /* position: absolute; */
-    right: 18px;
+    /* right: 18px;
     bottom: -18px;
     background: #f5ba13;
     color: #fff;
@@ -160,7 +263,7 @@
     width: 46px;
     height: 46px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
+    cursor: pointer; */
     outline: none;
   }
   
