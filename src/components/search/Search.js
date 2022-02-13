@@ -2,6 +2,7 @@ import React,{useState} from 'react'
 import { Link } from 'react-router-dom'
 import axios from "axios";
 import UserNotFound from '../error/userNotFound'
+import IconSearch from '../../images/search.png'
 
 function Search() {
     const [searchs , setNewSearch] = useState("")
@@ -53,7 +54,7 @@ function Search() {
     }
     
         return (
-            <div className="profile-page">
+            <div className="search-form">
                 <form onSubmit={submitSearch} className="searchForm">
                         <input
                             className="form-control form-control-lg"
@@ -63,9 +64,9 @@ function Search() {
                             value={searchs}
                             onChange={handleChange} />
                         <button
-                            className="btn btn-lg btn-primary pull-xs-right"
+                            className="btn btn-lg btn-primary pull-xs-right search-btn"
                             type="submit">
-                            Search
+                            <img src={IconSearch} alt=""/>
                         </button>
                 </form>
 				{searchresult[0] ? searchresult.map(search => <Display key={search.id} f_name={search.firstname} 
