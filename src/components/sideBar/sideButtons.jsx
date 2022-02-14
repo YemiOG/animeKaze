@@ -17,7 +17,7 @@ function CreateButton(){
 	const {removeToken}= useContext(UserContext);
 	const username = window.localStorage.getItem('username')
 	const [isActive, setActive] = useState(1);
-	const [iconColor, setIconColor] = useState("#546E7A")
+	const [iconColor, setIconColor] = useState("#ffffff")
 
 	function logMeIn(){
 		setIconColor('#ffffff')
@@ -77,10 +77,10 @@ function CreateButton(){
 		{ id: 4, icon: Notification, text: 'Notification', action:'' },
 		{ id: 5, icon: Person, text: 'Profile', action: goToProfile},
 		{ id: 6, icon: Settings, text: 'Settings', action:''},
-		{ id: 7, icon: Logout, text: 'Logout' , action:logMeOut }
+		{ id: 7, icon: Logout, text: 'Logout' , action:logMeOut },
 	]
 
-  return {unAuthButtons, AuthButtons, isActive, iconColor}
+  return {unAuthButtons, AuthButtons, isActive, setActive, iconColor}
 }
 
 export default CreateButton
