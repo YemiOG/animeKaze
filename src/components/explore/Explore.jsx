@@ -106,7 +106,7 @@ function Explore(){
     }
 
     return (
-      <div className='App'>
+      <div className='explore'>
         <h1>Explore</h1>
 		    {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={notInterested} report={reportPost}/>)}
       </div>
