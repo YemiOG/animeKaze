@@ -209,7 +209,7 @@ function Profile() {
     return (
       <>
         {(!noUser) ?
-        <>
+        <div className="profilePage">
           {idMatch && 
             <form onSubmit={submitForm} encType="multipart/form-data" className="create-note">
               <input  type="text" onChange={handleChange} name="content" placeholder="What's happening?" value={content} required/>
@@ -218,7 +218,7 @@ function Profile() {
               <button
                 className="btn btn-lg btn-primary pull-xs-right"
                 type="submit">
-                Upload
+                  Post
               </button>
             </form>
           }
@@ -255,7 +255,7 @@ function Profile() {
           {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} report={null}/>)}
           {editProfile && <EditProfile key={profile.id} username={profile.username} fname={profile.firstname} lname={profile.lastname} bio={profile.about_me} email={profile.email} 
                             cancel={displayEdit} update={getProfile}/>}
-        </>
+        </div>
         :
         <UserNotFound/>}
       </>
