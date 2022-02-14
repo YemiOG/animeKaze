@@ -10,7 +10,6 @@
   }
   body {
     background: #ffffff;
-    padding: 0 16px;
     height: 100%;
     width: 100%;
   }
@@ -24,7 +23,7 @@
 
   header {
     margin: auto -16px;
-    padding: 21px 69px 16px 85px;
+    padding: 21px 69px 16px 30px;
   }
   
   header h1 {
@@ -47,6 +46,7 @@
   
   header .logo img{
     margin-right: 4px;
+    width:50px;
   }
   
   header .logo p{
@@ -56,8 +56,15 @@
     font-weight: 800;
     font-size: 14px;
     line-height: 17px;
+    display: none;
     /* color: rgba(255, 255, 255, 0.9); */
     }
+
+/* Application */
+.App{
+  display: flex;
+  position: relative;
+}
 
 /* Dark and Light mode */
 .dark{
@@ -69,8 +76,14 @@
 
 /* Start Side bar styling */
 .side-bar{
-  margin-left: 72px;
-  width:15%;
+  margin-left: 30px;
+  height: 90%;
+  /* background: #313544; */
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 30px;
+  position: fixed;
+  overflow-x: hidden;
 }
 
 .bar-contents{
@@ -83,20 +96,11 @@
   flex-direction: column;
 }
 
-.bar-content div{
-  width:100%;
-}
-
-.bar-content button .icons{
-  margin-right: 8px;
-}
-
 .bar-content button{
-  width:100%;
   font-family: inherit;
   display: flex;
   flex-direction: row;
-  align-items: end;
+  align-items: center;
   padding: 10px 16px;
   margin-bottom: 16px;
   border-radius: 8px;
@@ -105,15 +109,19 @@
   border: none;
 }
 
+.user-name{
+  display:none
+}
+
 .side-text{
-  position: static;
+  /* position: static; */
   height: 19px;
   font-family: inherit;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 19px;
-  /* display: none; */
+  display: none;
 }
 
 .bar-content .active-button{
@@ -130,6 +138,8 @@
   position: absolute;
   text-align: center;
   bottom: 35px;
+  text-decoration: none;
+  color: #575757;
 }
 
 .myProfile p{
@@ -137,14 +147,14 @@
   margin-left: 12px;
 }
 
-.myProfile .profileImage{
-  border-radius: 4px;
-  background-color: #C4C4C4;
+.profileImage{
+  /* border-radius: 4px;
+  background-color: #C4C4C4; */
   width:40px;
   height:40px;
 }
 
-.myProfile img{
+.profileImage img{
   margin-right: 12px;
   border-radius: 50%;
   width: inherit;
@@ -199,7 +209,41 @@
   }
 /* search form */
 
-  .note {
+/* home page */
+.home-page{
+  margin-left: 94px;
+  
+}
+/* profile page */
+.profilePage{
+ margin-left: 94px;
+}
+
+/* explore page */
+.explore{
+  margin-left: 94px;
+}
+
+
+/* forms */
+.post-form{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+
+  width: 319px;
+  left: 70px;
+  top: 128px;
+
+  background: #ECEFF1;
+  border: 1px solid #C4C4C4;
+  box-sizing: border-box;
+  border-radius: 16px;
+}
+
+.note {
     background: #fff;
     border-radius: 7px;
     box-shadow: 0 2px 5px #ccc;
@@ -242,16 +286,109 @@
     box-shadow: 0 1px 5px rgb(138, 137, 137);
   } */
 
-  form input,
-  form textarea {
-    width: 100%;
-    border: none;
-    padding: 4px;
-    outline: none;
-    font-size: 1.2em;
+  form .text, .text{
     font-family: inherit;
-    resize: none;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 13px;
+    color: rgba(87, 87, 87, 0.75);
+    border: none;
+    padding: 8px 16px;
+    width: 241px;
+    height: 39px;
+    border-radius: 8.07101px;
+    margin-left: 16px;
+    margin-right: 8.5px;
   }
+
+  /* Change style of emoji form */
+.react-input-emoji--container{
+  border-radius: 8.07101px !important;
+  color: rgba(87, 87, 87, 0.75) !important;
+  border: none !important;
+  background: #fff !important;
+  font-family: inherit !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 11px !important;
+  line-height: 13px !important;
+  margin-left: 5px !important;
+  height: 110px;
+}
+
+.react-emoji-picker--wrapper {
+  top: 160px !important;
+  left: -45px !important;
+}
+
+.emoji-mart {
+  width: 318px;
+}
+
+.react-input-emoji--button{
+  padding-left: 7px !important;
+  padding-right: 3px !important;
+  }
+
+.react-emoji{
+   width: 271px !important;
+  height: 110px;
+}
+
+.formTop, .formBottom{
+    display:flex
+  }
+
+  .formBottom{
+    width:inherit;
+    margin-top: 8px;
+    justify-content:space-around;
+  }
+
+  .post-form label{
+    display:flex;
+    margin-left: 25px;
+  }
+
+  .post-form label img{
+    width:30px;
+    height:30px;
+  }
+
+  .post-form .sub-btn{
+    /* padding: 8px 32px; */
+    width: 80px;
+    height: 30px;
+    background: rgba(41, 98, 255, 1);
+    border-radius: 4px;
+    outline: none;
+    border:none;
+    margin-right: 15px;
+    font-size: 12px;
+    line-height: 14px;
+    color: #FFFFFF;
+    font-family: inherit;
+  }
+
+.post-form label p{
+    width: 81px;
+    height: 14px;
+    left: 20px;
+    top: 1px;
+    color: rgba(87, 87, 87, 0.9);
+    font-family: inherit;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 14px;
+    align-self: center;
+  }
+
+  .post-form .file-custom{
+    display: none
+  }
+
   form button {
     /* position: absolute; */
     /* right: 18px;
@@ -276,3 +413,36 @@
     clear: both;
   }
   
+/* media  */
+@media screen and (min-width: 1260px) {
+  .side-text{
+    display: block
+  }
+  .user-name{
+    display:block
+  }
+  .side-bar{
+    width:13%
+  }
+  .bar-content button{
+    width:100%
+  }
+  .profilePage{
+    margin-left: 250px
+   }
+   .home-page{
+    margin-left: 250px;
+  }  
+  .explore{
+    margin-left: 250px;
+  }
+   .bar-content button .icons{
+    margin-right: 8px
+   }
+   header .logo p{
+     display:block
+   }
+   .topHeader {
+     margin-left:2%
+   }
+}
