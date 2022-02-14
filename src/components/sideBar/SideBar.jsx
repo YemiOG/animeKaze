@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/userContext'
 import CreateButton from './sideButtons'
 
@@ -6,8 +7,9 @@ function Sidebar(props) {
   const {token}= useContext(UserContext);
   const avatar = window.localStorage.getItem('avatar')
   const username = window.localStorage.getItem('username')
-  const { unAuthButtons, AuthButtons, isActive , iconColor} = CreateButton();
-  
+  const { unAuthButtons, AuthButtons, isActive, setActive , iconColor} = CreateButton();
+  const user = {username}
+  const profile = "/user/" + user.username
 
   console.log(iconColor)
   return (
@@ -38,12 +40,14 @@ function Sidebar(props) {
                                 </button> 
                               </div> 
                               )}
-            <div className="myProfile">
-              <div className='profileImage'>
-                <img src={avatar} alt="profile logo"/>
-              </div>
-              <p>{username}</p>
-            </div>
+                               
+          <Link to={profile} className="myProfile" onClick={() => setActive(5)}>
+                <div className='profileImage'>
+                  <img src={avatar} alt="profile logo"/>
+                </div>
+                <p className="user-name">{username}</p>
+          </Link> 
+
           </>
         }
       </div>
