@@ -14,7 +14,7 @@ function CreatePost(props){
 	const avatar = window.localStorage.getItem('avatar')
 	const userId = JSON.parse(window.localStorage.getItem("cuid"))
 	const {token, removeToken}= useContext(UserContext)
-	
+
 	function expandTextArea(){
 		setTextArea(true)
 	}
@@ -31,9 +31,15 @@ function CreatePost(props){
 		setTextArea(false)
 	}
 
+	function cancelImage(){
+		setImage(null)
+	}
+
 
 	function submitForm (event){
 		const formData = new FormData(event.target)
+		formData.append("content", content);
+		// console.log(formData.get(content))
 		axios({
 			method: "POST",
 			url: '/api/upload',
@@ -52,6 +58,8 @@ function CreatePost(props){
 				  }
 			  	})
 		setContent("")
+		setTextArea(false)
+		setImage(null)
 		event.target.reset()
 		event.preventDefault()
 	}
@@ -70,9 +78,9 @@ function CreatePost(props){
 					</div>
 					{textArea ? <InputEmoji
 						className='text'
-						value={content}
 						onChange={setContent}
 						placeholder="What's happening?"
+						value={content}
 						required
 					/>
 					:
@@ -84,13 +92,13 @@ function CreatePost(props){
 					<div className="top-image-preview">
 						<img className="preview" src={image} alt="preview" />
 					</div>
-					<p onClick={cancelPost}> X </p>
+					<p onClick={cancelImage}> X </p>
 					</div>}
 				<div className="formBottom">
 					<label onClick={expandTextArea} htmlFor="image"> <img src={photo} alt=""/> <p>Photo/Video</p>  </label>
 					{!textArea ? <div className="emoji" onClick={expandTextArea}>  <img src={emoji} alt=""/> <p>Feeling</p> </div> : null}
-					<input type="file" id="image" name="file" accept="image/*" className="file-custom" onChange={onChangeFile} required/>
-					<input name="uid" value={userId} hidden readOnly={true}/>
+					<input type="file" id="image" name="file" accept="image/*" className="file-custom" onChange={onChangeFile}/>
+					<input  name="uid" value={userId} hidden readOnly={true}/>
 					<button
 						className="sub-btn btn-lg btn-primary pull-xs-right"
 						type="submit">
