@@ -211,7 +211,7 @@
 
 /* home page */
 .home-page{
-  margin-left: 94px;
+  margin-left: 121px;
   
 }
 /* profile page */
@@ -226,21 +226,56 @@
 
 
 /* forms */
-.post-form{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 16px;
-
-  width: 319px;
-  left: 70px;
-  top: 128px;
-
+.createPost{
   background: #ECEFF1;
   border: 1px solid #C4C4C4;
   box-sizing: border-box;
   border-radius: 16px;
+    /* width: 319px; */
+}
+.post-top{
+  display:flex;
+  justify-content:space-between;
+  padding-top: 8px;
+  padding-bottom: 8px ;
+  padding-left: 16px;
+  padding-right: 18px;
+  border-bottom: 1px solid #a4a8af;
+}
+
+
+.post-top div{
+  margin-right: 5px;
+}
+
+.post-form{
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.picture-preview{
+  display:flex;
+  width:311px;
+}
+
+.picture-preview p{
+  padding-left: 5px ;
+  padding-right: 3px ;
+  width: 24px;
+  cursor: pointer;
+}
+
+.top-image-preview{
+  width:inherit
+}
+
+.preview{
+  border-radius: 8.07101px;
+  width: 230px;
+  height: 230px;
+  margin-left: 45px;
 }
 
 .note {
@@ -295,11 +330,11 @@
     color: rgba(87, 87, 87, 0.75);
     border: none;
     padding: 8px 16px;
-    width: 241px;
+    width: 251px;
     height: 39px;
     border-radius: 8.07101px;
     margin-left: 16px;
-    margin-right: 8.5px;
+    /* margin-right: 8.5px; */
   }
 
   /* Change style of emoji form */
@@ -314,7 +349,7 @@
   font-size: 11px !important;
   line-height: 13px !important;
   margin-left: 5px !important;
-  height: 110px;
+  height: 106px;
 }
 
 .react-emoji-picker--wrapper {
@@ -343,17 +378,26 @@
   .formBottom{
     width:inherit;
     margin-top: 8px;
-    justify-content:space-around;
+    justify-content:space-between;
   }
 
   .post-form label{
     display:flex;
-    margin-left: 25px;
+    cursor: pointer;
   }
 
-  .post-form label img{
+  .formBottom .emoji{
+    display:flex;
+    cursor: pointer;
+  }
+
+  .post-form label img, .emoji img{
     width:30px;
     height:30px;
+  }
+
+  .emoji img{
+    margin-right:4px;
   }
 
   .post-form .sub-btn{
@@ -364,15 +408,16 @@
     border-radius: 4px;
     outline: none;
     border:none;
-    margin-right: 15px;
+    /* margin-right: 22px; */
     font-size: 12px;
     line-height: 14px;
     color: #FFFFFF;
     font-family: inherit;
+    cursor: pointer;
   }
 
-.post-form label p{
-    width: 81px;
+.post-form label p,   .formBottom .emoji p{
+    /* width: 95px; */
     height: 14px;
     left: 20px;
     top: 1px;
@@ -381,13 +426,17 @@
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
-    line-height: 14px;
+    line-height: 12px;
     align-self: center;
   }
 
   .post-form .file-custom{
-    display: none
+    display:none
   }
+
+  /* ::file-selector-button{
+    display: none
+  } */
 
   form button {
     /* position: absolute; */
