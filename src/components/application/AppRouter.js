@@ -61,50 +61,49 @@ function AppRouter() {
 
 	return (
 		<UserContext.Provider value={{token, userInfo, appState, setAppState, setUserInfo, removeToken, setToken}}>
-		<div className='App'>
-		<Header/>  
-		<Sidebar/>  
+			<Header/>  
+			<div className='App'>
+				<Sidebar/> 
 
-		{/* {console.log(userInfo.uzer)} */}
-		{console.log(location.pathname)}
-		{/* username: {userInfo.currentUser} */}
-		<Routes>
-			<Route exact path="/login" element={<Login/>}></Route>
-			<Route exact path="/register" element={<Register/>}></Route>
-			<Route exact path="/" element={<Base />}></Route> 
-			<Route exact path="/accounts/password/reset/" element={<RequestPasswordChange/>}></Route>
-			<Route exact path="/explore" element={
-						<AuthedRoute >
-							<Explore/>
-						</AuthedRoute>
-						} />
-			<Route exact path="/home" 
-				element={
-						<AuthedRoute >
-							<Home />
-						</AuthedRoute>
-						} />
-			{profileLocation &&
-			<Route exact path={`${location.pathname}`} element={<Profile />} />}
-			{followerLocation &&
-			<Route exact path={`${location.pathname}`} 
-				element={
-					<AuthedRoute >
-						<Follow />
-					</AuthedRoute>
-					}/>}
-			{followingLocation &&
-			<Route exact path={`${location.pathname}`} 
-				element={
-						<AuthedRoute >
-							<Follow />
-						</AuthedRoute>
-						}/>}
-			<Route path='*' element={<PageNotFound />}/>
-		</Routes> 
-		{console.log(appState.loading)}
-		<Footer />
-		</div>
+				{/* {console.log(userInfo.uzer)} */}
+				{console.log(location.pathname)}
+				{/* username: {userInfo.currentUser} */}
+				<Routes>
+					<Route exact path="/login" element={<Login/>}></Route>
+					<Route exact path="/register" element={<Register/>}></Route>
+					<Route exact path="/" element={<Base />}></Route> 
+					<Route exact path="/accounts/password/reset/" element={<RequestPasswordChange/>}></Route>
+					<Route exact path="/explore" element={
+								<AuthedRoute >
+									<Explore/>
+								</AuthedRoute>
+								} />
+					<Route exact path="/home" 
+						element={
+								<AuthedRoute >
+									<Home />
+								</AuthedRoute>
+								} />
+					{profileLocation &&
+					<Route exact path={`${location.pathname}`} element={<Profile />} />}
+					{followerLocation &&
+					<Route exact path={`${location.pathname}`} 
+						element={
+							<AuthedRoute >
+								<Follow />
+							</AuthedRoute>
+							}/>}
+					{followingLocation &&
+					<Route exact path={`${location.pathname}`} 
+						element={
+								<AuthedRoute >
+									<Follow />
+								</AuthedRoute>
+								}/>}
+					<Route path='*' element={<PageNotFound />}/>
+				</Routes> 
+				{/* <Footer /> */}
+			</div>
 		</UserContext.Provider>
 	)
 }
