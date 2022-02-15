@@ -89,7 +89,7 @@ function Home(){
     return (
         <div className="home-page">
 			<CreatePost post={getPosts}/>
-			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} report={reportPost}/>)}
+			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} report={reportPost} userLiked={posts.user_liked}/>)}
         </div>
     )
 }

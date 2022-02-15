@@ -243,7 +243,7 @@ function Profile() {
               </button>
               )
           }
-          {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} report={null}/>)}
+          {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} report={null} userLiked={posts.user_liked}/>)}
           {editProfile && <EditProfile key={profile.id} username={profile.username} fname={profile.firstname} lname={profile.lastname} bio={profile.about_me} email={profile.email} 
                             cancel={displayEdit} update={getProfile}/>}
         </div>
