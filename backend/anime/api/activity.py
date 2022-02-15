@@ -18,9 +18,10 @@ def upload_file():
 	post_time = datetime.utcnow()
 
 	#get post content from POST request
+	# print(request.form)
 	post = request.form['content']
 	user_id = request.form['uid']
-
+	
 	#confirm that a file was sent with the POST request
 	if 'file' not in request.files:
 		return bad_request('No image attached')
@@ -34,8 +35,8 @@ def upload_file():
 		return bad_request('Post failed, please try again')
 
 	upload_result = upload(file_to_upload, eager=[
-	{	"width": 400,
-    	"height": 300,
+	{	"width": 385,
+    	"height": 180,
 		"crop": "fit"
 	}])
 

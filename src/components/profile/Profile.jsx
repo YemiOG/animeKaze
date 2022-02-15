@@ -4,8 +4,10 @@ import { Link, useLocation } from 'react-router-dom'
 import axios from "axios";
 import { UserContext } from '../contexts/userContext';
 import UserNotFound from '../error/userNotFound'
+import CreatePost from "../posts/createPost"
 import Posts from "../posts/Posts"
 import EditProfile from "./EditProfile"
+
 
 function Profile() {
     // let navigate = useNavigate();
@@ -209,19 +211,8 @@ function Profile() {
     return (
       <>
         {(!noUser) ?
-        <>
-          {idMatch && 
-            <form onSubmit={submitForm} encType="multipart/form-data" className="create-note">
-              <input  type="text" onChange={handleChange} name="content" placeholder="What's happening?" value={content} required/>
-              <input type="file" id="image" name="file" accept="image/*" className="file-custom" required/>
-              {userId && <input  name="uid" value={userId} hidden readOnly={true}/>}
-              <button
-                className="btn btn-lg btn-primary pull-xs-right"
-                type="submit">
-                Upload
-              </button>
-            </form>
-          }
+        <div className="profilePage">
+          {idMatch && <CreatePost/>}
           <p style={{ textAlign: 'center', fontSize: '30px' }}>
             Username:{profile.username}
           </p>
@@ -255,7 +246,7 @@ function Profile() {
           {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} report={null}/>)}
           {editProfile && <EditProfile key={profile.id} username={profile.username} fname={profile.firstname} lname={profile.lastname} bio={profile.about_me} email={profile.email} 
                             cancel={displayEdit} update={getProfile}/>}
-        </>
+        </div>
         :
         <UserNotFound/>}
       </>

@@ -11,8 +11,8 @@ function Posts(props){
         props.interested(props.id);
       }
 	return (
-        <div>
-          <div className="note">
+        <div className="post-card">
+          <div className="post-list">
               <h1 >  {props.content} </h1>
 				      <img alt={""} src={props.image} />
               <p> {props.likeCount} </p>
@@ -20,7 +20,7 @@ function Posts(props){
               {props.report && <button onClick={handleReport}> Report </button>}
               {props.interested && <button onClick={handleInterest}> Not interested </button>}
           </div>
-          <div>
+          <div className="comment">
             <Comments postId={props.id}/>
           </div>
         </div>

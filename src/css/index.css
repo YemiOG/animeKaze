@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Rubik');
+
 * {
     padding: 0;
     margin: 0;
@@ -7,17 +9,21 @@
     font-family: "Rubik";
   }
   body {
-    background: #eee;
-    padding: 0 16px;
+    background: #ffffff;
+    height: 100%;
+    width: 100%;
   }
-  
+
+/* header */
+
+.topHeader{
+  display: flex;
+  justify-content: space-between;
+  }
+
   header {
-    display:flex;
-    justify-content: space-between;
-    background-color: #f5ba13;
     margin: auto -16px;
-    padding: 16px 32px;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+    padding: 21px 69px 16px 30px;
   }
   
   header h1 {
@@ -25,9 +31,138 @@
     font-family: inherit;
     font-weight: 200;
   }
-  
 
+  header .logo{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0px;
+    width: 95px;
+    height: 29px;
+    left: 73px;
+    top: 21px;
+  }
   
+  header .logo img{
+    margin-right: 4px;
+    width:50px;
+  }
+  
+  header .logo p{
+    position: static;
+    width: 64px;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 14px;
+    line-height: 17px;
+    display: none;
+    /* color: rgba(255, 255, 255, 0.9); */
+    }
+
+/* Application */
+.App{
+  display: flex;
+  position: relative;
+}
+
+/* Dark and Light mode */
+.dark{
+  color: rgba(255, 255, 255, 0.9);
+}
+.light{
+  color:rgba(255, 255, 255, 1);
+}
+
+/* Start Side bar styling */
+.side-bar{
+  margin-left: 30px;
+  height: 90%;
+  /* background: #313544; */
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 30px;
+  position: fixed;
+  overflow-x: hidden;
+}
+
+.bar-contents{
+    max-width: 178px;
+}
+
+.bar-content{
+  margin-top:50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.bar-content button{
+  font-family: inherit;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  color: #575757;
+  background:inherit;
+  border: none;
+}
+
+.user-name{
+  display:none
+}
+
+.side-text{
+  /* position: static; */
+  height: 19px;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+  display: none;
+}
+
+.bar-content .active-button{
+  background:#446271;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.myProfile{
+  display: flex;
+  padding: 8px 0px;
+  margin-left: 13px;
+  margin-top: 50%;
+  position: absolute;
+  text-align: center;
+  bottom: 35px;
+  text-decoration: none;
+  color: #575757;
+}
+
+.myProfile p{
+  align-self: center;
+  margin-left: 12px;
+}
+
+.profileImage{
+  /* border-radius: 4px;
+  background-color: #C4C4C4; */
+  width:40px;
+  height:40px;
+}
+
+.profileImage img{
+  margin-right: 12px;
+  border-radius: 50%;
+  width: inherit;
+  height: inherit;
+  backface-visibility: hidden;
+}
+/* End Side bar styling */
+
   footer {
     position: absolute;
     text-align: center;
@@ -40,19 +175,22 @@
     color: #ccc;
   }
 
+/* search form */
   .searchForm{
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 8px 16px;
-    position: absolute;
-    width: 378px;
+    width: 263px;
     height: 41px;
     left: 209px;
     top: 18px;
     background: rgba(236, 239, 241, 0.81);
     border-radius: 8px;
+  }
+
+  .search-btn{
+      border: none;
   }
 
   .searchForm input{
@@ -69,34 +207,88 @@
     line-height: 12px;
     color: #707070;
   }
+/* search form */
 
-  .myProfile{
-    display: flex;
-    width: 166px;
-    height:40px;
-    justify-content: flex-end;
-  }
+/* home page */
+.home-page{
+  margin-left: 121px;
+  
+}
+/* profile page */
+.profilePage{
+ margin-left: 121px;
+}
 
-  .myProfile p{
-    align-self: center;
-    margin-right: 16px;
-  }
+/* explore page */
+.explore{
+  margin-left: 121px;
+}
 
-  .myProfile .profileImage{
-    border-radius: 4px;
-    background-color: #C4C4C4;
-    width:40px;
-    height:40px;
-  }
 
-  .myProfile img{
-    border-radius: 50%;
-    width: inherit;
-    height: inherit;
-    backface-visibility: hidden;
-  }
+/* forms */
+.createPost{
+  background: #ECEFF1;
+  border: 1px solid #C4C4C4;
+  box-sizing: border-box;
+  border-radius: 16px;
+    /* width: 319px; */
+}
+.post-top{
+  display:flex;
+  justify-content:space-between;
+  padding-top: 8px;
+  padding-bottom: 8px ;
+  padding-left: 16px;
+  padding-right: 18px;
+  border-bottom: 1px solid #a4a8af;
+}
 
-  .note {
+
+.post-top div{
+  margin-right: 5px;
+}
+
+.post-form{
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.picture-preview{
+  display:flex;
+  width:311px;
+}
+
+.picture-preview p{
+  padding-left: 5px ;
+  padding-right: 3px ;
+  width: 24px;
+  cursor: pointer;
+}
+
+.top-image-preview{
+  width:inherit
+}
+
+.preview{
+  border-radius: 8.07101px;
+  width: 230px;
+  height: 230px;
+  margin-left: 45px;
+}
+
+.post-card{
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 2px 5px #ccc;
+  padding: 10px;
+  width: 315px;
+  margin-top: 26px;
+  margin-bottom: 24px;
+}
+
+.note {
     background: #fff;
     border-radius: 7px;
     box-shadow: 0 2px 5px #ccc;
@@ -139,19 +331,126 @@
     box-shadow: 0 1px 5px rgb(138, 137, 137);
   } */
 
-  form input,
-  form textarea {
-    width: 100%;
-    border: none;
-    padding: 4px;
-    outline: none;
-    font-size: 1.2em;
+  form .text, .text{
     font-family: inherit;
-    resize: none;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 13px;
+    color: rgba(87, 87, 87, 0.75);
+    border: none;
+    padding: 8px 16px;
+    width: 251px;
+    height: 39px;
+    border-radius: 8.07101px;
+    margin-left: 16px;
+    /* margin-right: 8.5px; */
   }
+
+  /* Change style of emoji form */
+.react-input-emoji--container{
+  border-radius: 8.07101px !important;
+  color: rgba(87, 87, 87, 0.75) !important;
+  border: none !important;
+  background: #fff !important;
+  font-family: inherit !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 11px !important;
+  line-height: 13px !important;
+  margin-left: 5px !important;
+  height: 106px;
+}
+
+.react-emoji-picker--wrapper {
+  top: 160px !important;
+  left: -45px !important;
+}
+
+.emoji-mart {
+  width: 318px;
+}
+
+.react-input-emoji--button{
+  padding-left: 7px !important;
+  padding-right: 3px !important;
+  }
+
+.react-emoji{
+   width: 271px !important;
+  height: 110px;
+}
+
+.formTop, .formBottom{
+    display:flex
+  }
+
+  .formBottom{
+    width:inherit;
+    margin-top: 8px;
+    justify-content:space-between;
+  }
+
+  .post-form label{
+    display:flex;
+    cursor: pointer;
+  }
+
+  .formBottom .emoji{
+    display:flex;
+    cursor: pointer;
+  }
+
+  .post-form label img, .emoji img{
+    width:30px;
+    height:30px;
+  }
+
+  .emoji img{
+    margin-right:4px;
+  }
+
+  .post-form .sub-btn{
+    /* padding: 8px 32px; */
+    width: 80px;
+    height: 30px;
+    background: rgba(41, 98, 255, 1);
+    border-radius: 4px;
+    outline: none;
+    border:none;
+    /* margin-right: 22px; */
+    font-size: 12px;
+    line-height: 14px;
+    color: #FFFFFF;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+.post-form label p,   .formBottom .emoji p{
+    /* width: 95px; */
+    height: 14px;
+    left: 20px;
+    top: 1px;
+    color: rgba(87, 87, 87, 0.9);
+    font-family: inherit;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 12px;
+    align-self: center;
+  }
+
+  .post-form .file-custom{
+    display:none
+  }
+
+  /* ::file-selector-button{
+    display: none
+  } */
+
   form button {
     /* position: absolute; */
-    right: 18px;
+    /* right: 18px;
     bottom: -18px;
     background: #f5ba13;
     color: #fff;
@@ -160,7 +459,7 @@
     width: 46px;
     height: 46px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
+    cursor: pointer; */
     outline: none;
   }
   
@@ -173,3 +472,36 @@
     clear: both;
   }
   
+/* media  */
+@media screen and (min-width: 1260px) {
+  .side-text{
+    display: block
+  }
+  .user-name{
+    display:block
+  }
+  .side-bar{
+    width:13%
+  }
+  .bar-content button{
+    width:100%
+  }
+  .profilePage{
+    margin-left: 250px
+   }
+   .home-page{
+    margin-left: 250px;
+  }  
+  .explore{
+    margin-left: 250px;
+  }
+   .bar-content button .icons{
+    margin-right: 8px
+   }
+   header .logo p{
+     display:block
+   }
+   .topHeader {
+     margin-left:2%
+   }
+}

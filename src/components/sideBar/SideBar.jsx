@@ -1,85 +1,57 @@
-import axios from "axios"
 import { useContext } from 'react'
+import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/userContext'
-import { useNavigate } from 'react-router';
-
-// import images
-import feed from '../../images/svg/feed.svg'
+import CreateButton from './sideButtons'
 
 function Sidebar(props) {
-  let navigate = useNavigate();
-  const {setUserInfo,setAppState, userInfo, removeToken, token}= useContext(UserContext);
-  const username = window.localStorage.getItem('username')
+  const {token}= useContext(UserContext);
   const avatar = window.localStorage.getItem('avatar')
+  const username = window.localStorage.getItem('username')
+  const { unAuthButtons, AuthButtons, isActive, setActive , iconColor} = CreateButton();
+  const user = {username}
+  const profile = "/user/" + user.username
 
-
-  function logMeOut() {
-    axios({
-      method: "POST",
-      url:"/api/logout",
-    })
-    .then((response) => {
-        removeToken()
-        setUserInfo({
-          uid:null
-        })
-        navigate("/")
-        setAppState({ loading: false });
-    }).catch((error) => {
-      if (error.response) {
-        console.log(error.response)
-        console.log(error.response.status)
-        console.log(error.response.headers)
-        }
-    })}
-  
-    function goToProfile(){
-      const user = {username}
-      const profile = "/user/" + user.username
-      navigate(profile)
-    }
-    function goHome(){
-      navigate("/home")
-    }
-    function goExplore(){
-      navigate("/explore")
-    }
-
-    function logMeIn(){
-      navigate("/login")
-    }
-
+  console.log(iconColor)
   return (
     <>
-      <div className="logo">
-        <h1>bankai</h1>
-      </div>
-      <div className="side-bar">
+    <div className="side-bar">
+      <div className="bar-content">
         {(!token && token !== "" && token !== undefined) ? 
           <>
-            <button onClick={logMeIn}> <img src={feed} alt="feed" /> Feed </button> 
-            <button onClick={logMeIn}> My Community </button>
-            <button onClick={logMeIn}> Explore </button>
-            <button onClick={logMeIn}> Notification </button>
-            <button onClick={logMeIn}> Profile </button>
-            <button onClick={logMeIn}> Settings </button>
+          {unAuthButtons.map(item => <div key={item.id}>
+                                <button  onClick={item.action}> 
+                                        <item.icon className="icons" stroke={iconColor}/> 
+                                        <p className="side-text">{item.text}</p>
+                                </button> 
+                              </div> 
+                              )}
+          <button className="bar-contents">
+              <p>hello</p>
+          </button>
           </>
         :
           <>
-            <button onClick={goHome}> Feed </button> 
-            <button onClick={logMeIn}> My Community </button>
-            <button onClick={goExplore}> Explore </button>
-            <button onClick={logMeIn}> Notification </button>
-            <button onClick={goToProfile}> Profile </button>
-            <button onClick={logMeIn}> Settings </button>
-            <button onClick={logMeOut}> Logout </button>
-            <div>
-              <p>{username}</p>
-              <img src={avatar} alt="profile logo"/>
-            </div>
+
+          {AuthButtons.map(item => <div key={item.id}>
+                                <button className={isActive === item.id ? 'active-button' : ''} 
+                                          onClick={() => item.action(item.id)}> 
+                                        <item.icon className="icons" stroke= {isActive === item.id ? iconColor : '#546E7A'}/> 
+                                        <p className="side-text">{item.text}</p>
+                                </button> 
+                              </div> 
+                              )}
+                               
+          <Link to={profile} className="myProfile" onClick={() => setActive(5)}>
+                <div className='profileImage'>
+                  <img src={avatar} alt="profile logo"/>
+                </div>
+                <p className="user-name">{username}</p>
+          </Link> 
+
           </>
         }
       </div>
+    </div>
     </>
   );
 }
