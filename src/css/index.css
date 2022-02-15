@@ -278,15 +278,68 @@
   margin-left: 45px;
 }
 
+/* postcard */
 .post-card{
-  background: #fff;
   border-radius: 7px;
   box-shadow: 0 2px 5px #ccc;
-  padding: 10px;
+  padding: 10px 16px;
   width: 315px;
   margin-top: 26px;
   margin-bottom: 24px;
+  background: #ECEFF1;
 }
+
+.post-list {
+  width: 283px;
+}
+
+.post-list img{
+  width: 283px;
+  height: 180px;
+  border-radius: 8px;
+}
+
+.post-list .like-button{
+  width:18px;
+  height:25px;
+  margin-right: 8px;
+}
+.post-list .comment-button{
+  width:18px;
+  height:23px;
+}
+
+.like-comment-box{
+  display:flex;
+  justify-content: space-between;
+  height: 37px;
+  align-items: center;
+  border-top: 1.8px solid #E5E5E5;
+  border-bottom: 1.8px solid #E5E5E5;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.post-list .like-box, .post-list .comment-box{
+  display: flex;
+  align-items: center;
+}
+
+.post-list .like-box span, .post-list .comment-box span{
+  width: 119.42px;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 13px;
+  color: rgba(87, 87, 87, 1);
+
+}
+
+.post-list .comment-button {
+  margin-right: 8px;
+}
+/* postcard */
 
 .note {
     background: #fff;
@@ -320,17 +373,6 @@
     outline: none;
   }
   
-
-  /* form {
-    position: relative;
-    width: 480px;
-    margin: 30px auto 20px auto;
-    background: #fff;
-    padding: 15px;
-    border-radius: 7px;
-    box-shadow: 0 1px 5px rgb(138, 137, 137);
-  } */
-
   form .text, .text{
     font-family: inherit;
     font-style: normal;
