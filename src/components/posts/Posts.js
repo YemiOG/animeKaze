@@ -6,11 +6,26 @@ import { ReactComponent as Like } from '../../images/svg/like.svg'
 import { ReactComponent as Comment } from '../../images/svg/comment.svg'
 
 function Posts(props){
+  let fillColor= 'none'
+  let strokeColor= '#575757'
 
+  if (props.userLiked===true) {
+      fillColor='#2962FF'
+      strokeColor= '#2962FF'
+  }
 	const [comments , setComments] = useState("")
+	const [liked , setLiked] = useState(fillColor)
+	const [stroke , setStroke] = useState(strokeColor)
 
     function handleClick(){
-        props.like(props.id);
+        props.like(props.id)
+        console.log(liked)
+        if (liked ==='none'){
+          setLiked('#2962FF')
+          setStroke('#2962FF')} else{
+            setLiked('none')
+            setStroke('#575757')
+          } 
       }
     function handleReport(){
         props.report(props.id);
@@ -19,7 +34,6 @@ function Posts(props){
         props.interested(props.id);
       }
 
-  console.log(comments.length)
 	return (
         <div className="post-card">
           <div className="post-list">
@@ -27,7 +41,7 @@ function Posts(props){
 				      <img alt={""} src={props.image} />
               <div className='like-comment-box'>
                 <div className="like-box">
-                  <Like className="like-button" onClick={handleClick}/>
+                  <Like fill={liked} stroke={stroke} className="like-button" onClick={handleClick}/>
                   <div>
                     <span> {(props.likeCount > 0) && props.likeCount} </span> {(props.likeCount > 1) ? <span> Likes </span> : <span> Like </span>}
                   </div>
