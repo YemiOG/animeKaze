@@ -218,6 +218,7 @@ class Post(PaginatedAPIMixin, db.Model):
         backref=db.backref('reportedPost', lazy='dynamic'), lazy='dynamic')
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    liked_by_user= db.Column(db.Boolean, unique=False, default=False)
 
     def __repr__(self):
         return '<Post {}>'.format(self.content)
@@ -225,8 +226,10 @@ class Post(PaginatedAPIMixin, db.Model):
     def like_state(self, user):
         if not self.liked(user):
             self.likes.append(user)
+            setattr(self, 'liked_by_user', True)
         else:
             self.likes.remove(user)
+            setattr(self, 'liked_by_user', False)
 
     def liked(self, user):
         return self.likes.filter(likedPosts.c.liker_id == user.id).count() > 0
@@ -256,6 +259,7 @@ class Post(PaginatedAPIMixin, db.Model):
             'content': self.content,
             'image': self.image,
             'likes': self.likes.count(),
+            'user_liked': self.liked_by_user,
         }
         return data
 
@@ -281,7 +285,6 @@ class Comment(PaginatedAPIMixin, db.Model):
     timestamps = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    parent = db.Column(db.Boolean, unique=False, default=True)
 
     def __repr__(self):
         return '<Comment from user {}>'.format(self.user_id)
@@ -303,7 +306,6 @@ class Comment(PaginatedAPIMixin, db.Model):
             'content': self.content,
             'username': user[0].username,
             'likes': self.likes.count(),
-            'parent': self.parent,
             'child': self.comments.count(),
         }
         return data
@@ -329,7 +331,6 @@ class ChildComment(PaginatedAPIMixin, db.Model):
             backref=db.backref('likedChildComments', lazy='dynamic'), lazy='dynamic')
     timestamps = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    parent = db.Column(db.Boolean, unique=False, default=False)
 
     def __repr__(self):
         return '<Child Comment from user {}>'.format(self.user_id)
