@@ -8,7 +8,6 @@ import os
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_toastr import Toastr
 from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
 
@@ -18,7 +17,6 @@ app.config.from_object(Config)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-toastr = Toastr(app)
 login_manager = LoginManager(app)
 ma = Marshmallow(app)
 jwt = JWTManager(app)
