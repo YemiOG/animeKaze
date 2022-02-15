@@ -14,7 +14,7 @@ class Config(object):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'you-will-never-know'
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES')))
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES') or 1))
     # CLOUD_NAME= os.environ.get('CLOUD_NAME')
     # API_KEY= os.environ.get('API_KEY')
     # API_SECRET=os.environ.get('API_SECRET')
