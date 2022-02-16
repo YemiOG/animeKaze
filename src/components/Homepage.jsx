@@ -25,6 +25,7 @@ function Home(){
 			  Authorization: 'Bearer ' + token
 			}
 		  }).then((response)=>{
+			console.log(response.data.items)
 			setPosts(
                 response.data.items
 			  )
@@ -89,7 +90,9 @@ function Home(){
     return (
         <div className="home-page">
 			<CreatePost post={getPosts}/>
-			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} report={reportPost} userLiked={posts.user_liked}/>)}
+			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} 
+											report={reportPost} userLiked={posts.user_liked} avatar={posts.avatar} poster={posts.poster} 
+											fname={posts.fname} lname={posts.lname}/>)}
         </div>
     )
 }
