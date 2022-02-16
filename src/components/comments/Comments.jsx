@@ -3,15 +3,25 @@ import axios from "axios";
 import { UserContext } from '../contexts/userContext';
 import { Link } from 'react-router-dom'
 
+import { ReactComponent as Like } from '../../images/svg/like.svg'
+
 function Comments(props){
 	const [newComment , setComment] = useState("")
-	const [allComment , setAllComment] = useState("")
 	const [childCommentForm, setchildCommentForm]= useState(false)
 	const [childComment , setchildComment] = useState("")
 	const [commentId , setCommentId] = useState(null)
 	const {token, removeToken, setAppState}= useContext(UserContext)
 	const userId = JSON.parse(window.localStorage.getItem("cuid"))
+	const avatar = window.localStorage.getItem('avatar')
 	const uzername = window.localStorage.getItem('username')
+
+	// let fillColor= 'none'
+	// let strokeColor= '#575757'
+  
+	// if (props.userLiked===true) {
+	// 	fillColor='#2962FF'
+	// 	strokeColor= '#2962FF'
+	// }
 
 	useEffect(() => {
 		// setAppState({ loading: true });
@@ -22,6 +32,20 @@ function Comments(props){
         const newValue = event.target.value
         setComment(newValue);
     }
+
+	const randomComment = function getRandomComment(arr){
+
+        const randomIndex = Math.floor(Math.random() * arr.length)
+
+        const randomComm = arr[randomIndex]
+
+        return <DisplayComments key={randomComm.id} id={randomComm.id} content={randomComm.content} 
+					likeCount={randomComm.likes} like={handleLikeComment} username={randomComm.username} 
+					child= {null} reply={setchildCommentForm} submit={setCommentId} topComment={true}/>
+    }
+
+	props.allComment.length>0 && randomComment(props.allComment)
+
 	
 	function getComments(){
 		axios({
@@ -34,10 +58,9 @@ function Comments(props){
 			  Authorization: 'Bearer ' + token
 			}
 		  }).then((response)=>{
-			console.log(response.data.items)
-			setAllComment(
-                response.data.items
-			  )
+				props.setAllComment(
+					response.data.items
+				)
 			// setAppState({ loading: false });
 		  }).catch((error) => {
 			if (error.response) {
@@ -197,9 +220,9 @@ function Comments(props){
 						{comm.username}
 					</Link> 
 					<h1 > {comm.content} </h1>
-					<p> {comm.likeCount} </p>
+					{!comm.topComment && <p> {comm.likeCount} </p> }
 					<button onClick={likeComment}> Like </button>
-					<button onClick={() => replyComment(comm.id)}> Reply </button>
+					{!comm.topComment && <button onClick={() => replyComment(comm.id)}> Reply </button>}
 					{comm.child ? (comm.child > 0 ?
 							<button onClick={getComment}> View {comm.child} replies </button>
 							:
@@ -211,7 +234,6 @@ function Comments(props){
 				{childComment  && childComment.map(child => 
 					<div key={child.id} className="">
 						{(child.comment === comm.id ) && <>
-							{console.log()}
 							<Link to={'/user/'+child.username}
 								className="nav-link">
 								{child.username}
@@ -226,12 +248,17 @@ function Comments(props){
 			</>
 		)
 	}
-	console.log(childCommentForm)
+
 	return (
 		<div>
-			{allComment && allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
+
+					{/* {(comments.length>0) && getRandomComment(comments)} */}
+          {/* {comments && comments.map(comments => <Comments allComment={comments} setAllComment={setComments} postId={props.id}/>)} */}
+
+			{props.top  ? ((props.allComment && props.allComment.length>0) && randomComment(props.allComment)) :
+				(props.allComment && props.allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
 														likeCount={comments.likes} like={handleLikeComment} username={comments.username} 
-														child= {comments.child} reply={setchildCommentForm} submit={setCommentId}/>)}
+														child= {comments.child} reply={setchildCommentForm} submit={setCommentId}/>))}
 
 			{/* Comments posting form */}
 			<div>
@@ -257,6 +284,9 @@ function Comments(props){
 				:
 				<form onSubmit={submitComment}>
                     <fieldset>
+						<div className='profileImage'>
+							<img src={avatar} alt="profile logo"/>
+						</div>
                         <fieldset className="form-group">
                             <input
                                 className="form-control form-control-lg"
