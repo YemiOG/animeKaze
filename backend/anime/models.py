@@ -217,6 +217,7 @@ class Post(PaginatedAPIMixin, db.Model):
         'User', secondary=reportedPost,
         backref=db.backref('reportedPost', lazy='dynamic'), lazy='dynamic')
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    username= db.Column(db.String(360))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     liked_by_user= db.Column(db.Boolean, unique=False, default=False)
 
@@ -259,6 +260,7 @@ class Post(PaginatedAPIMixin, db.Model):
             'content': self.content,
             'image': self.image,
             'likes': self.likes.count(),
+            'poster': self.username,
             'user_liked': self.liked_by_user,
         }
         return data
@@ -284,7 +286,9 @@ class Comment(PaginatedAPIMixin, db.Model):
             backref=db.backref('likedComments', lazy='dynamic'), lazy='dynamic')
     timestamps = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    username= db.Column(db.String(360))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    liked_by_user= db.Column(db.Boolean, unique=False, default=False)
 
     def __repr__(self):
         return '<Comment from user {}>'.format(self.user_id)
@@ -292,21 +296,22 @@ class Comment(PaginatedAPIMixin, db.Model):
     def like_comment_state(self, user):
         if not self.liked_comment(user):
             self.likes.append(user)
+            setattr(self, 'liked_by_user', True)
         else:
             self.likes.remove(user)
+            setattr(self, 'liked_by_user', False)
 
     def liked_comment(self, user):
         return self.likes.filter(likedComments.c.liker_id == user.id).count() > 0
-
+    
     def to_dict(self):
-        user = db.session.query(User).filter_by(id=self.user_id).all()
-        # print(user)
         data = {
             'id': self.id,
             'content': self.content,
-            'username': user[0].username,
+            'poster': self.username,
             'likes': self.likes.count(),
             'child': self.comments.count(),
+            'user_liked': self.liked_by_user,
         }
         return data
 
@@ -330,7 +335,9 @@ class ChildComment(PaginatedAPIMixin, db.Model):
             'User', secondary=likedChildComments,
             backref=db.backref('likedChildComments', lazy='dynamic'), lazy='dynamic')
     timestamps = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    username= db.Column(db.String(360))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    liked_by_user= db.Column(db.Boolean, unique=False, default=False)
 
     def __repr__(self):
         return '<Child Comment from user {}>'.format(self.user_id)
@@ -338,21 +345,22 @@ class ChildComment(PaginatedAPIMixin, db.Model):
     def like_child_comment(self, user):
         if not self.liked_comment(user):
             self.likes.append(user)
+            setattr(self, 'liked_by_user', True)
         else:
             self.likes.remove(user)
+            setattr(self, 'liked_by_user', False)
 
     def liked_comment(self, user):
         return self.likes.filter(likedChildComments.c.liker_id == user.id).count() > 0
 
     def to_dict(self):
-        user = db.session.query(User).filter_by(id=self.user_id).all()
-        # print(user)
         data = {
             'id': self.id,
             'content': self.content,
             'comment': self.comment_id,
-            'username': user[0].username,
+            'poster': self.username,
             'likes': self.likes.count(),
+            'user_liked': self.liked_by_user,
         }
         return data
 

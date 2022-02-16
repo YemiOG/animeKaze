@@ -50,6 +50,7 @@ def upload_file():
 	# finally store the new post in the db
 	new_post = Post(content=post, image=file_url, 
 					timestamp=post_time,
+					username= current_user.username,
 					author=current_user)
 	db.session.add(new_post)
 	db.session.commit()
@@ -208,6 +209,7 @@ def commenting():
 	new_comment = Comment(content=comment,
 							post = Posts,
 							timestamps=comment_time,
+							username= current_user.username,
 							author=current_user)
 	db.session.add(new_comment)
 	db.session.commit()
@@ -234,6 +236,7 @@ def child_commenting():
 	new_comment = ChildComment(content=content,
 						comment= comment,
 						timestamps=comment_time,
+						username= current_user.username,
 						author=current_user)
 	db.session.add(new_comment)
 	db.session.commit()
