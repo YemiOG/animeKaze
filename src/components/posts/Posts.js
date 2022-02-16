@@ -1,5 +1,7 @@
 import React, {useState} from "react";
+import { Link } from 'react-router-dom'
 import Comments from "../comments/Comments"
+
 
 
 import { ReactComponent as Like } from '../../images/svg/like.svg'
@@ -13,14 +15,16 @@ function Posts(props){
       fillColor='#2962FF'
       strokeColor= '#2962FF'
   }
+
 	const [comments , setComments] = useState("")
 	const [topComment , setTopComment] = useState(true)
 	const [liked , setLiked] = useState(fillColor)
 	const [stroke , setStroke] = useState(strokeColor)
+  const profile = "/user/" + props.poster
+  console.log(profile)
 
     function handleClick(){
         props.like(props.id)
-        console.log(liked)
         if (liked ==='none'){
           setLiked('#2962FF')
           setStroke('#2962FF')} else{
@@ -37,15 +41,22 @@ function Posts(props){
     function revealComments(){
         setTopComment(false);
       }
-    
-    // = getRandomComment(comments)
-  // console.log(randomComment(comments))
-  console.log(comments)
+
 	return (
         <div className="post-card">
           <div className="post-list">
-              <h1 >  {props.content} </h1>
-				      <img alt={""} src={props.image} />
+              <div className="post-image-top">
+                <div className='profileImage'>
+                  <img src={props.avatar} alt="profile logo"/>
+                </div>
+                <Link to={profile}
+                  className="nav-link">
+                   <span>{props.fname}</span><span>{props.lname}</span>@{props.poster}
+                </Link> 
+              </div>
+              <div className="post-content"> {props.content} </div>
+              
+				      <img className="post-image" alt="" src={props.image} />
               <div className='like-comment-box'>
                 <div className="like-box">
                   <Like fill={liked} stroke={stroke} className="like-button" onClick={handleClick}/>
