@@ -14,6 +14,7 @@ function Posts(props){
       strokeColor= '#2962FF'
   }
 	const [comments , setComments] = useState("")
+	const [topComment , setTopComment] = useState(true)
 	const [liked , setLiked] = useState(fillColor)
 	const [stroke , setStroke] = useState(strokeColor)
 
@@ -33,7 +34,13 @@ function Posts(props){
     function handleInterest(){
         props.interested(props.id);
       }
-
+    function revealComments(){
+        setTopComment(false);
+      }
+    
+    // = getRandomComment(comments)
+  // console.log(randomComment(comments))
+  console.log(comments)
 	return (
         <div className="post-card">
           <div className="post-list">
@@ -46,7 +53,7 @@ function Posts(props){
                     <span> {(props.likeCount > 0) && props.likeCount} </span> {(props.likeCount > 1) ? <span> Likes </span> : <span> Like </span>}
                   </div>
                 </div>
-                <div className="comment-box">
+                <div className="comment-box" onClick={revealComments}>
                   <Comment className="comment-button"/>
                   <div className="comment-box-1">
                     <span> {(comments.length > 0) && comments.length} </span> {(comments.length > 1) ? <span> Comments </span> : <span> Comment </span>}
@@ -54,7 +61,7 @@ function Posts(props){
                 </div>
               </div>
           </div>
-          <Comments allComment={comments} setAllComment={setComments} postId={props.id}/>
+          <Comments allComment={comments} setAllComment={setComments} postId={props.id} top={topComment}/>
           {props.report && <button onClick={handleReport}> Report </button>}
           {props.interested && <button onClick={handleInterest}> Not interested </button>}
         </div>
