@@ -20,7 +20,6 @@ def upload_file():
 	#get post content from POST request
 	# print(request.form)
 	post = request.form['content']
-	print(post)
 	user_id = request.form['uid']
 	
 	#confirm that a file was sent with the POST request

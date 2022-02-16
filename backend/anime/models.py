@@ -254,13 +254,20 @@ class Post(PaginatedAPIMixin, db.Model):
     def post_reported(self, user):
         return self.reported.filter(reportedPost.c.person_id == user.id).count() > 0
 
+    def get_user(self, user):
+        return db.session.query(User).filter_by(id=user.user_id).first()
+
     def to_dict(self):
+        user= self.get_user(self) 
         data = {
             'id': self.id,
             'content': self.content,
             'image': self.image,
             'likes': self.likes.count(),
-            'poster': self.username,
+            'poster': user.username,
+            'fname': user.first_name,
+            'lname': user.last_name,
+            'avatar': user.avatar,
             'user_liked': self.liked_by_user,
         }
         return data
@@ -304,11 +311,18 @@ class Comment(PaginatedAPIMixin, db.Model):
     def liked_comment(self, user):
         return self.likes.filter(likedComments.c.liker_id == user.id).count() > 0
     
+    def get_user(self,user):
+        return db.session.query(User).filter_by(id=user.user_id).first()
+        
     def to_dict(self):
+        user= self.get_user(self) 
         data = {
             'id': self.id,
             'content': self.content,
-            'poster': self.username,
+            'poster': user.username,
+            'fname': user.first_name,
+            'lname': user.last_name,
+            'avatar': user.avatar,
             'likes': self.likes.count(),
             'child': self.comments.count(),
             'user_liked': self.liked_by_user,
@@ -353,12 +367,19 @@ class ChildComment(PaginatedAPIMixin, db.Model):
     def liked_comment(self, user):
         return self.likes.filter(likedChildComments.c.liker_id == user.id).count() > 0
 
+    def get_user(self, user):
+        return db.session.query(User).filter_by(id=user.user_id).first()
+
     def to_dict(self):
+        user= self.get_user(self) 
         data = {
             'id': self.id,
             'content': self.content,
             'comment': self.comment_id,
-            'poster': self.username,
+            'poster': user.username,
+            'fname': user.first_name,
+            'lname': user.last_name,
+            'avatar': user.avatar,
             'likes': self.likes.count(),
             'user_liked': self.liked_by_user,
         }
