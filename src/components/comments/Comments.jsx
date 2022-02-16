@@ -6,7 +6,9 @@ import { Link } from 'react-router-dom'
 import { ReactComponent as Like } from '../../images/svg/like.svg'
 
 function Comments(props){
+
 	const [newComment , setComment] = useState("")
+	const [row , setRow] = useState(1)
 	const [childCommentForm, setchildCommentForm]= useState(false)
 	const [childComment , setchildComment] = useState("")
 	const [commentId , setCommentId] = useState(null)
@@ -14,14 +16,6 @@ function Comments(props){
 	const userId = JSON.parse(window.localStorage.getItem("cuid"))
 	const avatar = window.localStorage.getItem('avatar')
 	const uzername = window.localStorage.getItem('username')
-
-	// let fillColor= 'none'
-	// let strokeColor= '#575757'
-  
-	// if (props.userLiked===true) {
-	// 	fillColor='#2962FF'
-	// 	strokeColor= '#2962FF'
-	// }
 
 	useEffect(() => {
 		// setAppState({ loading: true });
@@ -31,6 +25,9 @@ function Comments(props){
 	function handleChange(event) {
         const newValue = event.target.value
         setComment(newValue);
+    }
+	function handleHeight(event) {
+        setRow(3);
     }
 
 	const randomComment = function getRandomComment(arr){
@@ -177,8 +174,25 @@ function Comments(props){
 	function DisplayComments(comm) {
 		const profile = "/user/" + comm.username
 		
+		let fillColor= 'none'
+		let strokeColor= '#575757'
+
+		if (comm.userLiked===true) {
+			fillColor='#2962FF'
+			strokeColor= '#2962FF'
+		}
+
+		const [liked , setLiked] = useState(fillColor)
+		const [stroke , setStroke] = useState(strokeColor)
+		
 		function likeComment(){
-			comm.like(comm.id);
+			comm.like(comm.id)
+			if (liked ==='none'){
+				setLiked('#2962FF')
+				setStroke('#2962FF')} else{
+				  setLiked('none')
+				  setStroke('#575757')
+				} 
 		}
 
 		function replyComment(id){
@@ -220,9 +234,13 @@ function Comments(props){
 						{comm.username}
 					</Link> 
 					<h1 > {comm.content} </h1>
-					{!comm.topComment && <p> {comm.likeCount} </p> }
-					<button onClick={likeComment}> Like </button>
-					{!comm.topComment && <button onClick={() => replyComment(comm.id)}> Reply </button>}
+					{!comm.topComment && 
+					<>
+					<p> {comm.likeCount} </p>
+					<Like fill={liked} stroke={stroke} className="like-button" onClick={likeComment}/>
+					<button onClick={() => replyComment(comm.id)}> Reply </button>
+					</>
+					}
 					{comm.child ? (comm.child > 0 ?
 							<button onClick={getComment}> View {comm.child} replies </button>
 							:
@@ -231,13 +249,12 @@ function Comments(props){
 						:
 						null}
 				</div>
-				{console.log(childComment)}
 				{childComment  && childComment.map(child => 
 					<div key={child.id} className="">
 						{(child.comment === comm.id ) && <>
 							<Link to={'/user/'+child.poster}
 								className="nav-link">
-								{child.poster}
+								<span>{props.fname}</span><span>{props.lname}</span>@{props.poster}
 							</Link> 
 							<h1 > {child.content} </h1>
 							<p> {child.likes} </p>
@@ -256,14 +273,15 @@ function Comments(props){
 			{props.top  ? ((props.allComment && props.allComment.length>0) && randomComment(props.allComment)) :
 				(props.allComment && props.allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
 														likeCount={comments.likes} like={handleLikeComment} username={comments.poster} 
-														child= {comments.child} reply={setchildCommentForm} submit={setCommentId}/>))}
+														child= {comments.child} reply={setchildCommentForm} submit={setCommentId} userLiked={comments.user_liked}/>))}
 
 			{/* Comments posting form */}
 			<div>
 			{childCommentForm ?
-				<form onSubmit={submitChildComment}>
-                    <fieldset>
-                        <fieldset className="form-group">
+				<form className="comment-form" onSubmit={submitChildComment}>
+					<div className='profileImage'>
+						<img src={avatar} alt="profile logo"/>
+					</div>
                             <input
                                 className="form-control form-control-lg"
                                 type="text"
@@ -271,35 +289,31 @@ function Comments(props){
                                 placeholder="Add a comment..."
                                 value={newComment}
                                 onChange={handleChange} />
-                        </fieldset>
                         <button
                             className="btn btn-lg btn-primary pull-xs-right"
                             type="submit">
                             Posting
                         </button>
-                    </fieldset>
                 </form>
 				:
-				<form onSubmit={submitComment}>
-                    <fieldset>
-						<div className='profileImage'>
-							<img src={avatar} alt="profile logo"/>
-						</div>
-                        <fieldset className="form-group">
-                            <input
-                                className="form-control form-control-lg"
-                                type="text"
-                                name="content"
-                                placeholder="Add a comment..."
-                                value={newComment}
-                                onChange={handleChange} />
-                        </fieldset>
+				<form className="comment-form" onSubmit={submitComment}>
+					<div className='profileImage'>
+						<img src={avatar} alt="profile logo"/>
+					</div>
+                        <textarea
+                            className=""
+                            type="text"
+                            name="content"
+                            placeholder="Add a comment..."
+							onFocus={handleHeight}
+							rows={row}
+                            value={newComment}
+                            onChange={handleChange} />
                         <button
                             className="btn btn-lg btn-primary pull-xs-right"
                             type="submit">
                             Post
                         </button>
-                    </fieldset>
                 </form>
 				}
 			</div>
