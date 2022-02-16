@@ -40,7 +40,7 @@ function Comments(props){
         const randomComm = arr[randomIndex]
 
         return <DisplayComments key={randomComm.id} id={randomComm.id} content={randomComm.content} 
-					likeCount={randomComm.likes} like={handleLikeComment} username={randomComm.username} 
+					likeCount={randomComm.likes} like={handleLikeComment} username={randomComm.poster} 
 					child= {null} reply={setchildCommentForm} submit={setCommentId} topComment={true}/>
     }
 
@@ -231,12 +231,13 @@ function Comments(props){
 						:
 						null}
 				</div>
+				{console.log(childComment)}
 				{childComment  && childComment.map(child => 
 					<div key={child.id} className="">
 						{(child.comment === comm.id ) && <>
-							<Link to={'/user/'+child.username}
+							<Link to={'/user/'+child.poster}
 								className="nav-link">
-								{child.username}
+								{child.poster}
 							</Link> 
 							<h1 > {child.content} </h1>
 							<p> {child.likes} </p>
@@ -252,12 +253,9 @@ function Comments(props){
 	return (
 		<div>
 
-					{/* {(comments.length>0) && getRandomComment(comments)} */}
-          {/* {comments && comments.map(comments => <Comments allComment={comments} setAllComment={setComments} postId={props.id}/>)} */}
-
 			{props.top  ? ((props.allComment && props.allComment.length>0) && randomComment(props.allComment)) :
 				(props.allComment && props.allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
-														likeCount={comments.likes} like={handleLikeComment} username={comments.username} 
+														likeCount={comments.likes} like={handleLikeComment} username={comments.poster} 
 														child= {comments.child} reply={setchildCommentForm} submit={setCommentId}/>))}
 
 			{/* Comments posting form */}
