@@ -4,6 +4,7 @@ import { UserContext } from '../contexts/userContext';
 import { Link } from 'react-router-dom'
 
 import { ReactComponent as Like } from '../../images/svg/like.svg'
+import { ReactComponent as Post } from '../../images/svg/post.svg'
 
 function Comments(props){
 
@@ -26,23 +27,9 @@ function Comments(props){
         const newValue = event.target.value
         setComment(newValue);
     }
-	function handleHeight(event) {
-        setRow(3);
+	function handleHeight() {
+        row===1 ? setRow(3) : setRow(1);
     }
-
-	const randomComment = function getRandomComment(arr){
-
-        const randomIndex = Math.floor(Math.random() * arr.length)
-
-        const randomComm = arr[randomIndex]
-
-        return <DisplayComments key={randomComm.id} id={randomComm.id} content={randomComm.content} 
-					likeCount={randomComm.likes} like={handleLikeComment} username={randomComm.poster} 
-					child= {null} reply={setchildCommentForm} submit={setCommentId} topComment={true}/>
-    }
-
-	props.allComment.length>0 && randomComment(props.allComment)
-
 	
 	function getComments(){
 		axios({
@@ -269,11 +256,10 @@ function Comments(props){
 
 	return (
 		<div>
-
-			{props.top  ? ((props.allComment && props.allComment.length>0) && randomComment(props.allComment)) :
-				(props.allComment && props.allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
+			{props.top && props.allComment ? props.allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
 														likeCount={comments.likes} like={handleLikeComment} username={comments.poster} 
-														child= {comments.child} reply={setchildCommentForm} submit={setCommentId} userLiked={comments.user_liked}/>))}
+														child= {comments.child} reply={setchildCommentForm} submit={setCommentId} userLiked={comments.user_liked}/>)
+										: null}
 
 			{/* Comments posting form */}
 			<div>
@@ -287,6 +273,9 @@ function Comments(props){
                                 type="text"
                                 name="content"
                                 placeholder="Add a comment..."
+								onFocus={handleHeight}
+								onBlur={handleHeight}
+								rows={row}
                                 value={newComment}
                                 onChange={handleChange} />
                         <button
@@ -304,16 +293,15 @@ function Comments(props){
                             className=""
                             type="text"
                             name="content"
-                            placeholder="Add a comment..."
+                            placeholder="Write a comment..."
 							onFocus={handleHeight}
+							onBlur={handleHeight}
 							rows={row}
                             value={newComment}
                             onChange={handleChange} />
-                        <button
-                            className="btn btn-lg btn-primary pull-xs-right"
-                            type="submit">
-                            Post
-                        </button>
+						<div className="comment-btn">
+							<Post />
+						</div>
                 </form>
 				}
 			</div>
