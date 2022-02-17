@@ -8,7 +8,6 @@ import CreatePost from "../posts/createPost"
 import Posts from "../posts/Posts"
 import EditProfile from "./EditProfile"
 
-
 function Profile() {
     // let navigate = useNavigate();
     const location = useLocation();
@@ -108,31 +107,6 @@ function Profile() {
             }
         })}
       
-    function submitForm (event){
-      const formData = new FormData(event.target)
-      axios({
-        method: "POST",
-        url: '/api/upload',
-        data:formData,
-        headers: {
-              Authorization: 'Bearer ' + token
-              }
-        }).then((response)=>{
-          // getPosts(uzer) // get posts upon successful post submission
-          getProfile()  //refresh profile data
-          }).catch((error) => {
-          if (error.response) {
-            console.log(error.response)
-            if (error.response.status === 401 || error.response.status === 422){
-              removeToken()
-            }
-            }
-          })
-      setContent("")
-      event.target.reset()
-      event.preventDefault()
-      }
-
   function followUser() {
         axios({
           method: "POST",
@@ -243,7 +217,9 @@ function Profile() {
               </button>
               )
           }
-          {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} report={null}/>)}
+          {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} 
+                                          report={null} userLiked={posts.user_liked} avatar={posts.avatar} poster={posts.poster} 
+											                    fname={posts.fname} lname={posts.lname}/>)}
           {editProfile && <EditProfile key={profile.id} username={profile.username} fname={profile.firstname} lname={profile.lastname} bio={profile.about_me} email={profile.email} 
                             cancel={displayEdit} update={getProfile}/>}
         </div>

@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/userContext'
 import CreateButton from './sideButtons'
+import logo from '../../images/logo.png'
 
 function Sidebar(props) {
   const {token}= useContext(UserContext);
@@ -15,6 +16,10 @@ function Sidebar(props) {
   return (
     <>
     <div className="side-bar">
+      <div className="logo">
+            <img src={logo} alt=""/>
+            <p>BANKAI</p>
+        </div>
       <div className="bar-content">
         {(!token && token !== "" && token !== undefined) ? 
           <>

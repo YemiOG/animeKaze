@@ -22,8 +22,9 @@ Step2: Then install the requirements using:
 `pip install -r requirements.txt`
 
 Step3: Run migrations to make the database up to date
-  - Run `flask db migrate`
-  - Then `flask db upgrade`
+  - run `flask db stamp head`
+  - then `flask db migrate`
+  - and finally `flask db upgrade`
 
 ## Frontend
 - Return to the base directory and run: `npm install` before running the scripts below.

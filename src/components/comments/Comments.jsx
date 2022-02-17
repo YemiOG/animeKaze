@@ -1,16 +1,24 @@
 import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
-import { UserContext } from '../contexts/userContext';
 import { Link } from 'react-router-dom'
+import { UserContext } from '../contexts/userContext';
+
+import FormChildComment from './childCommentForm'
+import FormComment from './commentForm'
+
+import { ReactComponent as Like } from '../../images/svg/like.svg'
+import { ReactComponent as Post } from '../../images/svg/post.svg'
 
 function Comments(props){
+
 	const [newComment , setComment] = useState("")
-	const [allComment , setAllComment] = useState("")
+	const [row , setRow] = useState(1)
 	const [childCommentForm, setchildCommentForm]= useState(false)
 	const [childComment , setchildComment] = useState("")
 	const [commentId , setCommentId] = useState(null)
 	const {token, removeToken, setAppState}= useContext(UserContext)
 	const userId = JSON.parse(window.localStorage.getItem("cuid"))
+	const avatar = window.localStorage.getItem('avatar')
 	const uzername = window.localStorage.getItem('username')
 
 	useEffect(() => {
@@ -21,6 +29,9 @@ function Comments(props){
 	function handleChange(event) {
         const newValue = event.target.value
         setComment(newValue);
+    }
+	function handleHeight() {
+        row===1 ? setRow(3) : setRow(1);
     }
 	
 	function getComments(){
@@ -34,10 +45,9 @@ function Comments(props){
 			  Authorization: 'Bearer ' + token
 			}
 		  }).then((response)=>{
-			console.log(response.data.items)
-			setAllComment(
-                response.data.items
-			  )
+				props.setAllComment(
+					response.data.items
+				)
 			// setAppState({ loading: false });
 		  }).catch((error) => {
 			if (error.response) {
@@ -154,8 +164,25 @@ function Comments(props){
 	function DisplayComments(comm) {
 		const profile = "/user/" + comm.username
 		
+		let fillColor= 'none'
+		let strokeColor= '#575757'
+
+		if (comm.userLiked===true) {
+			fillColor='#2962FF'
+			strokeColor= '#2962FF'
+		}
+
+		const [liked , setLiked] = useState(fillColor)
+		const [stroke , setStroke] = useState(strokeColor)
+		
 		function likeComment(){
-			comm.like(comm.id);
+			comm.like(comm.id)
+			if (liked ==='none'){
+				setLiked('#2962FF')
+				setStroke('#2962FF')} else{
+				  setLiked('none')
+				  setStroke('#575757')
+				} 
 		}
 
 		function replyComment(id){
@@ -197,9 +224,13 @@ function Comments(props){
 						{comm.username}
 					</Link> 
 					<h1 > {comm.content} </h1>
+					{!comm.topComment && 
+					<>
 					<p> {comm.likeCount} </p>
-					<button onClick={likeComment}> Like </button>
+					<Like fill={liked} stroke={stroke} className="like-button" onClick={likeComment}/>
 					<button onClick={() => replyComment(comm.id)}> Reply </button>
+					</>
+					}
 					{comm.child ? (comm.child > 0 ?
 							<button onClick={getComment}> View {comm.child} replies </button>
 							:
@@ -211,10 +242,9 @@ function Comments(props){
 				{childComment  && childComment.map(child => 
 					<div key={child.id} className="">
 						{(child.comment === comm.id ) && <>
-							{console.log()}
-							<Link to={'/user/'+child.username}
+							<Link to={'/user/'+child.poster}
 								className="nav-link">
-								{child.username}
+								<span>{props.fname}</span><span>{props.lname}</span>@{props.poster}
 							</Link> 
 							<h1 > {child.content} </h1>
 							<p> {child.likes} </p>
@@ -226,53 +256,22 @@ function Comments(props){
 			</>
 		)
 	}
-	console.log(childCommentForm)
+
 	return (
 		<div>
-			{allComment && allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
-														likeCount={comments.likes} like={handleLikeComment} username={comments.username} 
-														child= {comments.child} reply={setchildCommentForm} submit={setCommentId}/>)}
+			{props.top && props.allComment ? props.allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
+														likeCount={comments.likes} like={handleLikeComment} username={comments.poster} 
+														child= {comments.child} reply={setchildCommentForm} submit={setCommentId} userLiked={comments.user_liked}/>)
+										: null}
 
 			{/* Comments posting form */}
 			<div>
 			{childCommentForm ?
-				<form onSubmit={submitChildComment}>
-                    <fieldset>
-                        <fieldset className="form-group">
-                            <input
-                                className="form-control form-control-lg"
-                                type="text"
-                                name="content"
-                                placeholder="Add a comment..."
-                                value={newComment}
-                                onChange={handleChange} />
-                        </fieldset>
-                        <button
-                            className="btn btn-lg btn-primary pull-xs-right"
-                            type="submit">
-                            Posting
-                        </button>
-                    </fieldset>
-                </form>
+				<FormChildComment avatar={avatar} row={row} new={newComment} focus={handleHeight} 
+									commentform={submitChildComment} change={handleChange}/>
 				:
-				<form onSubmit={submitComment}>
-                    <fieldset>
-                        <fieldset className="form-group">
-                            <input
-                                className="form-control form-control-lg"
-                                type="text"
-                                name="content"
-                                placeholder="Add a comment..."
-                                value={newComment}
-                                onChange={handleChange} />
-                        </fieldset>
-                        <button
-                            className="btn btn-lg btn-primary pull-xs-right"
-                            type="submit">
-                            Post
-                        </button>
-                    </fieldset>
-                </form>
+				<FormComment avatar={avatar} row={row} new={newComment} focus={handleHeight} 
+									commentform={submitComment} change={handleChange}/>
 				}
 			</div>
 

@@ -2,7 +2,6 @@ import { useContext } from 'react'
 import { UserContext } from '../contexts/userContext'
 import { useNavigate } from 'react-router';
 import Search from "../search/Search"
-import logo from '../../images/logo.png'
 
 function Header(props) {
   let navigate = useNavigate();
@@ -19,10 +18,6 @@ function Header(props) {
   return (
     <header>
       <div className="topHeader">
-        <div className="logo">
-          <img src={logo} alt=""/>
-          <p>BANKAI</p>
-        </div>
         <Search />
       </div>
       {(!token && token !== "" && token !== undefined) ? 

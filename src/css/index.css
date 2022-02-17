@@ -12,8 +12,12 @@
     background: #ffffff;
     height: 100%;
     width: 100%;
+    overflow-x: hidden;
   }
 
+  a{
+    text-decoration: none;
+  }
 /* header */
 
 .topHeader{
@@ -22,7 +26,6 @@
   }
 
   header {
-    margin: auto -16px;
     padding: 21px 69px 16px 30px;
   }
   
@@ -32,24 +35,21 @@
     font-weight: 200;
   }
 
-  header .logo{
+  .side-bar .logo{
     display: flex;
     flex-direction: row;
-    justify-content: center;
     align-items: center;
     padding: 8px 0px;
-    width: 95px;
     height: 29px;
-    left: 73px;
-    top: 21px;
+    margin-top: 16px;
   }
   
-  header .logo img{
+  .side-bar .logo img{
     margin-right: 4px;
     width:50px;
   }
   
-  header .logo p{
+  .side-bar .logo p{
     position: static;
     width: 64px;
     font-style: normal;
@@ -76,9 +76,8 @@
 
 /* Start Side bar styling */
 .side-bar{
-  margin-left: 30px;
-  height: 90%;
-  /* background: #313544; */
+  margin-left: 19px;
+  height: 100%;
   padding-left: 0px;
   padding-right: 0px;
   padding-bottom: 30px;
@@ -91,7 +90,7 @@
 }
 
 .bar-content{
-  margin-top:50px;
+  margin-top:85px;
   display: flex;
   flex-direction: column;
 }
@@ -101,8 +100,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 10px 16px;
-  margin-bottom: 16px;
+  padding: 10px 12px;
+  margin-bottom: 20px;
   border-radius: 8px;
   color: #575757;
   background:inherit;
@@ -133,7 +132,6 @@
 .myProfile{
   display: flex;
   padding: 8px 0px;
-  margin-left: 13px;
   margin-top: 50%;
   position: absolute;
   text-align: center;
@@ -144,18 +142,18 @@
 
 .myProfile p{
   align-self: center;
-  margin-left: 12px;
 }
 
 .profileImage{
   /* border-radius: 4px;
   background-color: #C4C4C4; */
+  margin-right: 8px;
   width:40px;
   height:40px;
 }
 
 .profileImage img{
-  margin-right: 12px;
+  /* margin-right: 12px; */
   border-radius: 50%;
   width: inherit;
   height: inherit;
@@ -211,12 +209,16 @@
 
 /* home page */
 .home-page{
-  margin-left: 121px;
-  
+  margin-left: 82px;
+  margin-right: 17px;
+  margin-top: 130px;
+  background: none;
+  width: 615px;
 }
 /* profile page */
 .profilePage{
  margin-left: 121px;
+ margin-top: 47px;
 }
 
 /* explore page */
@@ -243,9 +245,26 @@
   border-bottom: 1px solid #a4a8af;
 }
 
-
 .post-top div{
   margin-right: 5px;
+}
+
+.side-card{
+  border: 1px solid red
+}
+.post-content{
+  /* width:291.28px; */
+  padding-left: 10px;
+  padding-right: 10px;
+  height:28px;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  color: #575757;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 
 .post-form{
@@ -278,15 +297,92 @@
   margin-left: 45px;
 }
 
+.nav-link{
+  width: 116.85px;
+  height: 16px;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 11.8613px;
+  line-height: 14px;
+  color: #575757;
+}
+
+.nav-link span{
+  font-weight: 600;
+  font-size: 13.8382px;
+  line-height: 16px;
+} 
+
+/* postcard */
 .post-card{
-  background: #fff;
   border-radius: 7px;
   box-shadow: 0 2px 5px #ccc;
-  padding: 10px;
-  width: 315px;
-  margin-top: 26px;
+  padding: 10px 11.86px;
+  margin-top: 24px;
   margin-bottom: 24px;
+  background: #ECEFF1;
 }
+
+/* .post-list {
+  width: 291.28px;
+} */
+
+.post-image-top, .post-image-top1{
+  display:flex;
+  align-items: center;
+  justify-content:space-between;
+}
+
+.post-list .post-image{
+  width: 291.28px;
+  height: 180px;
+  border-radius: 8px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.post-list .like-button{
+  width:18px;
+  height:25px;
+  margin-right: 8px;
+}
+.post-list .comment-button{
+  width:18px;
+  height:23px;
+}
+
+.like-comment-box{
+  display:flex;
+  justify-content: space-between;
+  height: 27px;
+  align-items: center;
+  border-top: 1.8px solid #E5E5E5;
+  border-bottom: 1.8px solid #E5E5E5;
+  margin: 8px 10px;
+}
+
+.post-list .like-box, .post-list .comment-box{
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.post-list .like-box span, .post-list .comment-box span{
+  width: 119.42px;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 13px;
+  color: rgba(87, 87, 87, 1);
+
+}
+
+.post-list .comment-button {
+  margin-right: 8px;
+}
+/* postcard */
 
 .note {
     background: #fff;
@@ -320,18 +416,9 @@
     outline: none;
   }
   
-
-  /* form {
-    position: relative;
-    width: 480px;
-    margin: 30px auto 20px auto;
-    background: #fff;
-    padding: 15px;
-    border-radius: 7px;
-    box-shadow: 0 1px 5px rgb(138, 137, 137);
-  } */
-
   form .text, .text{
+    display:flex;
+    flex-grow: 1;
     font-family: inherit;
     font-style: normal;
     font-weight: normal;
@@ -340,11 +427,9 @@
     color: rgba(87, 87, 87, 0.75);
     border: none;
     padding: 8px 16px;
-    width: 251px;
+    width: 235.86px;
     height: 39px;
     border-radius: 8.07101px;
-    margin-left: 16px;
-    /* margin-right: 8.5px; */
   }
 
   /* Change style of emoji form */
@@ -364,11 +449,13 @@
 
 .react-emoji-picker--wrapper {
   top: 160px !important;
-  left: -45px !important;
+  left: -57px !important;
+  display: flex;
+  flex-grow: 1;
 }
 
 .emoji-mart {
-  width: 318px;
+  width: revert !important;
 }
 
 .react-input-emoji--button{
@@ -377,7 +464,7 @@
   }
 
 .react-emoji{
-   width: 271px !important;
+  /* width: 271px !important; */
   height: 110px;
 }
 
@@ -472,7 +559,82 @@
     clear: both;
   }
   
+  /* comment form */
+  .comment-form{
+    display:flex;
+    justify-content: space-between;
+  }
+
+  .comment-form textarea{
+    margin-right: 8px;
+    padding: 7.90751px;
+    position: static;
+    display:flex;
+    flex-grow: 1;
+    height: auto;
+    background: #FFFFFF;
+    border-radius: 7.90751px;
+  }
+  .comment-form .comment-btn{
+    display: flex;
+    align-items: center;
+    padding: 7.90751px 15.815px;
+    width: 45.47px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.81);
+    border-radius: 7.90751px;
+    cursor: pointer;
+  }
+
 /* media  */
+@media (max-width: 410px){
+  .side-bar{
+    margin-left: 5px;
+  }
+  .profilePage, .explore, .home-page{
+      margin-left: 62px;
+  }
+
+  .createPost {
+    width:300px
+  }
+  .post-card {
+    width:300px
+  }
+  .post-list .post-image {
+    width:revert
+  }
+}
+@media (min-width:500px ) and (max-width: 834px){
+  .home-page {
+    margin-left: 157px;
+    margin-right: 62px;
+  }
+  .side-bar {
+    margin-left: 55px;
+    margin-right: 50px;
+    height: 100%;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 30px;
+    position: fixed;
+    overflow-x: hidden;
+  }
+  .post-card{
+    padding-top: 10.1px;
+    padding-bottom: 10.1px
+  }
+
+  .like-comment-box{
+    height: 30px;
+    margin-top: 11.44px;
+    margin-bottom: 11.44px;
+  }
+  .bar-content button {
+    padding: 12px 14px;
+  }
+}
+
 @media screen and (min-width: 1260px) {
   .side-text{
     display: block
@@ -481,27 +643,43 @@
     display:block
   }
   .side-bar{
-    width:13%
+    width:13%;
+    margin-left: 12%;
   }
   .bar-content button{
     width:100%
   }
-  .profilePage{
-    margin-left: 250px
-   }
-   .home-page{
-    margin-left: 250px;
-  }  
-  .explore{
-    margin-left: 250px;
+  .myProfile{
+    margin-left: 13px;
   }
+
+   .profilePage, .explore, .home-page{
+    margin-left: 30%;
+    margin-right: 38px;
+    background: #ECEFF1;
+    border-radius: 8px 8px 0px 0px;
+    padding-top: 21px;
+    padding-right: 24px;
+    padding-left: 24px;
+  }  
    .bar-content button .icons{
     margin-right: 8px
    }
-   header .logo p{
+   .side-bar .logo p{
      display:block
+   }
+   .side-bar .logo {
+     width: 95px;
    }
    .topHeader {
      margin-left:2%
    }
+
+   .comment-form textarea, form .text, .text, .comment-form .comment-btn{
+     background: #ECEFF1;
+   }
+   .createPost, .post-card {
+    background: #ffffff;
+   }
+
 }

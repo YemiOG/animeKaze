@@ -110,17 +110,26 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                             reportedPost.c.post_id, func.count('*').label(
                              'reporting')).group_by(
                              reportedPost.c.post_id).subquery()
+        
+        # get count of not interested posts by post id
+        no_intrst_count = db.session.query(
+                            notInterested.c.post_id, func.count('*').label(
+                             'not_interest_count')).group_by(
+                                notInterested.c.post_id).subquery()
 
         # get posts from user's followers minus reported posts
+
         followed = db.session.query(Post).join(
-            followers, (followers.c.followed_id == Post.user_id)).outerjoin(
-                reported_count).outerjoin(reportedPost).filter(
-                followers.c.follower_id == self.id).filter(
-                or_(reportedPost.c.person_id != self.id,
-                    reportedPost.c.person_id == None)).filter(
-                    or_(reported_count.c.reporting < 2, reportedPost.c.person_id == None))
-
-
+                    followers, (followers.c.followed_id == Post.user_id)).outerjoin(
+                        no_intrst_count).outerjoin(notInterested).outerjoin(
+                            reported_count).outerjoin(reportedPost).filter(
+                                followers.c.follower_id == self.id).filter(
+                                    or_(notInterested.c.person_id != self.id, notInterested.c.person_id == None)).filter(
+                                        or_(no_intrst_count.c.not_interest_count < 2,
+                                            notInterested.c.person_id == None)).filter(
+                                                    or_(reportedPost.c.person_id != self.id,
+                                                        reportedPost.c.person_id == None)).filter(
+                                                            or_(reported_count.c.reporting < 2, reportedPost.c.person_id == None))
         # get user's own posts
         own = Post.query.filter_by(user_id=self.id)
 
@@ -134,13 +143,30 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                             notInterested.c.post_id, func.count('*').label(
                              'not_interest_count')).group_by(
                                 notInterested.c.post_id).subquery()
+        # get count of reported posts by post id
+        reported_count = db.session.query(
+                            reportedPost.c.post_id, func.count('*').label(
+                             'reporting')).group_by(
+                             reportedPost.c.post_id).subquery()
+
         # filter out posts user doesn't want to see
         explore = db.session.query(Post).filter(
             Post.user_id != self.id).outerjoin(
-            no_intrst_count).outerjoin(notInterested).filter(
+            no_intrst_count).outerjoin(notInterested).outerjoin(
+                reported_count).outerjoin(reportedPost).filter(
                 or_(notInterested.c.person_id != self.id, notInterested.c.person_id == None)).filter(
                     or_(no_intrst_count.c.not_interest_count < 2,
-                        notInterested.c.person_id == None))
+                        notInterested.c.person_id == None)).filter(
+                                or_(reportedPost.c.person_id != self.id,
+                                    reportedPost.c.person_id == None)).filter(
+                                        or_(reported_count.c.reporting < 2, reportedPost.c.person_id == None))
+
+        # explore = db.session.query(Post).filter(
+        #     Post.user_id != self.id).outerjoin(
+        #     no_intrst_count).outerjoin(notInterested).filter(
+        #         or_(notInterested.c.person_id != self.id, notInterested.c.person_id == None)).filter(
+        #             or_(no_intrst_count.c.not_interest_count < 2,
+        #                 notInterested.c.person_id == None))
 
         return explore.order_by(Post.timestamp.desc())
 
@@ -217,7 +243,9 @@ class Post(PaginatedAPIMixin, db.Model):
         'User', secondary=reportedPost,
         backref=db.backref('reportedPost', lazy='dynamic'), lazy='dynamic')
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    username= db.Column(db.String(360))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    liked_by_user= db.Column(db.Boolean, unique=False, default=False)
 
     def __repr__(self):
         return '<Post {}>'.format(self.content)
@@ -225,8 +253,10 @@ class Post(PaginatedAPIMixin, db.Model):
     def like_state(self, user):
         if not self.liked(user):
             self.likes.append(user)
+            setattr(self, 'liked_by_user', True)
         else:
             self.likes.remove(user)
+            setattr(self, 'liked_by_user', False)
 
     def liked(self, user):
         return self.likes.filter(likedPosts.c.liker_id == user.id).count() > 0
@@ -250,12 +280,21 @@ class Post(PaginatedAPIMixin, db.Model):
     def post_reported(self, user):
         return self.reported.filter(reportedPost.c.person_id == user.id).count() > 0
 
+    def get_user(self, user):
+        return db.session.query(User).filter_by(id=user.user_id).first()
+
     def to_dict(self):
+        user= self.get_user(self) 
         data = {
             'id': self.id,
             'content': self.content,
             'image': self.image,
             'likes': self.likes.count(),
+            'poster': user.username,
+            'fname': user.first_name,
+            'lname': user.last_name,
+            'avatar': user.avatar,
+            'user_liked': self.liked_by_user,
         }
         return data
 
@@ -280,8 +319,9 @@ class Comment(PaginatedAPIMixin, db.Model):
             backref=db.backref('likedComments', lazy='dynamic'), lazy='dynamic')
     timestamps = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    username= db.Column(db.String(360))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    parent = db.Column(db.Boolean, unique=False, default=True)
+    liked_by_user= db.Column(db.Boolean, unique=False, default=False)
 
     def __repr__(self):
         return '<Comment from user {}>'.format(self.user_id)
@@ -289,22 +329,29 @@ class Comment(PaginatedAPIMixin, db.Model):
     def like_comment_state(self, user):
         if not self.liked_comment(user):
             self.likes.append(user)
+            setattr(self, 'liked_by_user', True)
         else:
             self.likes.remove(user)
+            setattr(self, 'liked_by_user', False)
 
     def liked_comment(self, user):
         return self.likes.filter(likedComments.c.liker_id == user.id).count() > 0
-
+    
+    def get_user(self,user):
+        return db.session.query(User).filter_by(id=user.user_id).first()
+        
     def to_dict(self):
-        user = db.session.query(User).filter_by(id=self.user_id).all()
-        # print(user)
+        user= self.get_user(self) 
         data = {
             'id': self.id,
             'content': self.content,
-            'username': user[0].username,
+            'poster': user.username,
+            'fname': user.first_name,
+            'lname': user.last_name,
+            'avatar': user.avatar,
             'likes': self.likes.count(),
-            'parent': self.parent,
             'child': self.comments.count(),
+            'user_liked': self.liked_by_user,
         }
         return data
 
@@ -328,8 +375,9 @@ class ChildComment(PaginatedAPIMixin, db.Model):
             'User', secondary=likedChildComments,
             backref=db.backref('likedChildComments', lazy='dynamic'), lazy='dynamic')
     timestamps = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    username= db.Column(db.String(360))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    parent = db.Column(db.Boolean, unique=False, default=False)
+    liked_by_user= db.Column(db.Boolean, unique=False, default=False)
 
     def __repr__(self):
         return '<Child Comment from user {}>'.format(self.user_id)
@@ -337,21 +385,29 @@ class ChildComment(PaginatedAPIMixin, db.Model):
     def like_child_comment(self, user):
         if not self.liked_comment(user):
             self.likes.append(user)
+            setattr(self, 'liked_by_user', True)
         else:
             self.likes.remove(user)
+            setattr(self, 'liked_by_user', False)
 
     def liked_comment(self, user):
         return self.likes.filter(likedChildComments.c.liker_id == user.id).count() > 0
 
+    def get_user(self, user):
+        return db.session.query(User).filter_by(id=user.user_id).first()
+
     def to_dict(self):
-        user = db.session.query(User).filter_by(id=self.user_id).all()
-        # print(user)
+        user= self.get_user(self) 
         data = {
             'id': self.id,
             'content': self.content,
             'comment': self.comment_id,
-            'username': user[0].username,
+            'poster': user.username,
+            'fname': user.first_name,
+            'lname': user.last_name,
+            'avatar': user.avatar,
             'likes': self.likes.count(),
+            'user_liked': self.liked_by_user,
         }
         return data
 

@@ -84,7 +84,7 @@ function CreatePost(props){
 						required
 					/>
 					:
-					<input onClick={expandTextArea} className='text' type="text" required/>
+					<input onClick={expandTextArea} className='text' placeholder="What's happening?" type="text" required/>
 					}
 					
 				</div>
@@ -97,7 +97,7 @@ function CreatePost(props){
 				<div className="formBottom">
 					<label onClick={expandTextArea} htmlFor="image"> <img src={photo} alt=""/> <p>Photo/Video</p>  </label>
 					{!textArea ? <div className="emoji" onClick={expandTextArea}>  <img src={emoji} alt=""/> <p>Feeling</p> </div> : null}
-					<input type="file" id="image" name="file" accept="image/*" className="file-custom" onChange={onChangeFile}/>
+					<input type="file" id="image" name="file" accept="image/*" className="file-custom" onChange={onChangeFile} required/>
 					<input  name="uid" value={userId} hidden readOnly={true}/>
 					<button
 						className="sub-btn btn-lg btn-primary pull-xs-right"
