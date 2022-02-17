@@ -1,7 +1,10 @@
 import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
-import { UserContext } from '../contexts/userContext';
 import { Link } from 'react-router-dom'
+import { UserContext } from '../contexts/userContext';
+
+import FormChildComment from './childCommentForm'
+import FormComment from './commentForm'
 
 import { ReactComponent as Like } from '../../images/svg/like.svg'
 import { ReactComponent as Post } from '../../images/svg/post.svg'
@@ -264,45 +267,11 @@ function Comments(props){
 			{/* Comments posting form */}
 			<div>
 			{childCommentForm ?
-				<form className="comment-form" onSubmit={submitChildComment}>
-					<div className='profileImage'>
-						<img src={avatar} alt="profile logo"/>
-					</div>
-                            <input
-                                className="form-control form-control-lg"
-                                type="text"
-                                name="content"
-                                placeholder="Add a comment..."
-								onFocus={handleHeight}
-								onBlur={handleHeight}
-								rows={row}
-                                value={newComment}
-                                onChange={handleChange} />
-                        <button
-                            className="btn btn-lg btn-primary pull-xs-right"
-                            type="submit">
-                            Posting
-                        </button>
-                </form>
+				<FormChildComment avatar={avatar} row={row} new={newComment} focus={handleHeight} 
+									commentform={submitChildComment} change={handleChange}/>
 				:
-				<form className="comment-form" onSubmit={submitComment}>
-					<div className='profileImage'>
-						<img src={avatar} alt="profile logo"/>
-					</div>
-                        <textarea
-                            className=""
-                            type="text"
-                            name="content"
-                            placeholder="Write a comment..."
-							onFocus={handleHeight}
-							onBlur={handleHeight}
-							rows={row}
-                            value={newComment}
-                            onChange={handleChange} />
-						<div className="comment-btn">
-							<Post />
-						</div>
-                </form>
+				<FormComment avatar={avatar} row={row} new={newComment} focus={handleHeight} 
+									commentform={submitComment} change={handleChange}/>
 				}
 			</div>
 
