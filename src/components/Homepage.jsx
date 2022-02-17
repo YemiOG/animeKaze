@@ -64,6 +64,55 @@ function Home(){
 		})
 	}
 
+	function notInterested(id) { 
+		axios({
+		  method: "POST",
+		  url:"/api/notinterested/" + id,
+		  data:{
+			username:username
+		   },
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		})
+		.then((response) => {
+		  console.log(response.data.success)
+		}).catch((error) => {
+		  if (error.response) {
+			console.log(error.response)
+			if (error.response.status === 401 || error.response.status === 422){
+			  removeToken()
+			}
+			}
+		})
+	  }
+
+	  function unfollowUser(uzer) {
+		console.log(uzer)
+        axios({
+          method: "POST",
+          url:"/api/unfollow/" + uzer,
+          data:{
+            username:username
+           },
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        })
+        .then((response) => {
+			getPosts()
+        }).catch((error) => {
+          if (error.response) {
+            console.log(error.response)
+            console.log(error.response.status)
+            console.log(error.response.headers)
+            if (error.response.status === 401 || error.response.status === 422){
+              removeToken()
+            }
+            }
+        })  
+    }
+
 	  function reportPost(id) { 
 		axios({
 		  method: "POST",
@@ -90,9 +139,9 @@ function Home(){
     return (
         <div className="home-page">
 			<CreatePost post={getPosts}/>
-			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} 
+			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={notInterested} 
 											report={reportPost} userLiked={posts.user_liked} avatar={posts.avatar} poster={posts.poster} 
-											fname={posts.fname} lname={posts.lname}/>)}
+											fname={posts.fname} lname={posts.lname} unfollow={unfollowUser}/>)}
         </div>
     )
 }
