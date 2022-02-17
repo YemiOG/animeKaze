@@ -2,8 +2,6 @@ import React, {useState} from "react";
 import { Link } from 'react-router-dom'
 import Comments from "../comments/Comments"
 
-
-
 import { ReactComponent as Like } from '../../images/svg/like.svg'
 import { ReactComponent as Comment } from '../../images/svg/comment.svg'
 import { ReactComponent as Drop } from '../../images/svg/dropdown.svg'
@@ -22,6 +20,7 @@ function Posts(props){
 	const [showCard , setShowCard] = useState(false)
 	const [liked , setLiked] = useState(fillColor)
 	const [stroke , setStroke] = useState(strokeColor)
+  const usernamer = window.localStorage.getItem('username')
   const profile = "/user/" + props.poster 
 
     function handleClick(){
@@ -47,12 +46,14 @@ function Posts(props){
       showCard===false ? setShowCard(true) : setShowCard(false);
       }
 
+
     function SideCard(){
 
       return (
         <div className="side-card">
             {props.report && <button onClick={handleReport}> Report </button>}
             {props.interested && <button onClick={handleInterest}> Not interested </button>}
+            {(usernamer!==props.poster) && props.unfollow ? <button onClick={() => props.unfollow(props.poster)}> Unfollow </button> : null}
         </div>
       )}
 
