@@ -6,6 +6,7 @@ import Comments from "../comments/Comments"
 
 import { ReactComponent as Like } from '../../images/svg/like.svg'
 import { ReactComponent as Comment } from '../../images/svg/comment.svg'
+import { ReactComponent as Drop } from '../../images/svg/dropdown.svg'
 
 function Posts(props){
   let fillColor= 'none'
@@ -17,11 +18,11 @@ function Posts(props){
   }
 
 	const [comments , setComments] = useState("")
-	const [topComment , setTopComment] = useState(true)
+	const [showComment , setShowComment] = useState(false)
+	const [showCard , setShowCard] = useState(false)
 	const [liked , setLiked] = useState(fillColor)
 	const [stroke , setStroke] = useState(strokeColor)
-  const profile = "/user/" + props.poster
-  console.log(profile)
+  const profile = "/user/" + props.poster 
 
     function handleClick(){
         props.like(props.id)
@@ -39,24 +40,44 @@ function Posts(props){
         props.interested(props.id);
       }
     function revealComments(){
-        setTopComment(false);
+      showComment===false ? setShowComment(true) : setShowComment(false)
       }
+
+    function revealBar(){
+      showCard===false ? setShowCard(true) : setShowCard(false);
+      }
+
+    function SideCard(){
+
+      return (
+        <div className="side-card">
+            {props.report && <button onClick={handleReport}> Report </button>}
+            {props.interested && <button onClick={handleInterest}> Not interested </button>}
+        </div>
+      )}
 
 	return (
         <div className="post-card">
           <div className="post-list">
               <div className="post-image-top">
-                <div className='profileImage'>
-                  <img src={props.avatar} alt="profile logo"/>
+                <div className="post-image-top1">
+                  <div className='profileImage'>
+                    <img src={props.avatar} alt="profile logo"/>
+                  </div>
+                  <Link to={profile}
+                    className="nav-link">
+                    <span>{props.fname}</span><span>{props.lname}</span>@{props.poster}
+                  </Link> 
                 </div>
-                <Link to={profile}
-                  className="nav-link">
-                   <span>{props.fname}</span><span>{props.lname}</span>@{props.poster}
-                </Link> 
+                <Drop className="drop" onClick={revealBar}/>
               </div>
+              {showCard && <SideCard />}
               <div className="post-content"> {props.content} </div>
               
-				      <img className="post-image" alt="" src={props.image} />
+				      {/* <img className="post-image" alt="" src={props.image} /> */}
+              <div className="post-image" style={{backgroundImage: `url(${props.image})`}}>
+
+              </div>
               <div className='like-comment-box'>
                 <div className="like-box">
                   <Like fill={liked} stroke={stroke} className="like-button" onClick={handleClick}/>
@@ -72,9 +93,7 @@ function Posts(props){
                 </div>
               </div>
           </div>
-          <Comments allComment={comments} setAllComment={setComments} postId={props.id} top={topComment}/>
-          {props.report && <button onClick={handleReport}> Report </button>}
-          {props.interested && <button onClick={handleInterest}> Not interested </button>}
+          <Comments allComment={comments} setAllComment={setComments} postId={props.id} top={showComment}/>
         </div>
     )
 }
