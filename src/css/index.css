@@ -644,7 +644,7 @@
   }
   .side-bar{
     width:13%;
-    margin-left: 30px;
+    margin-left: 12%;
   }
   .bar-content button{
     width:100%
@@ -654,7 +654,7 @@
   }
 
    .profilePage, .explore, .home-page{
-    margin-left: 250px;
+    margin-left: 30%;
     margin-right: 38px;
     background: #ECEFF1;
     border-radius: 8px 8px 0px 0px;
