@@ -110,17 +110,26 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                             reportedPost.c.post_id, func.count('*').label(
                              'reporting')).group_by(
                              reportedPost.c.post_id).subquery()
+        
+        # get count of not interested posts by post id
+        no_intrst_count = db.session.query(
+                            notInterested.c.post_id, func.count('*').label(
+                             'not_interest_count')).group_by(
+                                notInterested.c.post_id).subquery()
 
         # get posts from user's followers minus reported posts
+
         followed = db.session.query(Post).join(
-            followers, (followers.c.followed_id == Post.user_id)).outerjoin(
-                reported_count).outerjoin(reportedPost).filter(
-                followers.c.follower_id == self.id).filter(
-                or_(reportedPost.c.person_id != self.id,
-                    reportedPost.c.person_id == None)).filter(
-                    or_(reported_count.c.reporting < 2, reportedPost.c.person_id == None))
-
-
+                    followers, (followers.c.followed_id == Post.user_id)).outerjoin(
+                        no_intrst_count).outerjoin(notInterested).outerjoin(
+                            reported_count).outerjoin(reportedPost).filter(
+                                followers.c.follower_id == self.id).filter(
+                                    or_(notInterested.c.person_id != self.id, notInterested.c.person_id == None)).filter(
+                                        or_(no_intrst_count.c.not_interest_count < 2,
+                                            notInterested.c.person_id == None)).filter(
+                                                    or_(reportedPost.c.person_id != self.id,
+                                                        reportedPost.c.person_id == None)).filter(
+                                                            or_(reported_count.c.reporting < 2, reportedPost.c.person_id == None))
         # get user's own posts
         own = Post.query.filter_by(user_id=self.id)
 
@@ -134,13 +143,30 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                             notInterested.c.post_id, func.count('*').label(
                              'not_interest_count')).group_by(
                                 notInterested.c.post_id).subquery()
+        # get count of reported posts by post id
+        reported_count = db.session.query(
+                            reportedPost.c.post_id, func.count('*').label(
+                             'reporting')).group_by(
+                             reportedPost.c.post_id).subquery()
+
         # filter out posts user doesn't want to see
         explore = db.session.query(Post).filter(
             Post.user_id != self.id).outerjoin(
-            no_intrst_count).outerjoin(notInterested).filter(
+            no_intrst_count).outerjoin(notInterested).outerjoin(
+                reported_count).outerjoin(reportedPost).filter(
                 or_(notInterested.c.person_id != self.id, notInterested.c.person_id == None)).filter(
                     or_(no_intrst_count.c.not_interest_count < 2,
-                        notInterested.c.person_id == None))
+                        notInterested.c.person_id == None)).filter(
+                                or_(reportedPost.c.person_id != self.id,
+                                    reportedPost.c.person_id == None)).filter(
+                                        or_(reported_count.c.reporting < 2, reportedPost.c.person_id == None))
+
+        # explore = db.session.query(Post).filter(
+        #     Post.user_id != self.id).outerjoin(
+        #     no_intrst_count).outerjoin(notInterested).filter(
+        #         or_(notInterested.c.person_id != self.id, notInterested.c.person_id == None)).filter(
+        #             or_(no_intrst_count.c.not_interest_count < 2,
+        #                 notInterested.c.person_id == None))
 
         return explore.order_by(Post.timestamp.desc())
 
