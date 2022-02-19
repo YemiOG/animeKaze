@@ -2,14 +2,17 @@ import {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { UserContext } from '../contexts/userContext';
 import Posts from "../posts/Posts"
+import CreateButton from '../sideBar/sideButtons'
 
 function Explore(){
   const {token, removeToken, setAppState} = useContext(UserContext);
 	const usernamer = window.localStorage.getItem('username')
 	const [posts, setPosts] = useState("")
+  const { setActive } = CreateButton();
 
 	useEffect(() => {
 		// setAppState({ loading: true });
+        setActive(3)
         getExplore()
     },[])
 
