@@ -2,6 +2,7 @@ import React, {useState, useContext} from "react";
 import { UserContext } from '../contexts/userContext';
 import axios from "axios";
 import InputEmoji from "react-input-emoji";
+import { ReactComponent as Close } from '../../images/svg/closeButton.svg'
 
 import photo from '../../images/photoIcon.png'
 import emoji from '../../images/emoji.png'
@@ -65,15 +66,15 @@ function CreatePost(props){
 	}
 
 	return (
-		<div className="createPost">
+		<div className="create-post">
 			{textArea && <div className="post-top">
 					<p>Create a post</p>
-					<div onClick={cancelPost}> X </div>
+					<Close onClick={cancelPost}/>
 				</div>
 			}
 			<form onSubmit={submitForm} encType="multipart/form-data" className="post-form">
-				<div className="formTop">
-					<div className='profileImage'>
+				<div className="form-top">
+					<div className='profile-image'>
 						<img src={avatar} alt="profile logo"/>
 					</div>
 					{textArea ? <InputEmoji
@@ -88,16 +89,17 @@ function CreatePost(props){
 					}
 					
 				</div>
+
 				{image && <div className="picture-preview">
-					<div className="top-image-preview">
-						<img className="preview" src={image} alt="preview" />
-					</div>
-					<p onClick={cancelImage}> X </p>
-					</div>}
-				<div className="formBottom">
+								<img className="preview" src={image} alt="preview" />
+								<div>
+									<Close onClick={cancelImage}/>
+								</div>
+						  </div>}
+				<div className="form-bottom">
 					<label onClick={expandTextArea} htmlFor="image"> <img src={photo} alt=""/> <p>Photo/Video</p>  </label>
 					{!textArea ? <div className="emoji" onClick={expandTextArea}>  <img src={emoji} alt=""/> <p>Feeling</p> </div> : null}
-					<input type="file" id="image" name="file" accept="image/*" className="file-custom" onChange={onChangeFile} required/>
+					<input type="file" id="image" name="file" accept="image/*" className="file-custom" onChange={onChangeFile}/>
 					<input  name="uid" value={userId} hidden readOnly={true}/>
 					<button
 						className="sub-btn btn-lg btn-primary pull-xs-right"
