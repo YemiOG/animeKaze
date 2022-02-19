@@ -62,7 +62,7 @@ function Posts(props){
           <div className="post-list">
               <div className="post-image-top">
                 <div className="post-image-top1">
-                  <div className='profileImage'>
+                  <div className='profile-image'>
                     <img src={props.avatar} alt="profile logo"/>
                   </div>
                   <Link to={profile}
