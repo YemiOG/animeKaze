@@ -4,7 +4,7 @@ function ChildCommentForm(props) {
 	
 	return (
 		<form className="comment-form" onSubmit={props.commentform}>
-				<div className='profileImage'>
+				<div className='profile-image'>
 					<img src={props.avatar} alt="profile logo"/>
 				</div>
                 <textarea
