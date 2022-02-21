@@ -137,6 +137,9 @@ function Home(){
 		
     return (
         <div className="home-page">
+			<div className="top-title">
+				Feed
+			</div>
 			<CreatePost post={getPosts}/>
 			{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} 
 												image={posts.image} like={handlePost} interested={notInterested} 
