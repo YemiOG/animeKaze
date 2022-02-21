@@ -1,0 +1,20 @@
+.trend{
+	  -webkit-animation-name: slider;
+	  -webkit-animation-duration: 10s;
+	  -webkit-animation-iteration-count: infinite;
+	  -webkit-animation-direction: up;
+	  -webkit-animation-timing-function:linear;
+   }
+
+.trend:hover {
+	  -webkit-animation-play-state: paused;
+   }
+
+@-webkit-keyframes slider {
+	  0% {
+		 transform:translateY(0);
+	  }
+	  100% {
+		 transform:translateY(-100%);
+	  }
+   }
