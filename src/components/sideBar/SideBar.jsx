@@ -12,46 +12,46 @@ function Sidebar(props) {
   const profile = "/user/" + user.username
 
   return (
-    <>
-    <div className="side-bar">
-      <div className="bar-content">
-        {(!token && token !== "" && token !== undefined) ? 
-          <>
-          {unAuthButtons.map(item => <div key={item.id}>
-                                <button  onClick={item.action}> 
-                                        <item.icon className="icons" stroke={iconColor}/> 
-                                        <p className="side-text">{item.text}</p>
-                                </button> 
-                              </div> 
-                              )}
-          <button className="bar-contents">
-              <p>hello</p>
-          </button>
-          </>
-        :
-          <>
+    <div className="side">
+      <div className="side-bar">
+        <div className="bar-content">
+          {(!token && token !== "" && token !== undefined) ? 
+            <>
+            {unAuthButtons.map(item => <div key={item.id}>
+                                  <button  onClick={item.action}> 
+                                          <item.icon className="icons" stroke={iconColor}/> 
+                                          <p className="side-text">{item.text}</p>
+                                  </button> 
+                                </div> 
+                                )}
+            <button className="bar-contents">
+                <p>hello</p>
+            </button>
+            </>
+          :
+            <>
 
-          {AuthButtons.map(item => <div key={item.id}>
-                                <button className={isActive === item.id ? 'active-button' : ''} 
-                                          onClick={() => item.action(item.id)}> 
-                                        <item.icon className="icons" stroke= {isActive === item.id ? iconColor : '#546E7A'}/> 
-                                        <p className="side-text">{item.text}</p>
-                                </button> 
-                              </div> 
-                              )}
-                               
-          <Link to={profile} className="myProfile" onClick={() => setActive(5)}>
-                <div className='profile-image'>
-                  <img src={avatar} alt="profile logo"/>
-                </div>
-                <p className="user-name">{username}</p>
-          </Link> 
+            {AuthButtons.map(item => <div key={item.id}>
+                                  <button className={isActive === item.id ? 'active-button' : ''} 
+                                            onClick={() => item.action(item.id)}> 
+                                          <item.icon className="icons" stroke= {isActive === item.id ? iconColor : '#546E7A'}/> 
+                                          <p className="side-text">{item.text}</p>
+                                  </button> 
+                                </div> 
+                                )}
+                                
+            <Link to={profile} className="my-profile" onClick={() => setActive(5)}>
+                  <div className='profile-image'>
+                    <img src={avatar} alt="profile logo"/>
+                  </div>
+                  <p className="user-name">{username}</p>
+            </Link> 
 
-          </>
-        }
+            </>
+          }
+        </div>
       </div>
     </div>
-    </>
   );
 }
 
