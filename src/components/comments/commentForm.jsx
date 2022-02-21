@@ -18,9 +18,9 @@ function CommentForm(props) {
 					value={props.new}
 					onChange={props.change} />
 
-				<div className="comment-btn">
+				<button className="comment-btn">
 					<Post />
-				</div>
+				</button>
 	</form>
 	);
   }
