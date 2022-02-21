@@ -86,6 +86,7 @@ function Comments(props){
 
 	function submitComment(event){
         const contnt = event.target.content.value;
+		console.log(contnt)
 		axios({
 			method: "POST",
 			url: '/api/comment',
@@ -99,6 +100,7 @@ function Comments(props){
 			  }
 			}).then((response)=>{
 				getComments()
+				props.reveal(true)
 			}).catch((error) => {
 				if (error.response) {
 					if (error.response.status === 401 || error.response.status === 422){
