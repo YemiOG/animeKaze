@@ -16,7 +16,9 @@ function ChildCommentForm(props) {
 					onBlur={props.focus}
 					rows={props.row}
 					value={props.new}
-					onChange={props.change} />
+					onChange={props.change} 
+					required
+					/>
 				<button className="comment-btn">
 					<Post />
 				</button>
