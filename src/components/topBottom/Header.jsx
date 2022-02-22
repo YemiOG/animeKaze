@@ -22,7 +22,6 @@ function Header(props) {
   return (
     <header>
       <div className="top-header">
-        <div className="header-top">
           <div className="logo">
               <img src={logo} alt=""/>
               <p>BANKAI</p>
@@ -30,10 +29,9 @@ function Header(props) {
           <div className="trend-icon">
             <TrendIcon />
           </div>
-        </div>
-        <div className="top-search">
-          <Search />
-        </div>
+          <div className="top-search">
+            <Search />
+          </div>
       </div>
       {(!token && token !== "" && token !== undefined) ? 
         <>
