@@ -6,6 +6,7 @@ import { UserContext } from '../contexts/userContext';
 import Home from "../Homepage"
 import Explore from "../explore/Explore"
 import Base from "../Basepage"
+import Trend from "../trendingAnime/trending"
 import Header from "../topBottom/Header"
 import Footer from "../topBottom/Footer"
 import Sidebar from "../sideBar/SideBar"
@@ -61,10 +62,9 @@ function AppRouter() {
 
 	return (
 		<UserContext.Provider value={{token, userInfo, appState, setAppState, setUserInfo, removeToken, setToken}}>
-			<Header/>  
+			<Header />
 			<div className='App'>
 				<Sidebar/> 
-
 				{/* {console.log(userInfo.uzer)} */}
 				{console.log(location.pathname)}
 				{/* username: {userInfo.currentUser} */}
@@ -101,7 +101,8 @@ function AppRouter() {
 								</AuthedRoute>
 								}/>}
 					<Route path='*' element={<PageNotFound />}/>
-				</Routes> 
+				</Routes> 				
+				{token && <Trend />}
 				{/* <Footer /> */}
 			</div>
 		</UserContext.Provider>
