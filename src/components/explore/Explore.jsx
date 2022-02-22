@@ -110,11 +110,15 @@ function Explore(){
 
     return (
       <div className='explore'>
-        <h1>Explore</h1>
+        <div className="top-title">
+				  Explore
+			  </div>
+        <div className='explore-page'>
 		    {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} 
                                             like={handlePost} interested={notInterested} report={reportPost} userLiked={posts.user_liked} 
                                             avatar={posts.avatar} poster={posts.poster} 
 											                      fname={posts.fname} lname={posts.lname}/>)}
+        </div>
       </div>
     )
 }
