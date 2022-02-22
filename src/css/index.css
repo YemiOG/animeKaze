@@ -21,10 +21,12 @@
 /* header */
   header {
     padding-top: 18px; 
-    padding-right:66px; 
+    /* padding-right:66px;  */
     padding-bottom:18px;
-    padding-left:10px;
+    /* padding-left:10px; */
     height:50px;
+    margin-left: 19px;
+    margin-right: 67px;
   }
   
   header h1 {
@@ -62,17 +64,17 @@
       justify-content: space-between;
     }
     
-      .header-top{
+    .header-top{
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         width: 664px;
-      }
+    }
     
-      .trend-icon{
+    .trend-icon{
         margin-top: 8px;
         cursor: pointer;
-      }
+   }
     
 
 /* Application */
@@ -228,15 +230,17 @@
 /* search form */
 
 /* home page */
-.home-page, .profilePage, .explore{
+.home-page, .profilePage, .explore-page{
+  background: none;
+}
+
+.home, .explore{
   margin-left: 82px;
   margin-right: 48px;
   margin-top: 57px;
-  background: none;
   width: 615px;
   position: relative;
 }
-
 .top-title{
   margin-bottom: 9px;
   font-family: inherit;
@@ -372,7 +376,7 @@
   border-radius: 7px;
   box-shadow: 0 2px 5px #ccc;
   padding: 10px 11.86px;
-  margin-top: 24px;
+  margin-top: 30px;
   margin-bottom: 24px;
   background: #ECEFF1;
 }
@@ -385,6 +389,9 @@
   display:flex;
   align-items: center;
   justify-content:space-between;
+}
+.post-image-top svg{
+  cursor:pointer
 }
 
 .post-list .post-image{
@@ -502,9 +509,10 @@
 
 .react-emoji-picker--wrapper {
   top: 160px !important;
-  left: -57px !important;
+  left: -45px !important;
   display: flex;
   flex-grow: 1;
+  width:unset !important;
 }
 
 .emoji-mart {
@@ -650,14 +658,14 @@
 .anime-trends{
   position: relative;
   display: none;
-  width: 310px;
+  width: 300px;
 }
 
 .trending-anime{
   margin-top: 57px;
-  height: 671px;
+  /* height: 671px; */
   overflow: hidden;
-  position: absolute
+  /* position: absolute */
 }
 
 .trending-anime .caption{
@@ -674,7 +682,7 @@
   width:258px;
   display:flex;
   flex-direction: column;
-  height:653px;
+  height:1000px;
 }
 
 .trend .anime{
@@ -688,7 +696,7 @@
   color: rgba(87, 87, 87, 0.9);
 }
 .trend-scroll{
-  height: 653px;
+  height: 573px;
   overflow: hidden;
 }
 .trend .anime .content{
@@ -723,11 +731,28 @@
 /* end trends */
 
 /* media  */
+@media (max-width: 445px){
+  .profilePage, .explore, .home{
+    margin-left: 70px;
+  }
+}
+
+@media (max-width: 430px){
+  .profilePage, .explore, .home{
+    margin-left: 65px;
+  }
+}
+
+@media (max-width: 500px){
+  .App{
+    margin-left: 8px;
+  }
+}
 @media (max-width: 410px){
   .App{
     margin-left: 5px;
   }
-  .profilePage, .explore, .home-page{
+  .profilePage, .explore, .home{
       margin-left: 62px;
   }
 
@@ -747,9 +772,9 @@
 }
 
 @media (min-width:500px ) and (max-width: 834px){
-  .home-page {
-    margin-left: 157px;
-    margin-right: 62px;
+  .home, .explore{
+    margin-left: 100px;
+    margin-right: 0
   }
   .App{
     margin-left: 55px;
@@ -767,7 +792,7 @@
     padding-bottom: 10.1px
   }
   .top-header {
-    margin-left:50px
+    margin-left:45px
   }
   .like-comment-box{
     height: 30px;
@@ -776,6 +801,11 @@
   }
   .bar-content button {
     padding: 12px 14px;
+  }
+}
+@media (min-width:500px ) and (max-width: 560px){
+  header{
+    margin-right: 20px;
   }
 }
 @media screen and (min-width: 834px){
@@ -787,6 +817,38 @@
   }
   .side-card{
     padding-left:16px;
+  }
+}
+@media screen and (max-width: 837px){
+  .anime-trends {
+    display: none;
+  }
+}
+
+@media (min-width:837px ) and (max-width:1040px){
+  .anime-trends {
+    display: block;
+  }
+  .anime-trends, .trend {
+    width: 180px;
+  }
+  .trend .anime .content{
+    display: none;
+  }
+  .trending-anime {
+    text-align: center;
+  }
+  .trend .anime{
+    align-self: center;
+  }
+}
+
+@media (min-width:1041px ) and (max-width:1300px){
+  .App{
+    margin-left:50px
+  }
+  .home, .profilePage, .explore {
+    margin-left: 110px;
   }
 }
 
@@ -828,12 +890,15 @@
   }
 }
 
-@media screen and (max-width: 410px){
+@media screen and (max-width: 490px){
   .preview{
      width: 86%;
   }
+  header{
+    margin-left:0;
+    margin-right: 20px;
+  }
 }
-
 @media screen and (min-width: 1260px) {
   .side-text{
     display: block
@@ -845,7 +910,7 @@
     margin-left: 5%;
   }
   .side-bar{
-    width:13%;
+    width:200px;
   }
   .bar-content button{
     width:100%
@@ -853,15 +918,18 @@
   .my-profile{
     margin-left: 13px;
   }
-   .profilePage, .explore, .home-page{
+   .profilePage, .explore, .home{
     margin-left: 20%;
     margin-right: 5%;
+  }  
+  .home-page, .explore-page{
     background: #ECEFF1;
     border-radius: 8px 8px 0px 0px;
     padding-top: 21px;
     padding-right: 24px;
     padding-left: 24px;
-  }  
+    padding-bottom: 15px;
+  }
    .bar-content button .icons{
     margin-right: 8px
   }
@@ -875,29 +943,81 @@
    .top-header .logo {
      width: 95px;
   }
-   .top-header {
+   /* .top-header {
      margin-left:12%
-  }
+  } */
    .comment-form textarea, form .text, .text, .comment-form .comment-btn{
      background: #ECEFF1;
    }
-   .create-post, .post-card {
+   .create-post{
     background: #ffffff;
     margin-bottom: 15px;
+   }
+    .post-card {
+    background: #ffffff;
+    margin-top: 0;
+    margin-bottom: 0;
    }
    .react-input-emoji--container {
     background:#ECEFF1 !important;
   }
 }
-@media screen and (max-width: 1260px) {
+@media (min-width:1040px ) and (max-width:1260px){
+  header{
+    margin-left: 4%;
+  }
 }
+
+@media (min-width:1080px ) and (max-width:1140px){
+  .top-search{
+    margin-right: 2%;
+  }
+}
+@media (min-width:1140px ) and (max-width:1180px){
+  .top-search{
+    margin-right: 3%;
+  }
+}
+
+@media (min-width:1180px ) and (max-width:1260px){
+  .top-search{
+    margin-left: 720px;
+  }
+  .top-header {
+    justify-content: revert;
+  }
+}
+
+@media (min-width:1260px ) and (max-width:1300px){
+  header{
+    margin-left: 5%;
+    margin-right: 7.5%;
+  }
+}
+
 @media screen and (min-width: 1300px) {
   .App{
     margin-left: 12%;
     margin-right: 12%;
   }
-  .profilePage, .explore, .home-page{
+  header{
+    margin-left: 12%;
+    margin-right: 12%;
+  }
+  .profilePage, .explore, .home{
     margin-left: 25%;
     margin-right: 10%;
   } 
+}
+@media screen and (min-width: 1500px) {
+  .App, header{
+    margin: auto;
+    width: 1400px;
+  }
+  .trend{
+    width:300px;
+  }
+  .searchForm{
+    width:300px;
+  }
 }

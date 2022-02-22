@@ -101,7 +101,7 @@ function CreatePost(props){
 					{!textArea ? <div className="emoji" onClick={expandTextArea}>  <img src={emoji} alt=""/> <p>Feeling</p> </div> : null}
 					<input type="file" id="image" name="file" accept="image/*" className="file-custom" onChange={onChangeFile}/>
 					<input  name="uid" value={userId} hidden readOnly={true}/>
-					<button
+					<button 
 						className="sub-btn btn-lg btn-primary pull-xs-right"
 						type="submit">
 						Post

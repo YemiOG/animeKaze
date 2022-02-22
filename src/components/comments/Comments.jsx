@@ -7,7 +7,6 @@ import FormChildComment from './childCommentForm'
 import FormComment from './commentForm'
 
 import { ReactComponent as Like } from '../../images/svg/like.svg'
-import { ReactComponent as Post } from '../../images/svg/post.svg'
 
 function Comments(props){
 
