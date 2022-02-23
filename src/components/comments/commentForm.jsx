@@ -4,7 +4,7 @@ function CommentForm(props) {
 	
 	return (
 		<form className="comment-form" onSubmit={props.commentform}>
-				<div className='profileImage'>
+				<div className='profile-image'>
 					<img src={props.avatar} alt="profile logo"/>
 				</div>
 				<textarea
@@ -18,9 +18,9 @@ function CommentForm(props) {
 					value={props.new}
 					onChange={props.change} />
 
-				<div className="comment-btn">
+				<button className="comment-btn">
 					<Post />
-				</div>
+				</button>
 	</form>
 	);
   }

@@ -5,6 +5,9 @@ import Comments from "../comments/Comments"
 import { ReactComponent as Like } from '../../images/svg/like.svg'
 import { ReactComponent as Comment } from '../../images/svg/comment.svg'
 import { ReactComponent as Drop } from '../../images/svg/dropdown.svg'
+import { ReactComponent as Interest } from '../../images/svg/interest.svg'
+import { ReactComponent as Report } from '../../images/svg/report.svg'
+import { ReactComponent as Unfollow } from '../../images/svg/unfollow.svg'
 
 function Posts(props){
   let fillColor= 'none'
@@ -51,9 +54,10 @@ function Posts(props){
 
       return (
         <div className="side-card">
-            {props.report && <button onClick={handleReport}> Report </button>}
-            {props.interested && <button onClick={handleInterest}> Not interested </button>}
-            {(usernamer!==props.poster) && props.unfollow ? <button onClick={() => props.unfollow(props.poster)}> Unfollow </button> : null}
+            {props.interested && <button onClick={handleInterest}> <Interest stroke="#2c2c2c"/> Not interested </button>}
+            {props.report && <button onClick={handleReport}> <Report stroke="#575757"/> Report </button>}
+            {(usernamer!==props.poster) && props.unfollow ? <button onClick={() => props.unfollow(props.poster)}> 
+                                                            <Unfollow stroke="#575757"/> Unfollow </button> : null}
         </div>
       )}
 
@@ -62,7 +66,7 @@ function Posts(props){
           <div className="post-list">
               <div className="post-image-top">
                 <div className="post-image-top1">
-                  <div className='profileImage'>
+                  <div className='profile-image'>
                     <img src={props.avatar} alt="profile logo"/>
                   </div>
                   <Link to={profile}
@@ -75,7 +79,6 @@ function Posts(props){
               {showCard && <SideCard />}
               <div className="post-content"> {props.content} </div>
               
-				      {/* <img className="post-image" alt="" src={props.image} /> */}
               <div className="post-image" style={{backgroundImage: `url(${props.image})`}}>
 
               </div>
@@ -94,7 +97,7 @@ function Posts(props){
                 </div>
               </div>
           </div>
-          <Comments allComment={comments} setAllComment={setComments} postId={props.id} top={showComment}/>
+          <Comments allComment={comments} setAllComment={setComments} postId={props.id} top={showComment} reveal={setShowComment}/>
         </div>
     )
 }

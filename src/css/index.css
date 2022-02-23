@@ -19,14 +19,12 @@
     text-decoration: none;
   }
 /* header */
-
-.topHeader{
-  display: flex;
-  justify-content: space-between;
-  }
-
   header {
-    padding: 21px 69px 16px 30px;
+    padding-top: 18px; 
+    padding-right:66px; 
+    padding-bottom:18px;
+    padding-left:10px;
+    height:50px;
   }
   
   header h1 {
@@ -35,21 +33,20 @@
     font-weight: 200;
   }
 
-  .side-bar .logo{
+  .top-header .logo{
     display: flex;
     flex-direction: row;
     align-items: center;
     padding: 8px 0px;
     height: 29px;
-    margin-top: 16px;
   }
   
-  .side-bar .logo img{
+  .top-header .logo img{
     margin-right: 4px;
     width:50px;
   }
   
-  .side-bar .logo p{
+  .top-header .logo p{
     position: static;
     width: 64px;
     font-style: normal;
@@ -60,10 +57,30 @@
     /* color: rgba(255, 255, 255, 0.9); */
     }
 
+    .top-header{
+      display: flex;
+      justify-content: space-between;
+    }
+    
+      .header-top{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 664px;
+      }
+    
+      .trend-icon{
+        margin-top: 8px;
+        cursor: pointer;
+      }
+    
+
 /* Application */
 .App{
   display: flex;
   position: relative;
+  margin-left: 19px;
+  margin-right: 67px;
 }
 
 /* Dark and Light mode */
@@ -75,9 +92,12 @@
 }
 
 /* Start Side bar styling */
+.side{
+  position: relative;
+}
+
 .side-bar{
-  margin-left: 19px;
-  height: 100%;
+  height: 90%;
   padding-left: 0px;
   padding-right: 0px;
   padding-bottom: 30px;
@@ -129,7 +149,7 @@
   color: #FFFFFF;
 }
 
-.myProfile{
+.my-profile{
   display: flex;
   padding: 8px 0px;
   margin-top: 50%;
@@ -140,11 +160,11 @@
   color: #575757;
 }
 
-.myProfile p{
+.my-profile p{
   align-self: center;
 }
 
-.profileImage{
+.profile-image{
   /* border-radius: 4px;
   background-color: #C4C4C4; */
   margin-right: 8px;
@@ -152,7 +172,7 @@
   height:40px;
 }
 
-.profileImage img{
+.profile-image img{
   /* margin-right: 12px; */
   border-radius: 50%;
   width: inherit;
@@ -179,7 +199,7 @@
     justify-content: center;
     align-items: center;
     padding: 8px 16px;
-    width: 263px;
+    width: 260px;
     height: 41px;
     left: 209px;
     top: 18px;
@@ -208,33 +228,45 @@
 /* search form */
 
 /* home page */
-.home-page{
+.home-page, .profilePage, .explore{
   margin-left: 82px;
-  margin-right: 17px;
-  margin-top: 130px;
+  margin-right: 48px;
+  margin-top: 57px;
   background: none;
   width: 615px;
+  position: relative;
 }
-/* profile page */
+
+.top-title{
+  margin-bottom: 9px;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: 0.02em;
+}
+/* profile page
 .profilePage{
  margin-left: 121px;
  margin-top: 47px;
-}
+} */
 
 /* explore page */
-.explore{
+/* .explore{
   margin-left: 121px;
-}
+} */
 
 
 /* forms */
-.createPost{
+.create-post{
   background: #ECEFF1;
   border: 1px solid #C4C4C4;
   box-sizing: border-box;
   border-radius: 16px;
     /* width: 319px; */
 }
+
 .post-top{
   display:flex;
   justify-content:space-between;
@@ -250,8 +282,31 @@
 }
 
 .side-card{
-  border: 1px solid red
+  width: 193px;
+  background: #ffffff;
+  border-radius: 8px;
+  position:absolute;
+  right:-20px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 10px;
 }
+
+.side-card button{
+  height:20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #575757;
+  display: flex;
+  align-items: center;
+  margin-bottom:7px;
+}
+
+.side-card button svg{
+  margin-right: 12px;
+}
+
 .post-content{
   /* width:291.28px; */
   padding-left: 10px;
@@ -276,25 +331,23 @@
 
 .picture-preview{
   display:flex;
-  width:311px;
+  justify-content:space-between;
+  margin-left: 50px;
 }
 
-.picture-preview p{
-  padding-left: 5px ;
-  padding-right: 3px ;
+.picture-preview div{
+  margin-left: 10px;
+}
+
+.picture-preview svg{
   width: 24px;
   cursor: pointer;
 }
 
-.top-image-preview{
-  width:inherit
-}
-
 .preview{
   border-radius: 8.07101px;
-  width: 230px;
+  width: 93.5%;
   height: 230px;
-  margin-left: 45px;
 }
 
 .nav-link{
@@ -384,7 +437,7 @@
 }
 /* postcard */
 
-.note {
+/* .note {
     background: #fff;
     border-radius: 7px;
     box-shadow: 0 2px 5px #ccc;
@@ -414,7 +467,7 @@
     height: 36px;
     cursor: pointer;
     outline: none;
-  }
+  } */
   
   form .text, .text{
     display:flex;
@@ -468,11 +521,11 @@
   height: 110px;
 }
 
-.formTop, .formBottom{
+.form-top, .form-bottom{
     display:flex
   }
 
-  .formBottom{
+  .form-bottom{
     width:inherit;
     margin-top: 8px;
     justify-content:space-between;
@@ -483,7 +536,7 @@
     cursor: pointer;
   }
 
-  .formBottom .emoji{
+  .form-bottom .emoji{
     display:flex;
     cursor: pointer;
   }
@@ -513,7 +566,7 @@
     cursor: pointer;
   }
 
-.post-form label p,   .formBottom .emoji p{
+.post-form label p,   .form-bottom .emoji p{
     /* width: 95px; */
     height: 14px;
     left: 20px;
@@ -584,18 +637,101 @@
     background: rgba(255, 255, 255, 0.81);
     border-radius: 7.90751px;
     cursor: pointer;
+    border:none
   }
+
+/* search */
+  .top-search{
+    display:none;
+  }
+/* end search */
+
+/* trends */
+.anime-trends{
+  position: relative;
+  display: none;
+  width: 310px;
+}
+
+.trending-anime{
+  margin-top: 57px;
+  height: 671px;
+  overflow: hidden;
+  position: absolute
+}
+
+.trending-anime .caption{
+  margin-bottom: 9px;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 19px;
+  color: #272727;
+}
+
+.trend{
+  width:258px;
+  display:flex;
+  flex-direction: column;
+  height:653px;
+}
+
+.trend .anime{
+  display: flex;
+  margin-bottom: 23px;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 11.8439px;
+  line-height: 14px;
+  color: rgba(87, 87, 87, 0.9);
+}
+.trend-scroll{
+  height: 653px;
+  overflow: hidden;
+}
+.trend .anime .content{
+  display: flex;
+  flex-direction: column;
+  align-self: end;
+}
+.trend .anime .content p:nth-child(1) {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.trend .anime .content p:nth-child(2) {
+  height: 65px;
+  white-space: pre-wrap;
+  max-height: 20ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: justify;
+}
+
+.trend .anime .cover{
+  width: 129px;
+  height: 120px;
+  margin-right: 4px;
+}
+
+.trend .anime .cover img{
+  width: inherit;
+  height: 120px;
+  border-radius: 8px;
+}
+/* end trends */
 
 /* media  */
 @media (max-width: 410px){
-  .side-bar{
+  .App{
     margin-left: 5px;
   }
   .profilePage, .explore, .home-page{
       margin-left: 62px;
   }
 
-  .createPost {
+  .create-post {
     width:300px
   }
   .post-card {
@@ -604,16 +740,22 @@
   .post-list .post-image {
     width:revert
   }
+  header {
+    padding-left:5px;
+  }
+  
 }
+
 @media (min-width:500px ) and (max-width: 834px){
   .home-page {
     margin-left: 157px;
     margin-right: 62px;
   }
-  .side-bar {
+  .App{
     margin-left: 55px;
+  }
+  .side-bar {
     margin-right: 50px;
-    height: 100%;
     padding-left: 0px;
     padding-right: 0px;
     padding-bottom: 30px;
@@ -624,7 +766,9 @@
     padding-top: 10.1px;
     padding-bottom: 10.1px
   }
-
+  .top-header {
+    margin-left:50px
+  }
   .like-comment-box{
     height: 30px;
     margin-top: 11.44px;
@@ -632,6 +776,61 @@
   }
   .bar-content button {
     padding: 12px 14px;
+  }
+}
+@media screen and (min-width: 834px){
+  .trend-icon{
+    display: none
+  }
+  .top-search{
+    display: block;
+  }
+  .side-card{
+    padding-left:16px;
+  }
+}
+
+@media screen and (max-width: 800px){
+  .preview{
+     width: 92%;
+  }
+}
+@media screen and (min-width: 1040px){
+  .anime-trends{
+    display:block
+  }
+  .trending-anime{
+    display:flex;
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 750px){
+  .preview{
+     width: 92%;
+  }
+}
+
+@media screen and (max-width: 700px){
+  .preview{
+     width: 90%;
+  }
+}
+
+@media screen and (max-width: 630px){
+  .preview{
+     width: 88%;
+  }
+}
+@media screen and (max-width: 600px){
+  .preview{
+     width: 86%;
+  }
+}
+
+@media screen and (max-width: 410px){
+  .preview{
+     width: 86%;
   }
 }
 
@@ -642,20 +841,21 @@
   .user-name{
     display:block
   }
+  .App{
+    margin-left: 5%;
+  }
   .side-bar{
     width:13%;
-    margin-left: 12%;
   }
   .bar-content button{
     width:100%
   }
-  .myProfile{
+  .my-profile{
     margin-left: 13px;
   }
-
    .profilePage, .explore, .home-page{
-    margin-left: 30%;
-    margin-right: 38px;
+    margin-left: 20%;
+    margin-right: 5%;
     background: #ECEFF1;
     border-radius: 8px 8px 0px 0px;
     padding-top: 21px;
@@ -664,22 +864,40 @@
   }  
    .bar-content button .icons{
     margin-right: 8px
-   }
-   .side-bar .logo p{
+  }
+   .side-card{
+    width: 226px;
+    background: #ECEFF1;
+  }
+   .top-header .logo p{
      display:block
-   }
-   .side-bar .logo {
+  }
+   .top-header .logo {
      width: 95px;
-   }
-   .topHeader {
-     margin-left:2%
-   }
-
+  }
+   .top-header {
+     margin-left:12%
+  }
    .comment-form textarea, form .text, .text, .comment-form .comment-btn{
      background: #ECEFF1;
    }
-   .createPost, .post-card {
+   .create-post, .post-card {
     background: #ffffff;
+    margin-bottom: 15px;
    }
-
+   .react-input-emoji--container {
+    background:#ECEFF1 !important;
+  }
+}
+@media screen and (max-width: 1260px) {
+}
+@media screen and (min-width: 1300px) {
+  .App{
+    margin-left: 12%;
+    margin-right: 12%;
+  }
+  .profilePage, .explore, .home-page{
+    margin-left: 25%;
+    margin-right: 10%;
+  } 
 }

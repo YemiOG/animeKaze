@@ -50,7 +50,11 @@ function Follow() {
 
   return (
 	<div>
-		{followers.follwrs && followers.follwrs.map( (lists,index) => <FollowLoading key={lists.id} isFollowing={following[index]} setFollowing={getfollowers} follow={lists}/> )}
+		{followers.follwrs && followers.follwrs.map( (lists,index) => <FollowLoading 
+																		key={lists.id} 
+																		isFollowing={following[index]} 
+																		setFollowing={getfollowers} 
+																		follow={lists}/> )}
 	</div>
   );
 }

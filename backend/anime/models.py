@@ -58,7 +58,7 @@ class PaginatedAPIMixin(object):
         return data
 
 #default image
-image = 'https://res.cloudinary.com/nagatodev/image/upload/v1644138637/no_picture.png'
+image = 'https://res.cloudinary.com/nagatodev/image/upload/v1644138637/No%20picture/no_picture.png'
 class User(PaginatedAPIMixin, db.Model, UserMixin):
     __tablename__ = 'user'
 
