@@ -6,6 +6,7 @@ import { UserContext } from '../contexts/userContext';
 import FormChildComment from './childCommentForm'
 import FormComment from './commentForm'
 
+import { ReactComponent as Drop } from '../../images/svg/dropdown.svg'
 import { ReactComponent as Like } from '../../images/svg/like.svg'
 
 function Comments(props){
@@ -219,18 +220,32 @@ function Comments(props){
 		}
         return (
 			<>
-				<div className="">
-					<Link to={profile}
-						className="nav-link">
-						{comm.username}
-					</Link> 
-					<h1 > {comm.content} </h1>
+				<div className="comment-list">
+					<div className="comment-content">
+						<div className='profile-image'>
+							<img src={comm.avatar} alt="profile logo"/>
+						</div>
+						<div className="comment-content-1">
+							<div className="comment-content-2">
+								<Link to={profile}
+									className="nav-link">
+									<span>{comm.fname}</span><span>{comm.lname}</span>@{comm.username}
+								</Link> 
+								<Drop className="drop" />
+							</div>
+							<div > {comm.content} </div>
+						</div>
+						<div className="like-comment-cont">
+							<Like fill={liked} stroke={stroke} className="like-comment-button" onClick={likeComment}/>
+						</div>
+					</div>
 					{!comm.topComment && 
-					<>
-					<p> {comm.likeCount} </p>
-					<Like fill={liked} stroke={stroke} className="like-button" onClick={likeComment}/>
-					<button onClick={() => replyComment(comm.id)}> Reply </button>
-					</>
+						<div className="comment-list-bottom">
+							<div className="like-list">
+								<span> {(comm.likeCount > 0) && comm.likeCount} </span> {(comm.likeCount > 1) ? <span> Likes </span> : <span> Like </span>}
+							</div>
+							<button onClick={() => replyComment(comm.id)}> Reply </button>
+						</div>
 					}
 					{comm.child ? (comm.child > 0 ?
 							<button onClick={getComment}> View {comm.child} replies </button>
@@ -257,12 +272,14 @@ function Comments(props){
 			</>
 		)
 	}
-
 	return (
 		<div>
 			{props.top && props.allComment ? props.allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
 														likeCount={comments.likes} like={handleLikeComment} username={comments.poster} 
-														child= {comments.child} reply={setchildCommentForm} submit={setCommentId} userLiked={comments.user_liked}/>)
+														child= {comments.child} reply={setchildCommentForm} submit={setCommentId} 
+														userLiked={comments.user_liked} fname={comments.fname} lname={comments.lname}
+														avatar={comments.avatar}
+														/>)
 										: null}
 
 			{/* Comments posting form */}

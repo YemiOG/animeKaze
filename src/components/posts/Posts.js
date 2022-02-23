@@ -97,7 +97,8 @@ function Posts(props){
                 </div>
               </div>
           </div>
-          <Comments allComment={comments} setAllComment={setComments} postId={props.id} top={showComment} reveal={setShowComment}/>
+          <Comments allComment={comments} setAllComment={setComments} postId={props.id} 
+                    top={showComment} reveal={setShowComment}/>
         </div>
     )
 }
