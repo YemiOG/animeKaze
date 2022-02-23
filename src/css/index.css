@@ -18,6 +18,9 @@
   a{
     text-decoration: none;
   }
+  button{
+    cursor: pointer;
+  }
 /* header */
   header {
     padding-top: 18px; 
@@ -390,7 +393,8 @@
   align-items: center;
   justify-content:space-between;
 }
-.post-image-top svg{
+
+.drop{
   cursor:pointer
 }
 
@@ -647,6 +651,92 @@
     cursor: pointer;
     border:none
   }
+  .comment-list{
+    height:107px
+  }
+  .comment-content{
+    display:flex;
+  }
+  .comment-content .profile-image{
+    align-self:center;
+    margin-right: 16px;
+  }
+  .comment-content-1{
+    display:flex;
+    flex-direction:column;
+    flex-grow: 1;
+    justify-content:space-between;
+    padding: 12px 16px;
+    background:  #ffffff;
+    border-radius: 8px;
+  }
+  .comment-content-2{
+    display:flex;
+    justify-content: space-between;
+  }
+  .comment-content a{
+    margin-bottom: 16px;
+    font-size: 12px;
+    line-height: 14px;
+  }
+  .comment-content div{
+    font-family: inherit;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 13px;
+    color:#575757;
+  }
+  .comment-list-bottom{
+    display:flex;
+    margin-left: 80px;
+    height:27px;
+    align-items: center;
+  }
+  .comment-list-bottom{
+      height: 27px;
+      color: #575757;
+      display: flex;
+      align-items: center;
+      font-family: inherit;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 11px;
+      line-height: 13px;
+  }
+  .comment-list-bottom .like-list {
+    display: flex;
+    /* margin-right: 5px; */
+}
+  .comment-list-bottom .like-list span:nth-child(1) {
+    margin-right: 3px;
+}
+
+  .comment-list-bottom button{
+      height: 13px;
+      border: none;
+      background: transparent;
+      display: flex;
+      color: #575757;
+      align-items: center;
+      font-family: inherit;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 11px;
+      line-height: 13px;
+      margin-left: 24px;
+  }
+  .like-comment-cont {
+    display:flex;
+    align-items: center;
+  }
+  .like-comment-button {
+    width: 15px;
+    height: 25px;
+    margin-right: 8px;
+    margin-left: 8px;
+}
+/* end comment*/
 
 /* search */
   .top-search{
@@ -665,7 +755,7 @@
   margin-top: 57px;
   /* height: 671px; */
   overflow: hidden;
-  /* position: absolute */
+  position: fixed;
 }
 
 .trending-anime .caption{
@@ -957,6 +1047,9 @@
     background: #ffffff;
     margin-top: 0;
     margin-bottom: 0;
+   }
+   .comment-content-1{
+    background:  #ECEFF1;
    }
    .react-input-emoji--container {
     background:#ECEFF1 !important;
