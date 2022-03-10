@@ -21,12 +21,11 @@
   button{
     cursor: pointer;
   }
+
 /* header */
   header {
     padding-top: 18px; 
-    /* padding-right:66px;  */
     padding-bottom:18px;
-    /* padding-left:10px; */
     height:50px;
     margin-left: 19px;
     margin-right: 67px;
@@ -59,6 +58,7 @@
     font-size: 14px;
     line-height: 17px;
     display: none;
+    margin-bottom: 0;
     /* color: rgba(255, 255, 255, 0.9); */
     }
 
@@ -139,6 +139,7 @@
 
 .side-text{
   /* position: static; */
+  margin-bottom:0;
   height: 19px;
   font-family: inherit;
   font-style: normal;
@@ -167,6 +168,7 @@
 
 .my-profile p{
   align-self: center;
+  margin-bottom: 0;
 }
 
 .profile-image{
@@ -223,6 +225,7 @@
 
   .search-btn{
       border: none;
+      line-height: 0;
   }
 
   .searchForm input{
@@ -293,8 +296,51 @@
   border-bottom: 1px solid #a4a8af;
 }
 
+.post-hidden{
+  display: flex;
+  padding-top: 4.18px;
+  padding-bottom: 4.18px;
+  padding-left: 7.05px;
+  justify-content: space-between;
+}
+.hidden-text-content{
+  margin-right: 59.82px;
+}
+.hidden-text-content p{
+  margin-bottom: 0;
+}
+.hidden-text-content p:nth-child(1){
+  font-family: inherit;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  }
+.hidden-text-content p:nth-child(2){
+  font-size: 11px;
+  line-height: 13px;
+  color: rgb(102 103 103);
+  }
+
+.hidden-eye{
+  margin-right: 18.91px;
+}
+
+.unhide{
+  cursor: pointer;
+}
+.unhide p{
+  margin-bottom: 0;
+  font-size: 11px;
+  line-height: 13px;
+  color: rgb(102 103 103);
+}
+
 .post-top div{
   margin-right: 5px;
+}
+.post-top svg{
+  cursor: pointer;
 }
 
 .side-card{
@@ -348,7 +394,7 @@
 .picture-preview{
   display:flex;
   justify-content:space-between;
-  margin-left: 50px;
+  margin-left: 52px;
 }
 
 .picture-preview div{
@@ -366,7 +412,7 @@
   height: 230px;
 }
 
-.nav-link{
+.navr-link{
   width: 116.85px;
   height: 16px;
   font-family: inherit;
@@ -377,7 +423,7 @@
   color: #575757;
 }
 
-.nav-link span{
+.navr-link span{
   font-weight: 600;
   font-size: 13.8382px;
   line-height: 16px;
@@ -408,11 +454,21 @@
 }
 
 .post-list .post-image{
-  width: 291.28px;
-  height: 180px;
+  display: flex;
+  flex-grow: 1;
+  /* width: 291.28px; */
+  height: 230px;
   border-radius: 8px;
   margin-left: 10px;
   margin-right: 10px;
+}
+
+.post-imager{
+  border-radius: 8.07101px;
+  /* width: 93.5%; */
+  height: 230px;
+  display: flex;
+  flex-grow: 1;
 }
 
 .post-list .like-button{
@@ -599,6 +655,7 @@
     font-size: 12px;
     line-height: 12px;
     align-self: center;
+    margin-bottom: 0;
   }
 
   .post-form .file-custom{
@@ -663,7 +720,7 @@
 
   .comment-cover{
     overflow: auto;
-    height: 200px;
+    height: 300px;
     padding-top: 10px;
     border: 2px solid #e5e5e5;
     border-radius: 7px;
@@ -674,9 +731,9 @@
     display: none;
   }
 
-  /* .comment-list{
-    height:107px
-  } */
+  .comment-list{
+    padding-right: 5px;
+  }
   .comment-content{
     display:flex;
   }
@@ -767,12 +824,13 @@
 }
 
 .child-comment-button{
-  margin-left: 60px !important;
+  margin-left: 70px !important;
   margin-bottom: 10px;
 }
 
 .comment-child-1{
   display:flex;
+  padding-right: 5px;
 }
 
   .comment-list button{
@@ -806,6 +864,15 @@
 /* search */
   .top-search{
     display:none;
+  }
+
+  .top-search .search-form .container-page{
+    background: #eceff1;
+    width: 260px;
+    border-radius: 8px;
+    z-index: 1000;
+    position: absolute;
+    margin-top: 5px;
   }
 /* end search */
 
@@ -849,6 +916,7 @@
   font-size: 11.8439px;
   line-height: 14px;
   color: rgba(87, 87, 87, 0.9);
+  cursor: pointer;
 }
 .trend-scroll{
   height: 573px;
@@ -884,6 +952,110 @@
   border-radius: 8px;
 }
 /* end trends */
+
+/* modal */
+.close-modal-button{
+  cursor: pointer;
+  display: flex;
+}
+.modal-content{
+  background: #ECEFF1 !important;
+  width: 592px;
+}
+.modal-content p{
+  margin-bottom: 0 ;
+}
+
+.modal-title p{
+  font-family: inherit;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 19px;
+}
+.modal-title{
+  width: 546.4px;
+  height: 19px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-title-cover{
+  border-bottom: 1px solid #a4a8af;
+  padding-bottom: 12px;
+}
+.post-modal-card{
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  display: flex;
+  flex-grow: 1;
+}
+.modal-body{
+  padding-top:0 !important;
+  font-family: inherit;
+  font-style: normal;
+}
+
+.modal-body p{
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 19px;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.modal-body div{
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  width: 551px;
+}
+
+.modal-body .characters{
+  text-align: center;
+}
+
+.modal-body .characters-cards{
+  display:flex;
+  justify-content: space-between;
+}
+
+.modal-body .characters-name{
+  display:flex;
+  width: 65px;
+  height: 28px;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.modal-body .characters-images{
+  width: 65px;
+  height: 95px;
+  border-radius: 8px;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
+.modal-body img{
+  width: 548px;
+  height: 281px;
+}
+.post-modal-list{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.post-modal-image{
+  display: flex;
+}
+.modal-header {
+  border-bottom: revert;
+}
+/* end modal */
 
 /* media  */
 @media (max-width: 445px){
@@ -924,6 +1096,12 @@
     padding-left:5px;
   }
   
+}
+
+@media screen and (max-width: 834px){
+   .explore{
+    margin-right: 0
+  }
 }
 
 @media (min-width:500px ) and (max-width: 834px){
@@ -1022,6 +1200,16 @@
   }
 }
 
+/* @media screen and (min-width: 690px){
+  .anime-trends{
+    display:block
+  }
+  .trending-anime{
+    display:flex;
+    flex-direction: column;
+  }
+} */
+
 @media screen and (max-width: 750px){
   .preview{
      width: 92%;
@@ -1044,6 +1232,11 @@
      width: 86%;
   }
 }
+@media screen and (max-width: 535px){
+  .post-imager {
+    width: 93.5%;
+  }
+}
 
 @media screen and (max-width: 490px){
   .preview{
@@ -1055,6 +1248,9 @@
   }
 }
 @media screen and (min-width: 1260px) {
+  .modal-content {
+    background: #fff !important;
+  }
   .side-text{
     display: block
   }
@@ -1111,9 +1307,8 @@
     .post-card {
     background: #ffffff;
     margin-top: 0;
-    margin-bottom: 0;
    }
-   .comment-content-1{
+   .comment-content-1, .comment-child-2{
     background:  #ECEFF1;
    }
    .react-input-emoji--container {
@@ -1192,7 +1387,7 @@
   .trend{
     width:300px;
   }
-  .searchForm{
+  .searchForm, .top-search .search-form .container-page {
     width:300px;
   }
 }
