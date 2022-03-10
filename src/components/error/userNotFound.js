@@ -1,10 +1,21 @@
-import React from 'react';
+import React, {useEffect, useRef} from "react";
 
-function userNotFound() {
+function UserNotFound(props) {
+
+  function removeDiv(){
+    props.notFound && props.notFound(false)
+  }
+
+  const notFoundDiv = useRef(null);
+
+  useEffect(()=>{
+    notFoundDiv.current.focus();
+  }, []);
+
     return(
-    <div className="container-page">
-      <div className="row">
-          <div className="col-md-6 offset-md-3 col-xs-12">
+    <div className="container-page" tabIndex={1} onBlur= {removeDiv} ref={notFoundDiv}>
+      <div className="">
+          <div className="">
              <h1>Not Found</h1>
              <p>Sorry! User not found</p>
           </div>
@@ -13,4 +24,4 @@ function userNotFound() {
     )
 }
 
-export default userNotFound
+export default UserNotFound
