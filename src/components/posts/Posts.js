@@ -8,6 +8,8 @@ import { ReactComponent as Drop } from '../../images/svg/dropdown.svg'
 import { ReactComponent as Interest } from '../../images/svg/interest.svg'
 import { ReactComponent as Report } from '../../images/svg/report.svg'
 import { ReactComponent as Unfollow } from '../../images/svg/unfollow.svg'
+import { ReactComponent as UnHide } from '../../images/svg/unHide.svg'
+import { ReactComponent as Hidden } from '../../images/svg/hidden.svg'
 
 function Posts(props){
   let fillColor= 'none'
@@ -20,11 +22,15 @@ function Posts(props){
 
 	const [comments , setComments] = useState("")
 	const [showComment , setShowComment] = useState(false)
+	const [hidePost , setHidePost] = useState(false)
 	const [showCard , setShowCard] = useState(false)
 	const [liked , setLiked] = useState(fillColor)
 	const [stroke , setStroke] = useState(strokeColor)
+
   const usernamer = window.localStorage.getItem('username')
   const profile = "/user/" + props.poster 
+
+
 
     function handleClick(){
         props.like(props.id)
@@ -40,6 +46,8 @@ function Posts(props){
       }
     function handleInterest(){
         props.interested(props.id);
+        hidePost === false ? setHidePost(true) : setHidePost(false)
+        setShowCard(false)
       }
     function revealComments(){
       showComment===false ? setShowComment(true) : setShowComment(false)
@@ -56,49 +64,75 @@ function Posts(props){
         <div className="side-card">
             {props.interested && <button onClick={handleInterest}> <Interest stroke="#2c2c2c"/> Not interested </button>}
             {props.report && <button onClick={handleReport}> <Report stroke="#575757"/> Report </button>}
-            {(usernamer!==props.poster) && props.unfollow ? <button onClick={() => props.unfollow(props.poster)}> 
+            {props.unfollow ? <button onClick={() => props.unfollow(props.poster)}> 
                                                             <Unfollow stroke="#575757"/> Unfollow </button> : null}
         </div>
       )}
 
 	return (
         <div className="post-card">
-          <div className="post-list">
-              <div className="post-image-top">
-                <div className="post-image-top1">
-                  <div className='profile-image'>
-                    <img src={props.avatar} alt="profile logo"/>
+          {!hidePost ? <div> 
+            <div className="post-list">
+                <div className="post-image-top">
+                  <div className="post-image-top1">
+                    <div className='profile-image'>
+                      <img src={props.avatar} alt="profile logo"/>
+                    </div>
+                    <Link to={profile}
+                      className="navr-link">
+                      <span>{props.fname}</span><span>{props.lname}</span>@{props.poster}
+                    </Link> 
                   </div>
-                  <Link to={profile}
-                    className="nav-link">
-                    <span>{props.fname}</span><span>{props.lname}</span>@{props.poster}
-                  </Link> 
+                  {(usernamer!==props.poster) && <Drop className="drop" onClick={revealBar}/>}
                 </div>
-                <Drop className="drop" onClick={revealBar}/>
-              </div>
-              {showCard && <SideCard />}
-              <div className="post-content"> {props.content} </div>
+                {showCard && <SideCard />}
+                <div className="post-content"> {props.content} </div>
               
-              <div className="post-image" style={{backgroundImage: `url(${props.image})`}}>
+                {/* <div className="post-image" style={{backgroundImage: `url(${props.image})`}}> */}
+                <div className="post-image">
+                    <img className="post-imager" src={props.image} alt="profile logo"/>
+                </div>
+                <div className='like-comment-box'>
+                  <div className="like-box">
+                    <Like fill={liked} stroke={stroke} className="like-button" onClick={handleClick}/>
+                    <div>
+                      <span> {(props.likeCount > 0) && props.likeCount} </span> {(props.likeCount > 1) ? <span> Likes </span> : <span> Like </span>}
+                    </div>
+                  </div>
+                  <div className="comment-box" {...((comments.length > 0) && {onClick :revealComments})}> 
+                    <Comment className="comment-button"/>
+                    <div className="comment-box-1">
+                      <span> {(comments.length > 0) && comments.length} </span> {(comments.length > 1) ? <span> Comments </span> : <span> Comment </span>}
+                    </div>
+                  </div>
+                </div>
+            </div>
 
-              </div>
-              <div className='like-comment-box'>
-                <div className="like-box">
-                  <Like fill={liked} stroke={stroke} className="like-button" onClick={handleClick}/>
-                  <div>
-                    <span> {(props.likeCount > 0) && props.likeCount} </span> {(props.likeCount > 1) ? <span> Likes </span> : <span> Like </span>}
-                  </div>
-                </div>
-                <div className="comment-box" onClick={revealComments}>
-                  <Comment className="comment-button"/>
-                  <div className="comment-box-1">
-                    <span> {(comments.length > 0) && comments.length} </span> {(comments.length > 1) ? <span> Comments </span> : <span> Comment </span>}
-                  </div>
-                </div>
-              </div>
+            <Comments allComment={comments} setAllComment={setComments} postId={props.id} 
+                          top={showComment} reveal={setShowComment} prof={profile} postAvatar={props.avatar}
+                            cont={props.content} firname={props.fname} lasname={props.lname} postr={props.poster}
+                            contImage={props.image}
+                          />
           </div>
-          <Comments allComment={comments} setAllComment={setComments} postId={props.id} 
-                    top={showComment} reveal={setShowComment}/>
+          :
+            <div className="post-hidden">
+
+              <div className="hidden-eye">
+                <Hidden fill="red"/>
+              </div>
+
+              <div className="hidden-text-content">
+                <p>Post Hidden</p>
+                <p>You will no longer see this post in your timeline.</p>
+              </div>
+
+              <div className="unhide">
+                <UnHide onClick={handleInterest}/>
+                <p>Unhide</p>
+              </div>
+
+            </div>
+          }
         </div>
     )
 }
