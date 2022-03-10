@@ -7,7 +7,7 @@ import animes from "./animes"
 import { ReactComponent as Close } from '../../images/svg/closeButton.svg'
 
 
-function HeaderTrend(){
+function Trend(){
 
 	const [showModal, setShowModal] = useState(false);
 	const [animeSelected, setAnimeSelected] = useState(false);
@@ -19,8 +19,8 @@ function HeaderTrend(){
 
 	return(
 		<>
-			<div className="anime-header-trends">
-				<div className="">
+			<div className="anime-trends">
+				<div className="trending-anime">
 					<div className="caption">
 						Trending Animations
 					</div>
@@ -36,18 +36,29 @@ function HeaderTrend(){
 				show={showModal} 
 				onHide={() => setShowModal(false)} >
 
-				<Modal.Header>
-					<Modal.Title>
-					 <img src={animeSelected.img} alt=""/>
-					 <div className="close-modal-button">
-					 	<Close onClick = {() => setShowModal(false)}/>
-					 </div>
-					</Modal.Title>
+				<Modal.Header >
+					<div className="modal-title-cover">
+						<Modal.Title>
+								<p>{animeSelected.title}</p>
+								<div className="close-modal-button">
+									<Close onClick = {() => setShowModal(false)}/>
+								</div>
+						</Modal.Title>
+					</div>
 				</Modal.Header>
 
 				<Modal.Body>
-					<p>{animeSelected.title}</p>
-					<p>{animeSelected.content}</p>
+					<img src={animeSelected.img} alt=""/>
+					<p>Story</p>
+					<div className="anime-trending-content">{animeSelected.content}</div>
+					<p className="characters">Characters</p>
+					<div className="characters-cards">
+						{animeSelected.characters && animeSelected.characters.map( (anime) => <div> 
+							{console.log(anime.pic)}
+							<img className="characters-images" src={anime.pic} alt="" /> 
+							<div className="characters-name">{anime.name}</div>  
+							 </div>)}
+					</div>
 				</Modal.Body>
 
 				<Modal.Footer>
@@ -58,4 +69,4 @@ function HeaderTrend(){
 }
 
 
-export default HeaderTrend
+export default Trend
