@@ -907,7 +907,7 @@
   height:1000px;
 }
 
-.trend .anime{
+.trend .anime, .trends .anime{
   display: flex;
   margin-bottom: 23px;
   font-family: inherit;
@@ -917,21 +917,25 @@
   line-height: 14px;
   color: rgba(87, 87, 87, 0.9);
   cursor: pointer;
+  box-shadow: 0 2px 5px #ccc;
+  padding:10px;
+  border-radius: 10px;
+  background: white;
 }
 .trend-scroll{
   height: 573px;
   overflow: hidden;
 }
-.trend .anime .content{
+.trend .anime .content, .trends .anime .content{
   display: flex;
   flex-direction: column;
   align-self: end;
 }
-.trend .anime .content p:nth-child(1) {
+.trend .anime .content p:nth-child(1), .trends .anime .content p:nth-child(1) {
   font-weight: bold;
   text-transform: uppercase;
 }
-.trend .anime .content p:nth-child(2) {
+.trend .anime .content p:nth-child(2), .trends .anime .content p:nth-child(2) {
   height: 65px;
   white-space: pre-wrap;
   max-height: 20ch;
@@ -940,13 +944,13 @@
   text-align: justify;
 }
 
-.trend .anime .cover{
+.trend .anime .cover, .trends .anime .cover{
   width: 129px;
   height: 120px;
   margin-right: 4px;
 }
 
-.trend .anime .cover img{
+.trend .anime .cover img, .trends .anime .cover img{
   width: inherit;
   height: 120px;
   border-radius: 8px;
@@ -1003,12 +1007,14 @@
   margin-top: 12px;
   margin-bottom: 4px;
 }
-
+.anime-trending-content{
+  margin-right: 10px;
+}
 .modal-body div{
   font-weight: normal;
   font-size: 12px;
   line-height: 14px;
-  width: 551px;
+  text-align: justify;
 }
 
 .modal-body .characters{
@@ -1018,6 +1024,8 @@
 .modal-body .characters-cards{
   display:flex;
   justify-content: space-between;
+  margin-right: 10px;
+  flex-wrap: wrap;
 }
 
 .modal-body .characters-name{
@@ -1044,6 +1052,7 @@
   width: 548px;
   height: 281px;
 }
+
 .post-modal-list{
   display: flex;
   flex-direction: column;
@@ -1101,6 +1110,12 @@
 @media screen and (max-width: 834px){
    .explore{
     margin-right: 0
+  }
+  .modal-content, .modal-body img, .modal-title-cover, .modal-title, .anime-trending-content  {
+    width: 100%;
+  }
+  .modal-body .characters-images {
+    width: 85px;
   }
 }
 
