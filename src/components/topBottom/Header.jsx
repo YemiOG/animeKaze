@@ -7,6 +7,7 @@ import logo from '../../images/logo.png'
 import Modal from 'react-bootstrap/Modal'
 
 import { ReactComponent as TrendIcon } from '../../images/svg/trending.svg'
+import { ReactComponent as Close } from '../../images/svg/closeButton.svg'
 
 function Header(props) {
   let navigate = useNavigate();
@@ -50,10 +51,15 @@ function Header(props) {
 				show={showModal} 
 				onHide={() => setShowModal(false)} >
 
-				<Modal.Header closeButton>
-					<Modal.Title>
-					 <p>Trending Animes</p>
-					</Modal.Title>
+				<Modal.Header>
+          <div className="modal-title-cover">
+            <Modal.Title>
+            <p>Trending Animes</p>
+            <div className="close-modal-button">
+							<Close onClick = {() => setShowModal(false)}/>
+						</div>
+            </Modal.Title>
+          </div>
 				</Modal.Header>
 
 				<Modal.Body>
