@@ -45,7 +45,7 @@ function Search() {
     function Display(props) {
 		const profile = "/user/" + props.username
         return (
-            <Link to={profile} className="nav-link">
+            <Link to={profile} className="navr-link">
                     <h1>{props.username}</h1>
                     <h1>{props.f_name}</h1>
                     <h1>{props.l_name}</h1>
@@ -62,9 +62,10 @@ function Search() {
                             name="searchy"
                             placeholder="Search for anything here"
                             value={searchs}
-                            onChange={handleChange} />
+                            onChange={handleChange}
+                            onFocus= {() => setNoUser(false)}/>
                         <button
-                            className="btn btn-lg btn-primary pull-xs-right search-btn"
+                            className="pull-xs-right search-btn"
                             type="submit">
                             <img src={IconSearch} alt=""/>
                         </button>
@@ -72,7 +73,7 @@ function Search() {
 				{searchresult[0] ? searchresult.map(search => <Display key={search.id} f_name={search.firstname} 
                                                               l_name={search.lastname} username={search.username} />)
                                                     :
-                                    (noUser ? <UserNotFound/> : null )
+                                    (noUser ? <UserNotFound notFound={setNoUser}/> : null )
                 }
             </div>
         );
