@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/userContext';
+import Modal from 'react-bootstrap/Modal'
 
 import FormChildComment from './childCommentForm'
 import FormComment from './commentForm'
@@ -9,6 +10,7 @@ import DisplayChildComments from './ChildComments'
 
 import { ReactComponent as Drop } from '../../images/svg/dropdown.svg'
 import { ReactComponent as Like } from '../../images/svg/like.svg'
+import { ReactComponent as Close } from '../../images/svg/closeButton.svg'
 
 function Comments(props){
 
@@ -22,10 +24,6 @@ function Comments(props){
 	const userId = JSON.parse(window.localStorage.getItem("cuid"))
 	const avatar = window.localStorage.getItem('avatar')
 	const uzername = window.localStorage.getItem('username')
-	const [show, setShow] = useState(false);
-
-	const handleClose = () => setShow(false);
-	const handleShow = () => setShow(true);
 
 	useEffect(() => {
 		// setAppState({ loading: true });
@@ -36,10 +34,16 @@ function Comments(props){
         const newValue = event.target.value
         setComment(newValue);
     }
-	
+
 	function handleHeight() {
-        row===1 ? setRow(3) : setRow(1);
+        if(row===1) {
+		  setRow(3)
+		}else{
+			setRow(1)
+			setchildCommentForm(false)
+			};
     }
+
 	function hideComment() {
         setDisplayChildComment(false)
     }
@@ -208,7 +212,6 @@ function Comments(props){
 			getChildComments(comm.id);
 			setDisplayChildComment(true)
 		}
-
         return (
 			<>
 				<div className="comment-list">
@@ -219,7 +222,7 @@ function Comments(props){
 						<div className="comment-content-1">
 							<div className="comment-content-2">
 								<Link to={profile}
-									className="nav-link">
+									className="navr-link">
 									<span>{comm.fname}</span><span>{comm.lname}</span>@{comm.username}
 								</Link> 
 								<Drop className="drop" />
@@ -238,11 +241,11 @@ function Comments(props){
 							<button onClick={() => replyComment(comm.id)}> Reply </button>
 						</div>
 					}
-					{comm.child > 0 ? (displayChildComment ? <button className="child-comment-button" onClick={hideComment}> Hide replies </button>
+					{comm.child > 0 ? (displayChildComment ? <button className="child-comment-button" onClick={hideComment}> ~ Hide replies </button>
 						: (comm.child > 1 ?
-							<button className="child-comment-button" onClick={getComment}> View {comm.child} replies </button>
+							<button className="child-comment-button" onClick={getComment}> ~ View {comm.child} replies </button>
 							:
-							<button className="child-comment-button" onClick={getComment}> View {comm.child} reply </button>
+							<button className="child-comment-button" onClick={getComment}> ~ View {comm.child} reply </button>
 							)
 					): null }
 				</div>
@@ -256,29 +259,60 @@ function Comments(props){
 
 
 	return (
-		<div >
-			<div className={props.top ? "comment-cover": "no-comment-cover"}>
-				{props.top && props.allComment ? props.allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
-															likeCount={comments.likes} like={handleLikeComment} username={comments.poster} 
-															child= {comments.child} reply={setchildCommentForm} submit={setCommentId} 
-															userLiked={comments.user_liked} fname={comments.fname} lname={comments.lname}
-															avatar={comments.avatar}
-															/>)
-											: null}
+		<Modal 
+			show={props.top} 
+			onHide={() => props.reveal(false)}
+			animation={false}
+			// scrollable={true}
+			>
+			<Modal.Header>
+				<div className="post-card post-modal-card">
+					<div className="post-modal-list">
+						<div className="post-image-top">
+								<div className="post-image-top1">
+									<div className='profile-image'>
+										<img src={props.postAvatar} alt="profile logo"/>
+									</div>
+									<Link to={props.prof}
+										className="navr-link">
+										<span>{props.firname}</span><span>{props.lasname}</span>@{props.postr}
+									</Link>
+								</div>
+								<Close className="drop" onClick={() => props.reveal(false)}/> 
+						</div>
+						<div className="post-content"> {props.cont} </div>
+						
+					<div className="post-modal-image">
+                  		<img className="post-imager" src={props.contImage} alt="profile logo"/>
+              		</div>
+				</div>
 			</div>
+			</Modal.Header>
+		    <Modal.Body>
+				<div >
+				<div className={props.top ? "comment-cover": "no-comment-cover"}>
+					{props.top && props.allComment ? props.allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
+																likeCount={comments.likes} like={handleLikeComment} username={comments.poster} 
+																child= {comments.child} reply={setchildCommentForm} submit={setCommentId} 
+																userLiked={comments.user_liked} fname={comments.fname} lname={comments.lname}
+																avatar={comments.avatar}
+																/>)
+												: null}
+				</div>
 
-			{/* Comments posting form */}
-			<div>
-				{childCommentForm ?
-					<FormChildComment avatar={avatar} row={row} new={newComment} focus={handleHeight} 
-										commentform={submitChildComment} change={handleChange}/>
-					:
-					<FormComment avatar={avatar} row={row} new={newComment} focus={handleHeight} 
-										commentform={submitComment} change={handleChange}/>
-					}
+				{/* Comments posting form */}
+				<div>
+					{childCommentForm ?
+						<FormChildComment avatar={avatar} row={row} new={newComment} focus={handleHeight} 
+											commentform={submitChildComment} change={handleChange}/>
+						:
+						<FormComment avatar={avatar} row={row} new={newComment} focus={handleHeight} 
+											commentform={submitComment} change={handleChange}/>
+						}
+				</div>
 			</div>
-
-		</div>
+			</Modal.Body>
+		</Modal>
     )
 }
 
