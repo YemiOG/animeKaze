@@ -62,7 +62,7 @@ function DisplayChildComments(props) {
 									<div className="comment-child-2">
 										<div className="comment-child-3">
 											<Link to={'/user/'+props.child.poster}
-												className="nav-link">
+												className="navr-link">
 												<span>{props.child.fname}</span><span>{props.child.lname}</span>@{props.child.poster}
 											</Link> 
 											<Drop className="drop" />
