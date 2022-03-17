@@ -1,4 +1,4 @@
-import React, {useState,useContext} from "react";
+import React, {useState,useContext,useRef,useEffect} from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/userContext';
@@ -8,6 +8,13 @@ import { ReactComponent as Like } from '../../images/svg/like.svg'
 
 
 function DisplayChildComments(props) {
+
+	const childComments = useRef(null);
+	
+	  useEffect(()=>{
+		if(childComments.current !== null) {
+			childComments.current.focus()};
+	  }, []);
 	
 
 	let fillColor= 'none'
@@ -53,7 +60,8 @@ function DisplayChildComments(props) {
 	}
 
 	return (
-		<div className="comment-child">
+		(props.child.comment === props.id ? 
+					<div className="comment-child" tabIndex={1} ref={childComments}>
 						<div className="comment-child-1">
 							<div className='profile-image-child'>
 									<img src={props.child.avatar} alt="profile logo"/>
@@ -79,6 +87,9 @@ function DisplayChildComments(props) {
 							<span> {(props.child.likes > 0) && props.child.likes} </span> {(props.child.likes > 1) ? <span> Likes </span> : <span> Like </span>}
 						</div>
 					</div>
+					:
+					null
+		)
 	)}
 
 
