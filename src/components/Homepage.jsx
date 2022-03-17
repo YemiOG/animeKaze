@@ -28,6 +28,7 @@ function Home(){
 			setPosts(
                 response.data.items
 			  )
+			console.log(response.data.items)
 			// setAppState({ loading: false });
 		  }).catch((error) => {
 			if (error.response) {
@@ -143,7 +144,7 @@ function Home(){
 			<div className="home-page">
 				<CreatePost post={getPosts}/>
 				{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} 
-													image={posts.image} like={handlePost} interested={notInterested} 
+													image={posts.image} like={handlePost} interested={null} 
 													report={reportPost} userLiked={posts.user_liked} avatar={posts.avatar} 
 													poster={posts.poster} fname={posts.fname} lname={posts.lname} unfollow={unfollowUser}/>)}
 			</div>
