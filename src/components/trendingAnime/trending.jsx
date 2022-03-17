@@ -48,7 +48,7 @@ function Trend(){
 				</Modal.Header>
 
 				<Modal.Body>
-					<img src={animeSelected.img} alt=""/>
+					<img className="cover" src={animeSelected.img} alt=""/>
 					<p>Story</p>
 					<div className="anime-trending-content">{animeSelected.content}</div>
 					<p className="characters">Characters</p>

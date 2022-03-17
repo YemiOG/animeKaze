@@ -60,6 +60,16 @@ function CreateButton(){
 		setActive(id)
 		navigate("/explore")
 	}
+	function goNotification(id){
+		setIconColor('#ffffff')
+		setActive(id)
+		navigate("/notifications")
+	}
+	function goCommunity(id){
+		setIconColor('#ffffff')
+		setActive(id)
+		navigate("/community")
+	}
 
 	const unAuthButtons = [
 		{ id: 1, icon: Feed, text: 'Feed', action: logMeIn  },
@@ -72,12 +82,12 @@ function CreateButton(){
 
 	const AuthButtons = [
 		{ id: 1, icon: Feed, text: 'Feed' , action: goHome  },
-		{ id: 2, icon: Community, text: 'Community', action:'' },
+		{ id: 2, icon: Community, text: 'Community', action: goCommunity },
 		{ id: 3, icon: Explorer, text: 'Explorer', action: goExplore },
-		{ id: 4, icon: Notification, text: 'Notification', action:'' },
+		{ id: 4, icon: Notification, text: 'Notification', action: goNotification },
 		{ id: 5, icon: Person, text: 'Profile', action: goToProfile},
 		{ id: 6, icon: Settings, text: 'Settings', action:''},
-		{ id: 7, icon: Logout, text: 'Logout' , action:logMeOut },
+		{ id: 7, icon: Logout, text: 'Logout' , action: logMeOut },
 	]
 
   return {unAuthButtons, AuthButtons, isActive, setActive, iconColor}
