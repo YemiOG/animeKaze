@@ -15,10 +15,12 @@ import { ReactComponent as Close } from '../../images/svg/closeButton.svg'
 function Comments(props){
 
 	const [newComment , setComment] = useState("")
+	const [newChildComment , setNewChildComment] = useState("")
 	const [row , setRow] = useState(1)
 	const [childCommentForm, setchildCommentForm]= useState(false)
+	const [displayChildComment , setDisplayChildComment] = useState(null)
+	const [submitPossible , setSubmitPossible] = useState(true)
 	const [childComment , setchildComment] = useState(null)
-	const [displayChildComment , setDisplayChildComment] = useState(false)
 	const [commentId , setCommentId] = useState(null)
 	const {token, removeToken, setAppState}= useContext(UserContext)
 	const userId = JSON.parse(window.localStorage.getItem("cuid"))
@@ -32,7 +34,14 @@ function Comments(props){
 	
 	function handleChange(event) {
         const newValue = event.target.value
+		newValue.length > 0 && setSubmitPossible(false)
         setComment(newValue);
+    }
+
+	function handleChildChange(event) {
+        const newValue = event.target.value
+		newValue.length > 0 && setSubmitPossible(false)
+        setNewChildComment(newValue);
     }
 
 	function handleHeight() {
@@ -42,10 +51,6 @@ function Comments(props){
 			setRow(1)
 			setchildCommentForm(false)
 			};
-    }
-
-	function hideComment() {
-        setDisplayChildComment(false)
     }
 	
 	function getComments(){
@@ -62,6 +67,7 @@ function Comments(props){
 				props.setAllComment(
 					response.data.items
 				)
+				console.log(response.data.items)
 			// setAppState({ loading: false });
 		  }).catch((error) => {
 			if (error.response) {
@@ -101,7 +107,6 @@ function Comments(props){
 
 	function submitComment(event){
         const contnt = event.target.content.value;
-		console.log(contnt)
 		axios({
 			method: "POST",
 			url: '/api/comment',
@@ -127,10 +132,9 @@ function Comments(props){
         event.preventDefault()
       }
 
-
 	function submitChildComment(event){
+		event.preventDefault()
 		const contnt = event.target.content.value;
-		console.log(commentId)
 		axios({
 			method: "POST",
 			url: '/api/child/comment',
@@ -143,6 +147,7 @@ function Comments(props){
 				Authorization: 'Bearer ' + token
 			  }
 			}).then((response)=>{
+				getComments()
 				getChildComments(commentId)
 			}).catch((error) => {
 				if (error.response) {
@@ -153,7 +158,6 @@ function Comments(props){
 			 })
 		setComment("")
 		setchildCommentForm(false)
-		event.preventDefault()
 	  }
 
 	function handleLikeComment(id){
@@ -192,6 +196,7 @@ function Comments(props){
 		
 		const [liked , setLiked] = useState(fillColor)
 		const [stroke , setStroke] = useState(strokeColor)
+		const [show, setShow] = useState(false)
 		
 		function likeComment(){
 			comm.like(comm.id)
@@ -203,6 +208,10 @@ function Comments(props){
 				} 
 		}
 
+		function hideComment() {
+			setDisplayChildComment(null)
+		}
+
 		function replyComment(id){
 			comm.submit(id)
 			comm.reply(true);
@@ -210,8 +219,13 @@ function Comments(props){
 		
 		function getComment(){
 			getChildComments(comm.id);
-			setDisplayChildComment(true)
+			setDisplayChildComment(comm.id)
+			setShow(true)
+			// onClick={ () => props.show(props.anime)
 		}
+
+		console.log(show)
+
         return (
 			<>
 				<div className="comment-list">
@@ -236,12 +250,12 @@ function Comments(props){
 					{!comm.topComment && 
 						<div className="comment-list-bottom">
 							<div className="like-list">
-								<span> {(comm.likeCount > 0) && comm.likeCount} </span> {(comm.likeCount > 1) ? <span> Likes </span> : <span> Like </span>}
+								<span> {(comm.likeCount > 0) && comm.likeCount} </span> {(comm.likeCount === 0) ? <span> 0 Likes </span> : ((comm.likeCount > 1) ? <span> Likes </span> : <span> Like </span>)}
 							</div>
 							<button onClick={() => replyComment(comm.id)}> Reply </button>
 						</div>
 					}
-					{comm.child > 0 ? (displayChildComment ? <button className="child-comment-button" onClick={hideComment}> ~ Hide replies </button>
+					{comm.child > 0 ? (displayChildComment === comm.id ? <button className="child-comment-button" onClick={hideComment}> ~ Hide replies </button>
 						: (comm.child > 1 ?
 							<button className="child-comment-button" onClick={getComment}> ~ View {comm.child} replies </button>
 							:
@@ -249,7 +263,7 @@ function Comments(props){
 							)
 					): null }
 				</div>
-				{(childComment && displayChildComment && comm.child > 0) ? (childComment.map(child => <DisplayChildComments key={child.id} child={child} id={comm.id} 
+				{(childComment && displayChildComment && comm.child > 0 ) ? (childComment.map(child => <DisplayChildComments key={child.id} child={child} id={comm.id}
 								childComments={getChildComments}
 				/>
 				)) : null}
@@ -282,35 +296,36 @@ function Comments(props){
 						</div>
 						<div className="post-content"> {props.cont} </div>
 						
-					<div className="post-modal-image">
-                  		<img className="post-imager" src={props.contImage} alt="profile logo"/>
-              		</div>
+						<div className="post-modal-image">
+							<img className="post-imager" src={props.contImage} alt="profile logo"/>
+						</div>
+					</div>
 				</div>
-			</div>
 			</Modal.Header>
 		    <Modal.Body>
 				<div >
-				<div className={props.top ? "comment-cover": "no-comment-cover"}>
-					{props.top && props.allComment ? props.allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
-																likeCount={comments.likes} like={handleLikeComment} username={comments.poster} 
-																child= {comments.child} reply={setchildCommentForm} submit={setCommentId} 
-																userLiked={comments.user_liked} fname={comments.fname} lname={comments.lname}
-																avatar={comments.avatar}
-																/>)
-												: null}
-				</div>
+					<div className={props.top ? "comment-cover": "no-comment-cover"}>
+						{props.top && props.allComment ? props.allComment.map(comments => <DisplayComments key={comments.id} id={comments.id} content={comments.content} 
+																	likeCount={comments.likes} like={handleLikeComment} username={comments.poster} 
+																	child= {comments.child} reply={setchildCommentForm} submit={setCommentId} 
+																	userLiked={comments.user_liked} fname={comments.fname} lname={comments.lname}
+																	avatar={comments.avatar}
+																	/>)
+													: null}
+					</div>
 
-				{/* Comments posting form */}
-				<div>
-					{childCommentForm ?
-						<FormChildComment avatar={avatar} row={row} new={newComment} focus={handleHeight} 
-											commentform={submitChildComment} change={handleChange}/>
-						:
-						<FormComment avatar={avatar} row={row} new={newComment} focus={handleHeight} 
-											commentform={submitComment} change={handleChange}/>
-						}
+					{/* Comments posting form */}
+					<div>
+						{childCommentForm ?
+							<FormChildComment avatar={avatar} row={row} new={newChildComment} focus={handleHeight} 
+												submitChild={submitChildComment} change={handleChildChange} poss={submitPossible}
+												child= {setchildCommentForm}
+												/>
+									:
+							<FormComment avatar={avatar} row={row} new={newComment} focus={handleHeight} 
+												commentform={submitComment} change={handleChange} poss={submitPossible}/>}
+					</div>
 				</div>
-			</div>
 			</Modal.Body>
 		</Modal>
     )
