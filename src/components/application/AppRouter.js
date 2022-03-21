@@ -39,7 +39,7 @@ function AppRouter() {
 	const profileLocation = location.pathname.includes('user') && !location.pathname.includes('follow')
 	const followerLocation = location.pathname.includes('user') && location.pathname.includes('follower')
 	const followingLocation = location.pathname.includes('user') && location.pathname.includes('followed')
-	const sideBarDisplay = location.pathname.includes('notification') || location.pathname.includes('community') 
+	const sideBarDisplay = location.pathname.includes('notification') || location.pathname.includes('community') || location.pathname.includes('user') 
 	const loginLocation = location.pathname.includes('login') || location.pathname.includes('register')
 
 	// console.log(sideBarDisplay)
