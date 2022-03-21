@@ -1,10 +1,10 @@
-function Community() {
+function Notification() {
 	
 	return (
 		<div>
-			Community
+			Notification
 		</div>
 	);
   }
   
-  export default Community;
+  export default Notification;
