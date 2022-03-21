@@ -6,7 +6,9 @@ import { useNavigate,useLocation } from 'react-router';
 function Login() {
     let navigate = useNavigate()
     let location = useLocation()
-    let from = location.state?.from?.pathname || "/"
+    let from = location.state?.from?.pathname 
+
+    console.log(from)
     
     const {setToken} = useContext(UserContext);
     const [loginForm, setloginForm] = useState({
@@ -40,7 +42,7 @@ function Login() {
         setToken(response.data.access_token)
 
         // navigate back to page before login 
-        navigate(from, {replace:true})
+        from === undefined ? navigate('/home', {replace:true}) : navigate(from, {replace:true})
 
         // update user info after log in
         // setUserInfo({
