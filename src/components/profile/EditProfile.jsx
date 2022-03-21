@@ -12,8 +12,14 @@ function EditProfile(props){
     username:props.username,
     about_me:props.bio,
     email:props.email,
+    gender: props.gender,
+    location: props.location,
+    dob: props.dob,
     firstname:props.fname,
     lastname:props.lname,
+    twitter:props.twitter,
+    instagram:props.instagram,
+    facebook:props.facebook,
   })
 
   function handleChange(event) { 
@@ -32,7 +38,13 @@ function EditProfile(props){
           username:profiler.username,
           email: profiler.email,
           about_me: profiler.about_me,
-          currentUzer: usernamer
+          currentUzer: usernamer,
+          gender: profiler.gender,
+          location: profiler.location,
+          dob: profiler.dob,
+          twitter:profiler.twitter,
+          instagram:profiler.instagram,
+          facebook:profiler.facebook,
          },
          headers: {
           Authorization: 'Bearer ' + token
@@ -60,11 +72,17 @@ function EditProfile(props){
 	return (
         <div>
               <form onSubmit={submitForm} className="create-note">
-                <input  type="text" onChange={handleChange} name="username"  value={profiler.username} required/>
-                 <input  type="text" onChange={handleChange} name="firstname"  value={profiler.fname} required/>
-                <input  type="text" onChange={handleChange} name="lastname"  value={profiler.lname} required/>
-                <input  type="text" onChange={handleChange} name="email"  value={profiler.email} required/>
-                <input  type="text" onChange={handleChange} name="about_me"  value={profiler.bio} required/>
+                <input  type="text" onChange={handleChange} name="username"  placeholder="Username" value={profiler.username} />
+                 <input  type="text" onChange={handleChange} name="firstname"  placeholder="First Name" value={profiler.fname} />
+                <input  type="text" onChange={handleChange} name="lastname"  placeholder="Last Name" value={profiler.lname} />
+                <input  type="text" onChange={handleChange} name="email"  placeholder="luffy@bankai.com" value={profiler.email} />
+                <input  type="text" onChange={handleChange} name="about_me"  placeholder="Bio" value={profiler.bio} />
+                <input  type="text" onChange={handleChange} name="gender"  placeholder="Gender" value={profiler.gender} />
+                <input  type="text" onChange={handleChange} name="location"  placeholder="Location" value={profiler.location} />
+                <input  type="text" onChange={handleChange} name="dob"  placeholder="Date of Birth" value={profiler.dob} />
+                <input  type="text" onChange={handleChange} name="twitter"  placeholder="@Twitter" value={profiler.twitter} />
+                <input  type="text" onChange={handleChange} name="instagram"  placeholder="@Instagram" value={profiler.instagram} />
+                <input  type="text" onChange={handleChange} name="facebook"  placeholder="@Facebook" value={profiler.facebook} />
                 <button
                   className="btn btn-lg btn-primary pull-xs-right"
                   type="submit">
