@@ -167,7 +167,7 @@
 }
 
 .my-profile p{
-  align-self: center;
+  align-self: flex-start;
   margin-bottom: 0;
 }
 
@@ -175,6 +175,32 @@
   margin-right: 8px;
   width:40px;
   height:40px;
+}
+.profile-image-username{
+  display: flex;
+  flex-direction: column;
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+}
+.profile-image-username p:nth-child(1){
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.profile-header-avatar{
+  position: relative;
+}
+
+.profile-page-image{
+  width:  80px;
+  height: 80px;
+  position: absolute;
+  top: 82%;
+  margin-left: 30px;
 }
 
 .profile-image-child{
@@ -190,6 +216,12 @@
 }
 .profile-image img{
   /* margin-right: 12px; */
+  border-radius: 50%;
+  width: inherit;
+  height: inherit;
+  backface-visibility: hidden;
+}
+.profile-page-image img{
   border-radius: 50%;
   width: inherit;
   height: inherit;
@@ -245,7 +277,7 @@
 /* search form */
 
 /* home page */
-.home-page, .profilePage, .explore-page{
+.home-page, .profile-page, .explore-page{
   background: none;
 }
 
@@ -256,6 +288,24 @@
   width: 615px;
   position: relative;
 }
+
+.profile-page{
+  margin-left: 82px;
+  /* margin-right: 48px; */
+  margin-top: 57px;
+  width: 100%;
+  position: relative;
+}
+.profile-header{
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.profile-header img{
+  width: inherit;
+  border-radius: 8px 8px 0px 0px;
+}
+
 .top-title{
   margin-bottom: 9px;
   font-family: inherit;
@@ -264,6 +314,109 @@
   font-size: 16px;
   line-height: 19px;
   letter-spacing: 0.02em;
+}
+
+.profile-info-topper{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 23px;
+}
+
+.profile-info-btn1, .profile-info-btn2{
+  padding: 8px 22px;
+  border-radius: 8px;
+  border: none;
+}
+
+.profile-info-btn3{
+  padding: 8px 22px;
+  border-radius: 8px;
+  border: none;
+  background: #cbd4d9;
+  color: #fff;
+}
+
+.profile-info-top{
+  font-family: 'Rubik';
+  font-style: normal;
+  color: rgba(87, 87, 87, 0.9);
+}
+
+.profile-info-top span:nth-child(1){
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  margin-right: 5px;
+}
+.profile-info-top span:nth-child(2){
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+/* .profile-info-top span:nth-child(1){
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+} */
+
+.profile-info-top p{
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+  margin: 0;
+}
+
+.profile-details{
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.detail-card{
+  border: 1px solid #272727;
+  width: 191px;
+  border-radius: 8px;
+  height: fit-content;
+  padding-top: 8px;
+  padding-right:16px;
+  padding-left:16px;
+}
+
+.detail-card p a{
+  color: #2C2C2C;
+}
+
+.detail-card p{
+  margin:0;
+  /* text-align: center; */
+  font-family: 'Roboto';
+  font-style: normal;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 400;
+  color: #2C2C2C;
+  margin-bottom: 8px;
+}
+
+.detail-card p span{
+  font-weight: 800;
+}
+
+.detail-card p svg{
+  margin-right: 12px;
+}
+
+.noDetail{
+  font-weight: bolder;
+}
+
+.post-detail{
+  width: 508px;
+  margin-right: 24px;
+  flex-grow: 1;
 }
 /* profile page
 .profilePage{
@@ -740,6 +893,8 @@
   .comment-content .profile-image{
     align-self:center;
     margin-right: 16px;
+    width: 40px;
+    height: 40px;
   }
   .comment-child{
     margin-left: 60px;
@@ -1047,10 +1202,8 @@
   background-repeat: no-repeat;
 }
 
-
-.modal-body img{
-  width: 548px;
-  height: 281px;
+.modal-body .cover{
+  width: 546.4px;
 }
 
 .post-modal-list{
@@ -1068,13 +1221,13 @@
 
 /* media  */
 @media (max-width: 445px){
-  .profilePage, .explore, .home{
+  .profile-page, .explore, .home{
     margin-left: 70px;
   }
 }
 
 @media (max-width: 430px){
-  .profilePage, .explore, .home{
+  .profile-page, .explore, .home{
     margin-left: 65px;
   }
 }
@@ -1088,7 +1241,7 @@
   .App{
     margin-left: 5px;
   }
-  .profilePage, .explore, .home{
+  .profile-page, .explore, .home{
       margin-left: 62px;
   }
 
@@ -1111,16 +1264,23 @@
    .explore{
     margin-right: 0
   }
-  .modal-content, .modal-body img, .modal-title-cover, .modal-title, .anime-trending-content  {
+  .modal-content, .modal-body .cover, .modal-title-cover, .modal-title, .anime-trending-content  {
     width: 100%;
   }
   .modal-body .characters-images {
     width: 85px;
   }
+  .profile-page-image{
+    top: 62%;
+  }
+  .profile-page-image {
+    width: 70px;
+    height: 70px;
+  }
 }
 
 @media (min-width:500px ) and (max-width: 834px){
-  .home, .explore{
+  .home, .explore, .profile-page{
     margin-left: 100px;
     margin-right: 0
   }
@@ -1173,6 +1333,30 @@
   }
 }
 
+@media screen and (max-width: 860px){
+  .profile-details{
+    flex-direction: column;
+  }
+  .post-detail {
+    width: unset;
+    margin-right: 0;
+  }
+  .detail-card{
+        border: none;
+        width: unset;
+  }
+  .top-detail-card{
+    text-align: center;
+  }
+  .post-follow{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    flex-direction: row-reverse;
+  }
+}
+
 @media (min-width:837px ) and (max-width:1040px){
   .anime-trends {
     display: block;
@@ -1195,7 +1379,7 @@
   .App{
     margin-left:50px
   }
-  .home, .profilePage, .explore {
+  .home, .profile-page, .explore {
     margin-left: 110px;
   }
 }
@@ -1234,6 +1418,15 @@
 @media screen and (max-width: 700px){
   .preview{
      width: 90%;
+  }
+  .profile-page-image{
+    top: 52%;
+    margin-left: 15px;
+    width: 60px;
+    height: 60px;
+  }
+  .profile-header {
+    margin-bottom: 50px;
   }
 }
 
@@ -1284,11 +1477,23 @@
   .my-profile{
     margin-left: 13px;
   }
-   .profilePage, .explore, .home{
+   .explore, .home{
     margin-left: 20%;
     margin-right: 5%;
   }  
+   .profile-page{
+    margin-left: 20%;
+    /* margin-right: 5%; */
+  }  
   .home-page, .explore-page{
+    background: #ECEFF1;
+    border-radius: 8px 8px 0px 0px;
+    padding-top: 21px;
+    padding-right: 24px;
+    padding-left: 24px;
+    padding-bottom: 15px;
+  }
+ .profile-page .profile-details{
     background: #ECEFF1;
     border-radius: 8px 8px 0px 0px;
     padding-top: 21px;
@@ -1372,9 +1577,13 @@
     margin-left: 12%;
     margin-right: 12%;
   }
-  .profilePage, .explore, .home{
+  .explore, .home{
     margin-left: 25%;
     margin-right: 10%;
+  } 
+  .profile-page{
+    margin-left: 25%;
+    /* margin-right: 10%; */
   } 
 }
 
