@@ -75,6 +75,12 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     child_comment = db.relationship('ChildComment', backref='author',
                                     lazy='dynamic')
     about_me = db.Column(db.String(140))
+    gender = db.Column(db.String(140))
+    location = db.Column(db.String(140))
+    date_of_birth = db.Column(db.String(140))
+    twitter = db.Column(db.String(140))
+    instagram = db.Column(db.String(140))
+    facebook = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     followed = db.relationship(
         'User', secondary=followers,
@@ -200,6 +206,12 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
             'username': self.username,
             'last_seen': self.last_seen.isoformat() + 'Z',
             'about_me': self.about_me,
+            'gender': self.gender,
+            'location': self.location,
+            'dob': self.date_of_birth,
+            'twitter': self.twitter,
+            'instagram': self.instagram,
+            'facebook': self.facebook,
             'avatar': self.avatar,
             'post_count': self.posts.count(),
             'follower_count': self.followers.count(),
@@ -215,7 +227,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         return data
 
     def from_dict(self, data, new_user=False):
-        for field in ['first_name', 'last_name', 'username', 'email', 'about_me']:
+        for field in ['first_name', 'last_name', 'username', 'email', 'about_me', 'gender', 'location' , 'dob' ,'twitter' , 'instagram', 'facebook']:
             if field in data:
                 setattr(self, field, data[field].lower())
         if new_user and 'password' in data:
