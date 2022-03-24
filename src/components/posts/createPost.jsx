@@ -10,7 +10,7 @@ import emoji from '../../images/emoji.png'
 function CreatePost(props){
 
 	const [content, setContent] = useState("")
-	const [image, setImage] = useState(null);
+	const [image, setImage] = useState("");
 	const [textArea, setTextArea] = useState(false)
 	const avatar = window.localStorage.getItem('avatar')
 	const userId = JSON.parse(window.localStorage.getItem("cuid"))

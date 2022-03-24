@@ -14,8 +14,6 @@ function FollowList(props){
         idMatch = true
       }
 
-      console.log(props)
-
     function followUser() {
         axios({
           method: "POST",
