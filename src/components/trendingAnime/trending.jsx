@@ -54,7 +54,6 @@ function Trend(){
 					<p className="characters">Characters</p>
 					<div className="characters-cards">
 						{animeSelected.characters && animeSelected.characters.map( (anime) => <div> 
-							{console.log(anime.pic)}
 							<img className="characters-images" src={anime.pic} alt="" /> 
 							<div className="characters-name">{anime.name}</div>  
 							 </div>)}
