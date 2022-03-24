@@ -67,7 +67,6 @@ function Comments(props){
 				props.setAllComment(
 					response.data.items
 				)
-				console.log(response.data.items)
 			// setAppState({ loading: false });
 		  }).catch((error) => {
 			if (error.response) {
