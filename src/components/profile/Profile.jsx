@@ -2,11 +2,18 @@ import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import { Link, useLocation } from 'react-router-dom'
 import axios from "axios";
+
+// modal import
+import Modal from 'react-bootstrap/Modal'
+// toast import
+
+// local imports
 import { UserContext } from '../contexts/userContext';
 import UserNotFound from '../error/userNotFound'
 import CreatePost from "../posts/createPost"
 import Posts from "../posts/Posts"
 import EditProfile from "./EditProfile"
+import Follow from "../follow/followerList"
 
 // import svg icons
 import { ReactComponent as Dob } from '../../images/svg/dob.svg'
@@ -15,26 +22,32 @@ import { ReactComponent as Instagram } from '../../images/svg/instagram.svg'
 import { ReactComponent as Twitter } from '../../images/svg/twitter.svg'
 import { ReactComponent as User } from '../../images/svg/user.svg'
 import { ReactComponent as Locate } from '../../images/svg/location.svg'
+import { ReactComponent as Close } from '../../images/svg/closeButton.svg'
 
 function Profile() {
     // let navigate = useNavigate();
-    const location = useLocation();
-    const {token, removeToken} = useContext(UserContext);
     const usernamer = window.localStorage.getItem('username')
+    const location = useLocation();
+    const navigate = useNavigate();
+    const {token, removeToken} = useContext(UserContext);
     const [idMatch, setidMatch] = useState(false)
     const [following, setFollowing] = useState(false)
     const [noUser, setNoUser] = useState(false)
-    const [editProfile, setEditProfile] = useState(false)
-    const [content, setContent] = useState("")
     const [posts, setPosts] = useState("")
-    // const [count, setCount] = useState("")
+    const [follow, setFollow] = useState("")
+    const [followModalHeader, setFollowModalHeader] = useState("")
+
+    const [showModal, setShowModal] = useState(false);
+    const [showFollowersModal, setShowFollowersModal] = useState(false);
+
     const [profile, setProfile] = useState({
       username:"",
       about_me:"",
       email:"",
       firstname:"",
       lastname:"",
-      avatar: null,
+      avatar: "",
+      header: "",
       followers_cnt:null,
       following_cnt:null,
       posts:null,
@@ -44,22 +57,19 @@ function Profile() {
       facebook:"",
       instagram:"",
       dob:"",
+      followers: "",
+      followed: "",
     })
     const userId = JSON.parse(window.localStorage.getItem("cuid"))
     const uzer = location.pathname.split("/")[2]
 
-
     useEffect(() => {
+        navigate("/user/" + usernamer, { state: true })
         getProfile()
         return () => {
           setidMatch({})
         };
-    },[uzer])
-    
-    function handleChange(event) { 
-      const post = event.target.value
-      setContent(post)
-    }
+    },[uzer, usernamer])
 
     function getPosts(uzername){
       axios({
@@ -88,12 +98,11 @@ function Profile() {
       setidMatch(false)
       axios({
           method: "POST",
-          url: '/api' + location.pathname,
+          url: '/api'+ location.pathname ,
           data:{
             username:usernamer
            },
         }).then((response)=>{
-          console.log(response.data.user)
           const data = response.data.user.id
           const username = response.data.user.username
           if(userId === data){
@@ -105,13 +114,23 @@ function Profile() {
             firstname:response.data.user.firstname,
             lastname:response.data.user.lastname,
             avatar:response.data.user.avatar,
+            header:response.data.user.header,
             about_me: response.data.user.about_me,
             followers_cnt: response.data.user.follower_count,
             following_cnt: response.data.user.followed_count,
-            posts: response.data.user.post_count
+            posts: response.data.user.post_count,
+            gender: response.data.user.gender,
+            location: response.data.user.location,
+            twitter: response.data.user.twitter,
+            facebook: response.data.user.facebook,
+            instagram: response.data.user.instagram,
+            dob: response.data.user.dob,
+            followers: response.data.user._links.followers,
+            followed: response.data.user._links.followed,
             }))
             username && getPosts(username) //if user exists check for posts
             setFollowing(response.data.following) //set user following status
+            setNoUser(false)
         }).catch((error) => {
           if (error.response) {
             console.log(error.response)
@@ -198,7 +217,19 @@ function Profile() {
     }
 
     function displayEdit() {
-      editProfile? setEditProfile(false) : setEditProfile(true)
+      setShowModal(true)
+    }
+
+    function followers() {
+        setShowFollowersModal(true)
+        setFollow(profile.followers)
+        setFollowModalHeader('Followers')
+    }
+
+    function followings() {
+        setShowFollowersModal(true)
+        setFollow(profile.followed)
+        setFollowModalHeader('Followings')
     }
      
     return (
@@ -207,7 +238,7 @@ function Profile() {
         <div className="profile-page">
           <div className="profile-header-avatar">
             <div className="profile-header">
-                <img src="https://res.cloudinary.com/nagatodev/image/upload/c_scale,h_179,w_766/v1647505420/Profile/Default_header_background.png" 
+                <img src={profile.header}
                       alt="profile header"/>
             </div>
             <div className='profile-page-image'>
@@ -262,11 +293,11 @@ function Profile() {
                   </p>
                 </div>
                   <div className="post-follow">
-                    <p>
-                      <Link to='followed'> <span> {profile.following_cnt} </span> Following</Link> 
+                    <p className="showFollow" onClick = {followings}>
+                      <span> {profile.following_cnt} </span> Following
                     </p>
-                    <p>
-                      <Link to='followers'> <span> {profile.followers_cnt} </span> {profile.followers_cnt.length > 1 ? <>Followers</> : <>Follower</>}</Link> 
+                    <p className="showFollow" onClick = {followers}>
+                      <span> {profile.followers_cnt} </span> {profile.followers_cnt && (profile.followers_cnt <2 ) ? <>Follower</> : ((profile.followers_cnt > 1) ? <>Followers</> : <>Follower</>)}
                     </p>
                     <p>
                       <span>Posts:</span> <span>{profile.posts}</span>
@@ -280,9 +311,49 @@ function Profile() {
                                                   report={null} userLiked={posts.user_liked} avatar={posts.avatar} poster={posts.poster} 
                                                   fname={posts.fname} lname={posts.lname}/>)}
                 </div>
-                {editProfile && <EditProfile key={profile.id} username={profile.username} fname={profile.firstname} lname={profile.lastname} bio={profile.about_me} email={profile.email} 
-                                  cancel={displayEdit} update={getProfile}/>}
               </div>
+              <Modal 
+                show={showModal} 
+                onHide={() => setShowModal(false) } >
+
+                <Modal.Header >
+                  <div className="modal-title-cover">
+                    <Modal.Title>
+                        <p>Edit basic info</p>
+                        <div className="close-modal-button">
+                          <Close onClick = {() => setShowModal(false)}/>
+                        </div>
+                    </Modal.Title>
+                  </div>
+                </Modal.Header>
+
+                <Modal.Body>
+                  <EditProfile key={profile.id} username={profile.username} fname={profile.firstname} lname={profile.lastname} bio={profile.about_me} email={profile.email} 
+                                  gender={profile.gender} location={profile.location} dob={profile.dob} twitter={profile.twitter} instagram={profile.instagram} facebook={profile.facebook}
+                                  header= {profile.header} avatar= {profile.avatar} cancel={setShowModal} update={getProfile} />
+                </Modal.Body>
+			        </Modal>
+              
+              {/* followers list modal */}
+              <Modal 
+                show={showFollowersModal} 
+                onHide={() => setShowFollowersModal(false) } >
+
+                <Modal.Header >
+                  <div className="modal-title-cover">
+                    <Modal.Title>
+                        <p>{followModalHeader}</p>
+                        <div className="close-modal-button">
+                          <Close onClick = {() => setShowFollowersModal(false)}/>
+                        </div>
+                    </Modal.Title>
+                  </div>
+                </Modal.Header>
+
+                <Modal.Body>
+								    <Follow getFlw={follow}/>
+                </Modal.Body>
+			        </Modal>
           </div>
         </div>  
           :
