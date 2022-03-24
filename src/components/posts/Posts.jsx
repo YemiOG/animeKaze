@@ -1,5 +1,7 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
+import axios from "axios";
 import { Link } from 'react-router-dom'
+import { UserContext } from '../contexts/userContext';
 import Comments from "../comments/Comments"
 
 import { ReactComponent as Like } from '../../images/svg/like.svg'
@@ -21,16 +23,32 @@ function Posts(props){
   }
 
 	const [comments , setComments] = useState("")
+  const [newComment , setComment] = useState("")
 	const [showComment , setShowComment] = useState(false)
+  const [row , setRow] = useState(1)
 	const [hidePost , setHidePost] = useState(false)
+	const [hideInterestPost , setHideInterestPost] = useState(false)
 	const [showCard , setShowCard] = useState(false)
 	const [liked , setLiked] = useState(fillColor)
 	const [stroke , setStroke] = useState(strokeColor)
+  const {token, removeToken, setAppState}= useContext(UserContext)
 
   const usernamer = window.localStorage.getItem('username')
+  const userId = JSON.parse(window.localStorage.getItem("cuid"))
   const profile = "/user/" + props.poster 
 
+    function handleHeight() {
+          if(row===1) {
+        setRow(3)
+      }else{
+        setRow(1)
+        };
+      }
 
+    function handleChange(event) {
+        const newValue = event.target.value
+        setComment(newValue);
+    }
 
     function handleClick(){
         props.like(props.id)
@@ -41,12 +59,15 @@ function Posts(props){
             setStroke('#575757')
           } 
       }
+      
     function handleReport(){
         props.report(props.id);
+        hidePost === false ? setHidePost(true) : setHidePost(false)
+        setShowCard(false)
       }
     function handleInterest(){
         props.interested(props.id);
-        hidePost === false ? setHidePost(true) : setHidePost(false)
+        hideInterestPost === false ? setHideInterestPost(true) : setHideInterestPost(false)
         setShowCard(false)
       }
     function revealComments(){
@@ -68,10 +89,10 @@ function Posts(props){
                                                             <Unfollow stroke="#575757"/> Unfollow </button> : null}
         </div>
       )}
-
+    
 	return (
         <div className="post-card">
-          {!hidePost ? <div> 
+          {!hidePost && !hideInterestPost ? <div> 
             <div className="post-list">
                 <div className="post-image-top">
                   <div className="post-image-top1">
@@ -80,7 +101,7 @@ function Posts(props){
                     </div>
                     <Link to={profile}
                       className="navr-link">
-                      <span>{props.fname}</span><span>{props.lname}</span>@{props.poster}
+                      <span>{props.fname}</span> <span>{props.lname}</span> @{props.poster}
                     </Link> 
                   </div>
                   {(usernamer!==props.poster) && <Drop className="drop" onClick={revealBar}/>}
@@ -99,7 +120,7 @@ function Posts(props){
                       <span> {(props.likeCount > 0) && props.likeCount} </span> {(props.likeCount > 1) ? <span> Likes </span> : <span> Like </span>}
                     </div>
                   </div>
-                  <div className="comment-box" {...((comments.length > 0) && {onClick :revealComments})}> 
+                  <div className="comment-box" onClick={revealComments}> 
                     <Comment className="comment-button"/>
                     <div className="comment-box-1">
                       <span> {(comments.length > 0) && comments.length} </span> {(comments.length > 1) ? <span> Comments </span> : <span> Comment </span>}
@@ -109,9 +130,9 @@ function Posts(props){
             </div>
 
             <Comments allComment={comments} setAllComment={setComments} postId={props.id} 
-                          top={showComment} reveal={setShowComment} prof={profile} postAvatar={props.avatar}
-                            cont={props.content} firname={props.fname} lasname={props.lname} postr={props.poster}
-                            contImage={props.image}
+                          top={showComment} reveal={setShowComment} prof={profile} 
+                          postAvatar={props.avatar} cont={props.content} firname={props.fname} 
+                          lasname={props.lname} postr={props.poster} contImage={props.image}
                           />
           </div>
           :
@@ -127,7 +148,7 @@ function Posts(props){
               </div>
 
               <div className="unhide">
-                <UnHide onClick={handleInterest}/>
+                <UnHide onClick={hidePost ? handleReport : handleInterest}/>
                 <p>Unhide</p>
               </div>
 
