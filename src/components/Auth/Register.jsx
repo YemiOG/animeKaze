@@ -18,6 +18,12 @@ function Register(props) {
       email: "",
       password: ""
     })
+    const [gender, setGender] = useState("female");
+
+    function genderChange(event){
+      const val = event.target.value
+      setGender(val)
+    }
 
     function registerMe(event) {
       axios({
@@ -26,7 +32,8 @@ function Register(props) {
         data:{
           username:registerForm.username,
           email: registerForm.email,
-          password: registerForm.password
+          password: registerForm.password,
+          gender: gender
          }
       })
       .then((response) => {
@@ -76,6 +83,17 @@ function Register(props) {
                   name="password" 
                   placeholder="Password" 
                   value={registerForm.password} />
+            <div className="gender">
+                  <div>Gender</div>
+                  <div>
+                    <input type="radio" id="male" name="gender" value="male"  onChange={genderChange} checked={gender === 'male' ? true : false} />
+                    <label htmlFor="male">Male</label>
+                    <input type="radio" id="female" name="gender" value="female" onChange={genderChange} checked={gender === 'female' ? true : false}/>
+                    <label htmlFor="female">Female</label>
+                    <input type="radio" id="other" name="gender" value="other" onChange={genderChange} checked={gender === 'other' ? true : false} />
+                    <label htmlFor="other">Other</label>                    
+                  </div>
+            </div>
             {errorDiv}
           <button onClick={registerMe}>Register</button>
         </form>

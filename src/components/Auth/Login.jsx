@@ -7,8 +7,6 @@ function Login() {
     let navigate = useNavigate()
     let location = useLocation()
     let from = location.state?.from?.pathname 
-
-    console.log(from)
     
     const {setToken} = useContext(UserContext);
     const [loginForm, setloginForm] = useState({
