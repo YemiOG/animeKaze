@@ -81,8 +81,16 @@ function AppRouter() {
 					<Route exact path="/login" element={<Login/>}></Route>
 					<Route exact path="/register" element={<Register/>}></Route>
 					<Route exact path="/" element={<Base />}></Route> 
-					<Route exact path="/notifications" element={<Notification />}></Route> 
-					<Route exact path="/community" element={<Community />}></Route> 
+					<Route exact path="/notifications" element= {
+								<AuthedRoute >
+									<Notification />
+								</AuthedRoute>
+								} />
+					<Route exact path="/community" element={
+								<AuthedRoute >
+									<Community />
+								</AuthedRoute>
+								} /> 
 					<Route exact path="/accounts/password/reset/" element={<RequestPasswordChange/>}></Route>
 					<Route exact path="/explore" element={
 								<AuthedRoute >
