@@ -59,6 +59,7 @@ class PaginatedAPIMixin(object):
 
 #default image
 image = 'https://res.cloudinary.com/nagatodev/image/upload/v1644138637/No%20picture/no_picture.png'
+header_image = 'https://res.cloudinary.com/nagatodev/image/upload/c_scale,h_179,w_766/v1647505420/Profile/Default_header_background.png'
 class User(PaginatedAPIMixin, db.Model, UserMixin):
     __tablename__ = 'user'
 
@@ -70,6 +71,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     avatar = db.Column(db.String(128), default=image)
+    header = db.Column(db.String(128), default=header_image)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comment = db.relationship('Comment', backref='author', lazy='dynamic')
     child_comment = db.relationship('ChildComment', backref='author',
@@ -213,6 +215,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
             'instagram': self.instagram,
             'facebook': self.facebook,
             'avatar': self.avatar,
+            'header': self.header,
             'post_count': self.posts.count(),
             'follower_count': self.followers.count(),
             'followed_count': self.followed.count(),
@@ -227,9 +230,12 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         return data
 
     def from_dict(self, data, new_user=False):
-        for field in ['first_name', 'last_name', 'username', 'email', 'about_me', 'gender', 'location' , 'dob' ,'twitter' , 'instagram', 'facebook']:
+        for field in ['avatar', 'header', 'first_name', 'last_name', 'username', 'email', 'about_me', 'gender', 'location' , 'dob' ,'twitter' , 'instagram', 'facebook']:
             if field in data:
-                setattr(self, field, data[field].lower())
+                if data[field] is not None:
+                    setattr(self, field, data[field].lower())
+                else:
+                    setattr(self, field, data[field])
         if new_user and 'password' in data:
             self.set_password(data['password'])
 
@@ -294,7 +300,6 @@ class Post(PaginatedAPIMixin, db.Model):
         if not self.post_reported(user):
             self.reported.append(user)
         else:
-            print('no longer reported')
             self.reported.remove(user)
 
     def post_reported(self, user):
