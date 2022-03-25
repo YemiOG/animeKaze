@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/userContext';
 
 function Notification() {
-	
+
 	const usernamer = window.localStorage.getItem('username')
 	const {token, removeToken} = useContext(UserContext);
 	
@@ -14,7 +14,7 @@ function Notification() {
 
 	function getNotifications(){
 		axios({
-		  method: "GET",
+		  method: "POST",
 		  url:'/api/notifications',
 		  data:{
             username:usernamer
