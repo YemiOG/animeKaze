@@ -45,7 +45,6 @@ def create_token():
     password = request.json.get("password")
     user = User.query.filter_by(email=email).first()
     if user is not None and user.check_password(password):
-        print(user.check_password(password))
         access_token = create_access_token(identity=email)
         response = {"access_token":access_token,
 					"userID":user.id,
