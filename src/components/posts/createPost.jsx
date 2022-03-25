@@ -81,7 +81,7 @@ function CreatePost(props){
 						className='text'
 						onChange={setContent}
 						placeholder="What's happening?"
-						value={content}
+						value={content && content}
 						required
 					/>
 					:
