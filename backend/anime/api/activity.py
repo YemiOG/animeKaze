@@ -383,12 +383,12 @@ def notify():
 
 	# Get current user
 	uzer = request.json.get("username").lower()
-    user = User.query.filter_by(username=uzer).first_or_404()
+	user = User.query.filter_by(username=uzer).first_or_404()
 
-    page = request.args.get('page', 1, type=int)
-    per_page = min(request.args.get('per_page', 10, type=int), 100)
+	page = request.args.get('page', 1, type=int)
+	per_page = min(request.args.get('per_page', 10, type=int), 100)
 
     # Display notifications
-    response = User.to_collection_dict(user.get_notifications(), page, per_page,
+	response = User.to_collection_dict(user.get_notifications(), page, per_page,
                                        'api.notify')
     return response
