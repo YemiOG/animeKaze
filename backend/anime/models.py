@@ -33,6 +33,29 @@ reportedPost = db.Table('reportedPost',
                                   db.ForeignKey('user.id'))
                         )
 
+# table for notifications for liked posts
+postNotification = db.Table('postNotification',
+                         db.Column('not_id', db.Integer,
+                                   db.ForeignKey('notification.id')),
+                         db.Column('posts_id', db.Integer,
+                                   db.ForeignKey('post.id'))
+                         )
+
+# table for notifications for liked comments
+commentNotification = db.Table('commentNotification',
+                         db.Column('not_id', db.Integer,
+                                   db.ForeignKey('notification.id')),
+                         db.Column('commnt_id', db.Integer,
+                                   db.ForeignKey('comment.id'))
+                         )
+
+# table for notifications for liked child comments
+childCommentNotification = db.Table('childCommentNotification',
+                         db.Column('not_id', db.Integer,
+                                   db.ForeignKey('notification.id')),
+                         db.Column('child_commnt_id', db.Integer,
+                                   db.ForeignKey('childcomment.id'))
+                         )
 
 class PaginatedAPIMixin(object):
     @staticmethod
@@ -76,6 +99,8 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     comment = db.relationship('Comment', backref='author', lazy='dynamic')
     child_comment = db.relationship('ChildComment', backref='author',
                                     lazy='dynamic')
+    Notification = db.relationship('Notification', backref='author',
+                                    lazy='dynamic')
     about_me = db.Column(db.String(140))
     gender = db.Column(db.String(140))
     location = db.Column(db.String(140))
@@ -111,8 +136,11 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         return self.followed.filter(
             followers.c.followed_id == user.id).count() > 0
 
-    def followed_posts(self):
+    def get_notifications(self):
+        notification_list =  db.session.query(Notification)
+        print(notification_list)
 
+    def followed_posts(self):
         # get count of reported posts by post id
         reported_count = db.session.query(
                             reportedPost.c.post_id, func.count('*').label(
@@ -259,6 +287,7 @@ class Post(PaginatedAPIMixin, db.Model):
     content = db.Column(db.String(360))
     image = db.Column(db.String(360))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    notifications = db.relationship('Notification', backref='post', lazy='dynamic')
     likes = db.relationship(
         'User', secondary=likedPosts,
         backref=db.backref('likedPosts', lazy='dynamic'), lazy='dynamic')
@@ -280,9 +309,11 @@ class Post(PaginatedAPIMixin, db.Model):
         if not self.liked(user):
             self.likes.append(user)
             setattr(self, 'liked_by_user', True)
+            return True
         else:
             self.likes.remove(user)
             setattr(self, 'liked_by_user', False)
+            return False
 
     def liked(self, user):
         return self.likes.filter(likedPosts.c.liker_id == user.id).count() > 0
@@ -331,14 +362,13 @@ likedComments = db.Table('likedComments',
                          db.Column('liker_id', db.Integer,
                                    db.ForeignKey('user.id'))
                          )
-
-
 class Comment(PaginatedAPIMixin, db.Model):
     __tablename__ = "comment"
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(360))
     comments = db.relationship('ChildComment', backref='comment', lazy='dynamic')
+    notifications = db.relationship('Notification', backref='comment', lazy='dynamic')
     likes = db.relationship(
             'User', secondary=likedComments,
             backref=db.backref('likedComments', lazy='dynamic'), lazy='dynamic')
@@ -355,9 +385,11 @@ class Comment(PaginatedAPIMixin, db.Model):
         if not self.liked_comment(user):
             self.likes.append(user)
             setattr(self, 'liked_by_user', True)
+            return True
         else:
             self.likes.remove(user)
             setattr(self, 'liked_by_user', False)
+            return False
 
     def liked_comment(self, user):
         return self.likes.filter(likedComments.c.liker_id == user.id).count() > 0
@@ -396,6 +428,7 @@ class ChildComment(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(360))
     comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    notifications = db.relationship('Notification', backref='childcomment', lazy='dynamic')
     likes = db.relationship(
             'User', secondary=likedChildComments,
             backref=db.backref('likedChildComments', lazy='dynamic'), lazy='dynamic')
@@ -411,9 +444,11 @@ class ChildComment(PaginatedAPIMixin, db.Model):
         if not self.liked_comment(user):
             self.likes.append(user)
             setattr(self, 'liked_by_user', True)
+            return True
         else:
             self.likes.remove(user)
             setattr(self, 'liked_by_user', False)
+            return False
 
     def liked_comment(self, user):
         return self.likes.filter(likedChildComments.c.liker_id == user.id).count() > 0
@@ -480,6 +515,63 @@ def delete_account(user_id):
     db.session.commit()
 
     return True
+
+class Notification(PaginatedAPIMixin, db.Model):
+    __tablename__ = 'notification'
+
+    id = db.Column(db.Integer, primary_key=True)
+    timestamps = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    username= db.Column(db.String(360))
+    like_post = db.relationship(
+        'Post', secondary=postNotification,
+        backref=db.backref('postNotification', lazy='dynamic'), lazy='dynamic')
+    like_comment = db.relationship(
+        'Comment', secondary=commentNotification,
+        backref=db.backref('commentNotification', lazy='dynamic'), lazy='dynamic')
+    like_child_comments = db.relationship(
+        'ChildComment', secondary=childCommentNotification,
+        backref=db.backref('childCommentNotification', lazy='dynamic'), lazy='dynamic')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    child_comment_id = db.Column(db.Integer, db.ForeignKey('childcomment.id'))
+
+
+    # method for post notifications
+    def like_post_notify(self, post):
+        self.like_post.append(post)
+
+    def delete_like_post_notify(self, post):
+        self.like_post.remove(post)
+        db.session.delete(self)
+
+    # method for comment notifications
+    def like_comment_notify(self, comment):
+        self.like_comment.append(comment)
+
+    def delete_like_comment_notify(self, comment):
+        self.like_comment.remove(comment)
+        db.session.delete(self)
+
+    # method for child comments notifications
+    def like_ch_comment_notify(self, comment):
+        self.like_child_comments.append(comment)
+
+    def delete_like_ch_comment_notify(self, comment):
+        self.like_child_comments.remove(comment)
+        db.session.delete(self)
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'username': self.username,
+            'fname': user.first_name,
+            'lname': user.last_name,
+            'avatar': user.avatar,
+            'likes': self.likes.count(),
+            'user_liked': self.liked_by_user,
+        }
+        return data
 
 @login_manager.user_loader
 def load_user(user_id):
