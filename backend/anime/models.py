@@ -3,7 +3,7 @@ from anime import app
 from time import time
 from flask_login import UserMixin
 from flask import url_for
-from sqlalchemy import or_,delete
+from sqlalchemy import or_,delete, and_
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db, login_manager
@@ -137,8 +137,11 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
             followers.c.followed_id == user.id).count() > 0
 
     def get_notifications(self):
-        notification_list =  db.session.query(Notification)
-        print(notification_list)
+        notification_list =  db.session.query(Notification).filter(
+                                Notification.user_id != self.id).filter(or_(Notification.post_creator_id == self.id,
+                                                                            Notification.comment_creator_id == self.id, 
+                                                                            Notification.child_comment_creator_id == self.id))
+        return notification_list
 
     def followed_posts(self):
         # get count of reported posts by post id
@@ -525,12 +528,15 @@ class Notification(PaginatedAPIMixin, db.Model):
     like_post = db.relationship(
         'Post', secondary=postNotification,
         backref=db.backref('postNotification', lazy='dynamic'), lazy='dynamic')
+    post_creator_id = db.Column(db.Integer)
     like_comment = db.relationship(
         'Comment', secondary=commentNotification,
         backref=db.backref('commentNotification', lazy='dynamic'), lazy='dynamic')
+    comment_creator_id = db.Column(db.Integer)
     like_child_comments = db.relationship(
         'ChildComment', secondary=childCommentNotification,
         backref=db.backref('childCommentNotification', lazy='dynamic'), lazy='dynamic')
+    child_comment_creator_id = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
@@ -560,16 +566,19 @@ class Notification(PaginatedAPIMixin, db.Model):
     def delete_like_ch_comment_notify(self, comment):
         self.like_child_comments.remove(comment)
         db.session.delete(self)
+    
+    def get_user(self, user):
+        return db.session.query(User).filter_by(id=user.user_id).first()
 
     def to_dict(self):
+        user= self.get_user(self) 
         data = {
             'id': self.id,
             'username': self.username,
-            'fname': user.first_name,
-            'lname': user.last_name,
+            'notify_post_type': self.like_post.count(),
+            'notify_comment_type': self.like_comment.count(),
+            'notify_child_comment_type': self.like_child_comments.count(),
             'avatar': user.avatar,
-            'likes': self.likes.count(),
-            'user_liked': self.liked_by_user,
         }
         return data
 
