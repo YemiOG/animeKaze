@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/userContext';
 
 function Notification() {
-
+	
+	const usernamer = window.localStorage.getItem('username')
 	const {token, removeToken} = useContext(UserContext);
 	
 	useEffect(() => {
@@ -15,13 +16,14 @@ function Notification() {
 		axios({
 		  method: "GET",
 		  url:'/api/notifications',
+		  data:{
+            username:usernamer
+           },
 		  headers: {
 			Authorization: 'Bearer ' + token
 		  }
 		  }).then((response)=>{
-			setPosts(
-			  response.data.items
-			)
+				console.log(response)
 		  // setAppState({ loading: false });
 		  }).catch((error) => {
 		  if (error.response) {
