@@ -28,7 +28,6 @@ function Profile() {
     // let navigate = useNavigate();
     const usernamer = window.localStorage.getItem('username')
     const location = useLocation();
-    const navigate = useNavigate();
     const {token, removeToken} = useContext(UserContext);
     const [idMatch, setidMatch] = useState(false)
     const [following, setFollowing] = useState(false)
@@ -64,8 +63,7 @@ function Profile() {
     const uzer = location.pathname.split("/")[2]
 
     useEffect(() => {
-        navigate("/user/" + usernamer, { state: true })
-        getProfile()
+        getProfile(location.pathname)
         return () => {
           setidMatch({})
         };
@@ -94,11 +92,10 @@ function Profile() {
           }
         })}
 
-    function getProfile() {
-      setidMatch(false)
-      axios({
+    function getProfile(lction) {
+      lction && axios({
           method: "POST",
-          url: '/api'+ location.pathname ,
+          url: '/api'+ lction ,
           data:{
             username:usernamer
            },
@@ -154,7 +151,7 @@ function Profile() {
           }
         })
         .then((response) => {
-            getProfile()
+            getProfile(location.pathname)
         }).catch((error) => {
           if (error.response) {
             console.log(error.response)
@@ -179,7 +176,7 @@ function Profile() {
           }
         })
         .then((response) => {
-             getProfile()
+             getProfile(location.pathname)
         }).catch((error) => {
           if (error.response) {
             console.log(error.response)
@@ -231,7 +228,8 @@ function Profile() {
         setFollow(profile.followed)
         setFollowModalHeader('Followings')
     }
-     
+
+    console.log(idMatch)
     return (
       <>
         {(!noUser) ?
