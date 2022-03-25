@@ -10,6 +10,7 @@ function Notification() {
 
 	const usernamer = window.localStorage.getItem('username')
 	const {token, removeToken} = useContext(UserContext);
+	const [notifier, setNotifier] = useState("")
 	
 	useEffect(() => {
         getNotifications()
@@ -27,6 +28,7 @@ function Notification() {
 		  }
 		  }).then((response)=>{
 				console.log(response)
+				setNotifier(response.data.items)
 		  // setAppState({ loading: false });
 		  }).catch((error) => {
 		  if (error.response) {
@@ -38,10 +40,20 @@ function Notification() {
 			console.log(error.response.headers);
 			}
 		  })}
-
+		  
 	return (
 		<div className="notification">
-			<ListNotification />
+				<div className="notification-cover">
+				<div className="notification-title">
+					Notification
+				</div>
+				<div className="notification-list-cover">
+					{notifier && notifier.map( lists => <ListNotification 
+															key={lists.id}
+															notifications={lists} /> 
+														)}
+				</div>
+				</div>
 		</div>
 	);
   }
