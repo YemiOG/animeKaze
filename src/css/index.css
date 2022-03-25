@@ -483,7 +483,7 @@
   position: relative;
 }
 
-.profile-page, .community{
+.profile-page, .community, .notification{
   margin-left: 82px;
   /* margin-right: 48px; */
   margin-top: 57px;
@@ -847,38 +847,6 @@
   margin-right: 8px;
 }
 /* postcard */
-
-/* .note {
-    background: #fff;
-    border-radius: 7px;
-    box-shadow: 0 2px 5px #ccc;
-    padding: 10px;
-    width: 300px;
-    margin: 16px;
-    float: left;
-  }
-  .note h1 {
-    font-size: 1.1em;
-    margin-bottom: 6px;
-  }
-  .note p {
-    font-size: 1.1em;
-    margin-bottom: 10px;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
-  
-  .note button {
-    position: relative;
-    float: right;
-    margin-right: 10px;
-    color: #f5ba13;
-    border: none;
-    width: 36px;
-    height: 36px;
-    cursor: pointer;
-    outline: none;
-  } */
   
   form .text, .text{
     display:flex;
@@ -1378,6 +1346,17 @@
 }
 /* end community */
 
+/* notifications */
+.notification{
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 82px;
+  margin-top: 57px;
+  width: 100%;
+  height: 100%;
+}
+/* end notifications */
+
 /* modal */
 .close-modal-button{
   cursor: pointer;
@@ -1490,7 +1469,7 @@
 
 /* media  */
 @media (min-width:500px ) and (max-width: 834px){
-  .home, .explore, .profile-page, .community{
+  .home, .explore, .profile-page, .community, .notification{
     margin-left: 100px;
     margin-right: 0
   }
@@ -1695,13 +1674,13 @@
 }
 
 @media (max-width: 445px){
-  .profile-page, .explore, .home, .community{
+  .profile-page, .explore, .home, .community, .notification{
     margin-left: 70px;
   }
 }
 
 @media (max-width: 430px){
-  .profile-page, .explore, .home, .community{
+  .profile-page, .explore, .home, .community, .notification{
     margin-left: 65px;
   }
 }
@@ -1710,7 +1689,7 @@
   .App{
     margin-left: 5px;
   }
-  .profile-page, .explore, .home, .community{
+  .profile-page, .explore, .home, .community, .notification{
       margin-left: 62px;
   }
 
@@ -1757,7 +1736,7 @@
   .App{
     margin-left:50px
   }
-  .home, .profile-page, .explore, .community {
+  .home, .profile-page, .explore, .community, .notification {
     margin-left: 110px;
   }
 }
@@ -1824,7 +1803,7 @@
     margin-left: 20%;
     margin-right: 5%;
   }  
-   .profile-page, .community{
+   .profile-page, .community, .notification{
     margin-left: 20%;
     /* margin-right: 5%; */
   }  
@@ -1930,7 +1909,7 @@
     margin-left: 25%;
     margin-right: 10%;
   } 
-  .profile-page, .community{
+  .profile-page, .community, .notification{
     margin-left: 25%;
     /* margin-right: 10%; */
   } 
