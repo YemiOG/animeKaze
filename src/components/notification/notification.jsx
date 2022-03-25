@@ -3,6 +3,9 @@ import axios from "axios";
 import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/userContext';
 
+// local imports
+import ListNotification from "./listNotification"
+
 function Notification() {
 
 	const usernamer = window.localStorage.getItem('username')
@@ -37,8 +40,8 @@ function Notification() {
 		  })}
 
 	return (
-		<div>
-			Notification
+		<div className="notification">
+			<ListNotification />
 		</div>
 	);
   }
