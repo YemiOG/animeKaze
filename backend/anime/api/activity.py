@@ -391,4 +391,4 @@ def notify():
     # Display notifications
 	response = User.to_collection_dict(user.get_notifications(), page, per_page,
                                        'api.notify')
-    return response
+	return response
