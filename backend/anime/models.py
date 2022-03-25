@@ -567,8 +567,8 @@ class Notification(PaginatedAPIMixin, db.Model):
         self.like_child_comments.remove(comment)
         db.session.delete(self)
     
-    def get_user(self, user):
-        return db.session.query(User).filter_by(id=user.user_id).first()
+    def get_user(self, notify):
+        return db.session.query(User).filter_by(id=notify.user_id).first()
 
     def to_dict(self):
         user= self.get_user(self) 
