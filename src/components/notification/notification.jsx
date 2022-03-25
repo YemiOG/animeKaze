@@ -5,6 +5,33 @@ import { UserContext } from '../contexts/userContext';
 
 function Notification() {
 	
+	useEffect(() => {
+        getNotifications()
+    },[])
+
+	function getNotifications(){
+		axios({
+		  method: "GET",
+		  url:'/api/profile/'+ uzername + '/posts',
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		  }).then((response)=>{
+			setPosts(
+			  response.data.items
+			)
+		  // setAppState({ loading: false });
+		  }).catch((error) => {
+		  if (error.response) {
+			console.log(error.response);
+			console.log(error.response.status);
+			if (error.response.status === 401){
+			  removeToken()
+			}
+			console.log(error.response.headers);
+			}
+		  })}
+
 	return (
 		<div>
 			Notification
