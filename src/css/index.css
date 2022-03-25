@@ -1313,7 +1313,8 @@
   padding: 23px 30px;
   position: relative;
   background: #eceff1;
-  border-radius: 8px 8px 0px 0px
+  border-radius: 8px;
+  height: 652px;
 }
 
 .following{
@@ -1349,11 +1350,56 @@
 /* notifications */
 .notification{
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   margin-left: 82px;
   margin-top: 57px;
   width: 100%;
-  height: 100%;
+  height: 652px;
+  border-radius: 8px;
+  background: #ECEFF1;
+  padding: 23px 29px;
+}
+.notification-cover{
+  border-radius: 5px;
+}
+.notification-title{
+  display: flex;
+  height: 51px;
+  align-items: center;
+  padding-left: 8px;
+}
+.list-notification{
+  display: flex;
+  flex-direction: row;
+  background: #fff;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+.notification-list-cover{
+}
+.notification-list-cover div:last-child{
+  border-radius: 5px;
+}
+
+.notification-image{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 14px;
+}
+.notification-image img{
+  width: inherit;
+  height: inherit;
+}
+.notification-details{
+  align-self: center;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+}
+.notification-details .navr-link{
+  text-transform: capitalize;
 }
 /* end notifications */
 
