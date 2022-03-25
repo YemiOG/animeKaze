@@ -166,6 +166,7 @@ def like(id):
 		new_notf = Notification(timestamps=like_time, 
 								username= user.username,
 								post = Post_liked,
+								post_creator_id= Post_liked.user_id,
 								author=user)
 		db.session.add(new_notf)
 		db.session.commit()
@@ -314,6 +315,7 @@ def likeComment(id):
 		new_notf = Notification(timestamps=comment_time, 
 								username= user.username,
 								comment = Comment_liked,
+								comment_creator_id= Comment_liked.user_id,
 								author=user)
 		db.session.add(new_notf)
 		db.session.commit()
@@ -350,6 +352,7 @@ def likeChildComment(id):
 		new_notf = Notification(timestamps=comment_time, 
 								username= user.username,
 								childcomment = comment,
+								child_comment_creator_id= comment.user_id,
 								author=user)
 		db.session.add(new_notf)
 		db.session.commit()
@@ -364,7 +367,7 @@ def likeChildComment(id):
 
 	bro = Notification.query.all()
 	for b in bro:
-		print(b)
+		print(b.child_comment_creator_id)
 	print("yes")
 
 	response = {"success": True}
@@ -376,10 +379,10 @@ def notify():
 	#set time action was made 
 	action_time = datetime.utcnow() 
 	
-	#get comment, userId and postId from POST request
-	comment = request.json.get('content')
-	user_id = request.json.get('uid')
-	post_id = request.json.get('pid')
+	# #get comment, userId and postId from POST request
+	# comment = request.json.get('content')
+	# user_id = request.json.get('uid')
+	# post_id = request.json.get('pid')
 
 	# Get current user
 	uzer = request.json.get("username").lower()
