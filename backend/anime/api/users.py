@@ -64,20 +64,21 @@ def get_followers(uzername):
 
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
 
-	userData = User.to_collection_dict(user.followers, page, per_page,
+	user_data = User.to_collection_dict(user.followers, page, per_page,
                                    'api.get_followers', uzername=uzername)
 
+	print(user_data)
 	# Get the state of the relationship (following or not following)
 	# between logged in user and the user
 	# whose profile page is being viewed ()
-	for follow in userData['items']:
+	for follow in user_data['items']:
 		
 		flw= follow['username']
 		follower= User.query.filter_by(username=flw).first_or_404()
 		following.append(currentUser.is_following(follower))
 
 	response = {
-			"user":userData,
+			"user":user_data,
 			"following":following
 		}
 	return response
@@ -103,19 +104,19 @@ def get_followed(uzername):
 
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
 
-	userData = User.to_collection_dict(user.followed, page, per_page,
+	user_data = User.to_collection_dict(user.followed, page, per_page,
                                    'api.get_followed', uzername=uzername)
 
 	#Get the state of the relationship (following or not following)
 	# between logged in user and the user 
 	# whose profile page is being viewed ()
-	for follow in userData['items']:
+	for follow in user_data['items']:
 		flw= follow['username']
 		follower= User.query.filter_by(username=flw).first_or_404()
 		following.append(currentUser.is_following(follower))
 		
 	response = {
-			"user":userData,
+			"user":user_data,
 			"following":following
 		}
 	return response
@@ -125,17 +126,12 @@ def get_followed(uzername):
 def update(uzername):
 	data = request.form.to_dict()
 
-	print(data)
-
 	# Confirm that the user editing the profile page is the owner of the page
 	if  uzername != data['currentUzer']:
 		return bad_request('unauthorized')
 	
 	avatar_image = request.files['file']
 	header_image = request.files['header-file']
-
-	print(avatar_image.filename)
-	print(header_image.filename)
 
 	user = User.query.filter_by(username=uzername).first_or_404()
 	if 'username' in data and data['username'] != user.username and \
@@ -162,7 +158,7 @@ def update(uzername):
 		# and then get the url for the transitioned uploaded file and store it in the database
 		header_file= upload_result.get('secure_url')
 		data["header"] = header_file
-	print(data)
+
 	#Update profile with new info
 	user.from_dict(data, new_user=False)
 	db.session.commit()
