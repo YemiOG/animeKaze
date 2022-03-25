@@ -80,12 +80,17 @@ function EditProfile(props){
           }
       })
       .then((response) => {
+        setShowToast(true)
         // update username in web storage
         window.localStorage.setItem(
           "username", response.data.username)
+
+        window.localStorage.setItem(
+          "avatar", response.data.avatar)
         // replace previous url
         window.history.replaceState({}, null, response.data.username);
-        setShowToast(true)
+        // navigate to new url
+        navigate("/user/" + response.data.username, { state: true })
         // update user details
         props.update()
       }).catch((error) => {
