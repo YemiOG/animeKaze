@@ -22,7 +22,6 @@ import RequestPasswordChange from "../Auth/RequestChangePassword"
 
 //Profile
 import Profile from "../profile/Profile"
-import Follow from "../follow/followerList"
 
 //notification
 import Notification from '../notification/notification'
@@ -37,8 +36,6 @@ function AppRouter() {
 
 	const location = useLocation();
 	const profileLocation = location.pathname.includes('user') && !location.pathname.includes('follow')
-	const followerLocation = location.pathname.includes('user') && location.pathname.includes('follower')
-	const followingLocation = location.pathname.includes('user') && location.pathname.includes('followed')
 	const sideBarDisplay = location.pathname.includes('notification') || location.pathname.includes('community') || location.pathname.includes('user') 
 	const loginLocation = location.pathname.includes('login') || location.pathname.includes('register')
 
@@ -62,12 +59,6 @@ function AppRouter() {
 		userLinks:'',
 		}
 	);
-	const [profiler, setProfiler] = useState(
-	  {
-	    uid:null,
-	    cuid:null,
-	    user:'',
-	  });
 
 	return (
 		<UserContext.Provider value={{token, userInfo, appState, setAppState, setUserInfo, removeToken, setToken}}>
@@ -104,21 +95,8 @@ function AppRouter() {
 								</AuthedRoute>
 								} />
 					{profileLocation &&
-					<Route exact path={`${location.pathname}`} element={<Profile />} />}
-					{followerLocation &&
-					<Route exact path={`${location.pathname}`} 
-						element={
-							<AuthedRoute >
-								<Follow />
-							</AuthedRoute>
-							}/>}
-					{followingLocation &&
-					<Route exact path={`${location.pathname}`} 
-						element={
-								<AuthedRoute >
-									<Follow />
-								</AuthedRoute>
-								}/>}
+						<Route exact path={`${location.pathname}`} element={<Profile />} />
+						}
 					<Route path='*' element={<PageNotFound />}/>
 				</Routes> 				
 				{(token && !sideBarDisplay)  && <Trend />}
