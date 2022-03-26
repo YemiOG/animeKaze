@@ -785,7 +785,7 @@
 }
 
 .drop{
-  cursor:pointer
+  cursor:pointer;
 }
 
 .post-list .post-image{
@@ -1414,6 +1414,18 @@
 .notification-details .navr-link{
   text-transform: capitalize;
 }
+
+.notify-header{
+  justify-content: flex-end;
+  border-bottom: 2px solid #E5E5E5 !important;
+  margin-bottom: 5px;
+}
+
+.main_notify{
+  font-style: italic;
+  cursor: pointer;
+  text-decoration: underline;
+  }
 /* end notifications */
 
 /* modal */
