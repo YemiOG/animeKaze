@@ -57,6 +57,14 @@ commentPostNotification = db.Table('commentPostNotification',
                                    db.ForeignKey('post.id'))
                          )
 
+# table for notifications for dropping comment on post
+commentChildNotification = db.Table('commentChildNotification',
+                         db.Column('not_id', db.Integer,
+                                   db.ForeignKey('notification.id')),
+                         db.Column('commnt_id', db.Integer,
+                                   db.ForeignKey('comment.id'))
+                         )
+
 # table for notifications for following/unfollowing user
 followNotification = db.Table('followNotification',
                          db.Column('not_id', db.Integer,
@@ -161,7 +169,8 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                                                                             Notification.comment_creator_id == self.id, 
                                                                             Notification.child_comment_creator_id == self.id,
                                                                             Notification.followed_user_id == self.id,
-                                                                            Notification.comment_post_author_id == self.id))
+                                                                            Notification.comment_post_author_id == self.id,
+                                                                            Notification.child_comment_author_id  == self.id ))
         return notification_list.order_by(Notification.timestamps.desc())
 
     def followed_posts(self):
@@ -566,6 +575,10 @@ class Notification(PaginatedAPIMixin, db.Model):
         'Post', secondary=commentPostNotification,
         backref=db.backref('commentPostNotification', lazy='dynamic'), lazy='dynamic')
     comment_post_author_id = db.Column(db.Integer)
+    child_comment_notify = db.relationship(
+        'Comment', secondary=commentChildNotification,
+        backref=db.backref('commentChildNotification', lazy='dynamic'), lazy='dynamic')
+    child_comment_author_id = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
@@ -621,6 +634,7 @@ class Notification(PaginatedAPIMixin, db.Model):
             'notify_child_comment_type': self.like_child_comments.count(),
             'notify_follow_type': self.follow_notify.count(),
             'notify_post_comment_type': self.comment_notify.count(),
+            'notify_child_comment_type': self.comment_notify.count(),
             'avatar': user.avatar,
         }
         return data
