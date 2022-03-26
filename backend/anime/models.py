@@ -627,6 +627,9 @@ class Notification(PaginatedAPIMixin, db.Model):
             'notify_post_comment_type': self.comment_notify.count(),
             'notify_cc_child_comment_type': self.child_comment_notify.count(),
             'avatar': user.avatar,
+            'post' : self.post_id,
+            'comment' : self.comment_id,
+            'child_comment' : self.child_comment_id,
         }
         return data
 
