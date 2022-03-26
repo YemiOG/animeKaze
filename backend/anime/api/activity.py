@@ -271,12 +271,6 @@ def commenting():
 	new_notf.comment_post_notification(Posts)
 	db.session.commit()
 
-
-	bro = Notification.query.all()
-	for b in bro:
-		print(b)
-	print("yes")
-
 	response = {"success": True}
 	return response
 
@@ -304,6 +298,24 @@ def child_commenting():
 						author=current_user)
 	db.session.add(new_comment)
 	db.session.commit()
+
+	#create new notification for new comment
+	new_notf = Notification(timestamps=comment_time, 
+							username= current_user.username,
+							comment= comment,
+							child_comment_author_id = comment.user_id,
+							author=current_user)
+
+	db.session.add(new_notf)
+	db.session.commit()
+	new_notf.comment_post_notification(comment)
+	db.session.commit()
+
+
+	bro = Notification.query.all()
+	for b in bro:
+		print(b)
+	print("yes")
 	response = {"success": True}
 	return response
 
