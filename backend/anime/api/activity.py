@@ -308,7 +308,7 @@ def child_commenting():
 
 	db.session.add(new_notf)
 	db.session.commit()
-	new_notf.comment_post_notification(comment)
+	new_notf.comment_child_notification(comment)
 	db.session.commit()
 
 
