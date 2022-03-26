@@ -1,7 +1,7 @@
 
 function Card(props){
 	return(
-		<div className="anime">
+		<div className="anime" onClick={ () => props.show(props.anime) } > 
 			<div className="cover">
 				<img src={props.image} alt=""/>
 			</div>
@@ -10,7 +10,6 @@ function Card(props){
 				<p>{props.content}</p>
 			</div>
 		</div>
-
 	)
 }
 

@@ -6,6 +6,7 @@ import { UserContext } from '../contexts/userContext';
 import Home from "../Homepage"
 import Explore from "../explore/Explore"
 import Base from "../Basepage"
+import Trend from "../trendingAnime/trending"
 import Header from "../topBottom/Header"
 import Footer from "../topBottom/Footer"
 import Sidebar from "../sideBar/SideBar"
@@ -21,7 +22,12 @@ import RequestPasswordChange from "../Auth/RequestChangePassword"
 
 //Profile
 import Profile from "../profile/Profile"
-import Follow from "../follow/followerList"
+
+//notification
+import Notification from '../notification/notification'
+
+//notification
+import Community from '../community/community'
 
 //error page
 import PageNotFound from '../error/pageNotFound'
@@ -30,10 +36,11 @@ function AppRouter() {
 
 	const location = useLocation();
 	const profileLocation = location.pathname.includes('user') && !location.pathname.includes('follow')
-	const followerLocation = location.pathname.includes('user') && location.pathname.includes('follower')
-	const followingLocation = location.pathname.includes('user') && location.pathname.includes('followed')
+	const sideBarDisplay = location.pathname.includes('notification') || location.pathname.includes('community') || location.pathname.includes('user') 
+	const loginLocation = location.pathname.includes('login') || location.pathname.includes('register')
 
-	// console.log(profileLocation)
+	// console.log(sideBarDisplay)
+	// console.log(location.pathname)
 	// console.log(followerLocation)
 	// console.log(followingLocation)
 	
@@ -52,19 +59,12 @@ function AppRouter() {
 		userLinks:'',
 		}
 	);
-	const [profiler, setProfiler] = useState(
-	  {
-	    uid:null,
-	    cuid:null,
-	    user:'',
-	  });
 
 	return (
 		<UserContext.Provider value={{token, userInfo, appState, setAppState, setUserInfo, removeToken, setToken}}>
-			<Header/>  
+			<Header />
 			<div className='App'>
-				<Sidebar/> 
-
+				{!loginLocation && <Sidebar/> }
 				{/* {console.log(userInfo.uzer)} */}
 				{console.log(location.pathname)}
 				{/* username: {userInfo.currentUser} */}
@@ -72,6 +72,16 @@ function AppRouter() {
 					<Route exact path="/login" element={<Login/>}></Route>
 					<Route exact path="/register" element={<Register/>}></Route>
 					<Route exact path="/" element={<Base />}></Route> 
+					<Route exact path="/notifications" element= {
+								<AuthedRoute >
+									<Notification />
+								</AuthedRoute>
+								} />
+					<Route exact path="/community" element={
+								<AuthedRoute >
+									<Community />
+								</AuthedRoute>
+								} /> 
 					<Route exact path="/accounts/password/reset/" element={<RequestPasswordChange/>}></Route>
 					<Route exact path="/explore" element={
 								<AuthedRoute >
@@ -85,23 +95,11 @@ function AppRouter() {
 								</AuthedRoute>
 								} />
 					{profileLocation &&
-					<Route exact path={`${location.pathname}`} element={<Profile />} />}
-					{followerLocation &&
-					<Route exact path={`${location.pathname}`} 
-						element={
-							<AuthedRoute >
-								<Follow />
-							</AuthedRoute>
-							}/>}
-					{followingLocation &&
-					<Route exact path={`${location.pathname}`} 
-						element={
-								<AuthedRoute >
-									<Follow />
-								</AuthedRoute>
-								}/>}
+						<Route exact path={`${location.pathname}`} element={<Profile />} />
+						}
 					<Route path='*' element={<PageNotFound />}/>
-				</Routes> 
+				</Routes> 				
+				{(token && !sideBarDisplay)  && <Trend />}
 				{/* <Footer /> */}
 			</div>
 		</UserContext.Provider>

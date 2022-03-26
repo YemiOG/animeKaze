@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import { UserContext } from '../contexts/userContext';
 import axios from "axios";
 import InputEmoji from "react-input-emoji";
@@ -10,7 +10,7 @@ import emoji from '../../images/emoji.png'
 function CreatePost(props){
 
 	const [content, setContent] = useState("")
-	const [image, setImage] = useState(null);
+	const [image, setImage] = useState("");
 	const [textArea, setTextArea] = useState(false)
 	const avatar = window.localStorage.getItem('avatar')
 	const userId = JSON.parse(window.localStorage.getItem("cuid"))
@@ -81,7 +81,7 @@ function CreatePost(props){
 						className='text'
 						onChange={setContent}
 						placeholder="What's happening?"
-						value={content}
+						value={content && content}
 						required
 					/>
 					:
@@ -101,7 +101,7 @@ function CreatePost(props){
 					{!textArea ? <div className="emoji" onClick={expandTextArea}>  <img src={emoji} alt=""/> <p>Feeling</p> </div> : null}
 					<input type="file" id="image" name="file" accept="image/*" className="file-custom" onChange={onChangeFile}/>
 					<input  name="uid" value={userId} hidden readOnly={true}/>
-					<button
+					<button 
 						className="sub-btn btn-lg btn-primary pull-xs-right"
 						type="submit">
 						Post

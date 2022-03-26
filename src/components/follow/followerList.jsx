@@ -5,7 +5,7 @@ import { UserContext } from '../contexts/userContext';
 import Loading from '../dataLoading/Loading'
 import FollowList from './followList'
 
-function Follow() {
+function Follow(props) {
 
 	const location = useLocation();
 	const usernamer = window.localStorage.getItem('username')
@@ -22,9 +22,10 @@ function Follow() {
     },[])
 
 	function getfollowers(){
+		const flwrsLink = props.getFlw
 		axios({
 			method: "POST",
-			url:'/api' + location.pathname,
+			url: flwrsLink,
 			data:{
 				username:usernamer
 			   },
@@ -47,9 +48,9 @@ function Follow() {
 			  console.log(error.response.headers);
 			  }
 		  })}
-
+		
   return (
-	<div>
+	<div className="follow-cover">
 		{followers.follwrs && followers.follwrs.map( (lists,index) => <FollowLoading 
 																		key={lists.id} 
 																		isFollowing={following[index]} 

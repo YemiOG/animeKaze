@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from ..models import User, delete_account
 from .. import db
 from .errors import bad_request
-
+from cloudinary.uploader import upload
 
 @api.route('/user/<uzername>', methods=['POST'])
 def get_user(uzername):
@@ -64,20 +64,20 @@ def get_followers(uzername):
 
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
 
-	userData = User.to_collection_dict(user.followers, page, per_page,
+	user_data = User.to_collection_dict(user.followers, page, per_page,
                                    'api.get_followers', uzername=uzername)
 
 	# Get the state of the relationship (following or not following)
 	# between logged in user and the user
 	# whose profile page is being viewed ()
-	for follow in userData['items']:
+	for follow in user_data['items']:
 		
 		flw= follow['username']
 		follower= User.query.filter_by(username=flw).first_or_404()
 		following.append(currentUser.is_following(follower))
 
 	response = {
-			"user":userData,
+			"user":user_data,
 			"following":following
 		}
 	return response
@@ -103,19 +103,19 @@ def get_followed(uzername):
 
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
 
-	userData = User.to_collection_dict(user.followed, page, per_page,
+	user_data = User.to_collection_dict(user.followed, page, per_page,
                                    'api.get_followed', uzername=uzername)
 
 	#Get the state of the relationship (following or not following)
 	# between logged in user and the user 
 	# whose profile page is being viewed ()
-	for follow in userData['items']:
+	for follow in user_data['items']:
 		flw= follow['username']
 		follower= User.query.filter_by(username=flw).first_or_404()
 		following.append(currentUser.is_following(follower))
 		
 	response = {
-			"user":userData,
+			"user":user_data,
 			"following":following
 		}
 	return response
@@ -123,11 +123,14 @@ def get_followed(uzername):
 @api.route('/user/<uzername>', methods=['PUT'])
 @jwt_required()
 def update(uzername):
-	data = request.get_json() or {}
+	data = request.form.to_dict()
 
 	# Confirm that the user editing the profile page is the owner of the page
 	if  uzername != data['currentUzer']:
 		return bad_request('unauthorized')
+	
+	avatar_image = request.files['file']
+	header_image = request.files['header-file']
 
 	user = User.query.filter_by(username=uzername).first_or_404()
 	if 'username' in data and data['username'] != user.username and \
@@ -137,6 +140,24 @@ def update(uzername):
 			User.query.filter_by(email=data['email'].lower()).first():
 		return bad_request('email address already registered')
 	
+	#upload avatar media file to cloudinary
+	if avatar_image.filename:
+		upload_result = upload(avatar_image, 
+			folder = "Profile/", 
+			public_id = avatar_image.filename)
+		# and then get the url for the transitioned uploaded file and store it in the database
+		avatar_file= upload_result.get('secure_url')
+		data["avatar"] = avatar_file
+
+	#upload header media file to cloudinary
+	if header_image.filename:
+		upload_result = upload(header_image, 
+			folder = "Profile/", 
+			public_id = header_image.filename)
+		# and then get the url for the transitioned uploaded file and store it in the database
+		header_file= upload_result.get('secure_url')
+		data["header"] = header_file
+
 	#Update profile with new info
 	user.from_dict(data, new_user=False)
 	db.session.commit()

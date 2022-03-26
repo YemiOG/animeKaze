@@ -8,7 +8,6 @@ function FollowList(props){
     const {token, removeToken}= useContext(UserContext)
     const userId = JSON.parse(window.localStorage.getItem("cuid"))
     const [buttonState, setButtonState] = useState(props.isFollowing)
-    // console.log(props.isFollowing)
     let idMatch = false
 
     if (userId === props.follow.id){
@@ -28,6 +27,7 @@ function FollowList(props){
         })
         .then((response) => {
           setButtonState(true)
+          props.change()
         }).catch((error) => {
           if (error.response) {
             console.log(error.response)
@@ -52,6 +52,7 @@ function FollowList(props){
             })
             .then((response) => {
               setButtonState(false)
+              props.change()
             }).catch((error) => {
               if (error.response) {
                 console.log(error.response)
@@ -65,24 +66,34 @@ function FollowList(props){
     
     const uzer = "/user/" + props.follow.username
     return (
-        <div className="note">
+        <div className="follow-card">
             <Link to={uzer}
                 className="nav-link">
-                {props.follow.username}
+                <div>
+                  <div className="follow-card-top">
+                    <div className="follow-card-img-cover">
+                      <img src={props.follow.avatar} alt=""/>
+                    </div>
+                    <div>
+                      <div className="username"> {props.follow.username} </div>
+                      <div className="about">{props.follow.about_me}</div>
+                    </div>
+                  </div>
+                </div>
             </Link> 
 
             {/* if current user id matched follower id, 
             follow/unfollow button should be hdden*/}
             {!idMatch &&
-            (buttonState ? 
-              <button onClick={unfollowUser}>
-                Following
-              </button>
-              :
-              <button onClick={followUser}>
-                Follow
-              </button>
-            )}
+              <div className="follow-btns">
+                <button onClick={unfollowUser} className= {buttonState ? 'following' : ""} disabled={!buttonState ? true : false}>
+                  Unfollow
+                </button>
+                <button onClick={followUser} className= {!buttonState ? 'following' : ""} disabled={buttonState ? true : false}>
+                  Follow
+                </button>
+              </div>
+            }
         </div>
     )
 }
