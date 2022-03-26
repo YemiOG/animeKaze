@@ -1,7 +1,8 @@
 import jwt
 from anime import app
 from time import time
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
+from flask_jwt_extended import get_jwt_identity
 from flask import url_for
 from sqlalchemy import or_,delete, and_
 from sqlalchemy.sql import func
@@ -266,7 +267,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         return data
 
     def from_dict(self, data, new_user=False):
-        for field in ['avatar', 'header', 'firstname', 'lastname', 'username', 'email', 'about_me', 'gender', 'location' , 'dob' ,'twitter' , 'instagram', 'facebook']:
+        for field in ['avatar', 'header', 'first_name', 'last_name', 'username', 'email', 'about_me', 'gender', 'location' , 'date_of_birth' ,'twitter' , 'instagram', 'facebook']:
             if field in data:
                 if data[field] is not None:
                     setattr(self, field, data[field].lower())
@@ -347,8 +348,19 @@ class Post(PaginatedAPIMixin, db.Model):
     def get_user(self, user):
         return db.session.query(User).filter_by(id=user.user_id).first()
 
+    def confirm_like(self):
+        user_email = get_jwt_identity()
+        user = db.session.query(User).filter_by(email=user_email).first()
+        if self.likes.filter(likedPosts.c.liker_id == user.id).count() > 0:
+            post_liked = True
+        else:
+            post_liked = False
+        return post_liked
+
     def to_dict(self):
         user= self.get_user(self) 
+        liked = self.confirm_like()
+        print(liked)
         data = {
             'id': self.id,
             'content': self.content,
@@ -358,7 +370,7 @@ class Post(PaginatedAPIMixin, db.Model):
             'fname': user.first_name,
             'lname': user.last_name,
             'avatar': user.avatar,
-            'user_liked': self.liked_by_user,
+            'user_liked': liked,
         }
         return data
 
