@@ -82,6 +82,22 @@ def get_profile_posts(username):
 										username=username)
     return response
 
+@api.route('/notification/posts', methods=['GET'])
+@jwt_required()
+def get_single_post():
+	#Get id of post
+	post_id = request.json.get("pid")
+
+	#Get the post by its id
+	post = Post.query.filter_by(id=post_id).first_or_404()
+
+    # Display user's posts only
+    response = Post.to_dict(post)
+
+	print(response)
+
+    return response
+
 
 @api.route('/home/<username>/posts', methods=['GET'])
 @jwt_required()
