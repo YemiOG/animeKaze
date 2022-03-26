@@ -180,24 +180,6 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                              'reporting')).group_by(
                              reportedPost.c.post_id).subquery()
         
-        # # get count of not interested posts by post id
-        # no_intrst_count = db.session.query(
-        #                     notInterested.c.post_id, func.count('*').label(
-        #                      'not_interest_count')).group_by(
-        #                         notInterested.c.post_id).subquery()
-
-        # followed = db.session.query(Post).join(
-        #             followers, (followers.c.followed_id == Post.user_id)).outerjoin(
-        #                 no_intrst_count).outerjoin(notInterested).outerjoin(
-        #                     reported_count).outerjoin(reportedPost).filter(
-        #                         followers.c.follower_id == self.id).filter(
-        #                             or_(notInterested.c.person_id != self.id, notInterested.c.person_id == None)).filter(
-        #                                 or_(no_intrst_count.c.not_interest_count < 2,
-        #                                     notInterested.c.person_id == None)).filter(
-        #                                             or_(reportedPost.c.person_id != self.id,
-        #                                                 reportedPost.c.person_id == None)).filter(
-        #                                                     or_(reported_count.c.reporting < 2, reportedPost.c.person_id == None))
-
         # get posts from user's followers minus reported posts
         followed = db.session.query(Post).join(
                     followers, (followers.c.followed_id == Post.user_id)).outerjoin(
@@ -237,13 +219,6 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                                 or_(reportedPost.c.person_id != self.id,
                                     reportedPost.c.person_id == None)).filter(
                                         or_(reported_count.c.reporting < 2, reportedPost.c.person_id == None))
-
-        # explore = db.session.query(Post).filter(
-        #     Post.user_id != self.id).outerjoin(
-        #     no_intrst_count).outerjoin(notInterested).filter(
-        #         or_(notInterested.c.person_id != self.id, notInterested.c.person_id == None)).filter(
-        #             or_(no_intrst_count.c.not_interest_count < 2,
-        #                 notInterested.c.person_id == None))
 
         return explore.order_by(Post.timestamp.desc())
 
@@ -291,7 +266,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         return data
 
     def from_dict(self, data, new_user=False):
-        for field in ['avatar', 'header', 'first_name', 'last_name', 'username', 'email', 'about_me', 'gender', 'location' , 'dob' ,'twitter' , 'instagram', 'facebook']:
+        for field in ['avatar', 'header', 'firstname', 'lastname', 'username', 'email', 'about_me', 'gender', 'location' , 'dob' ,'twitter' , 'instagram', 'facebook']:
             if field in data:
                 if data[field] is not None:
                     setattr(self, field, data[field].lower())
@@ -597,6 +572,10 @@ class Notification(PaginatedAPIMixin, db.Model):
     def comment_post_notification(self, post):
         self.comment_notify.append(post)
 
+    #method for commentting under comments
+    def comment_child_notification(self, comment):
+        self.child_comment_notify.append(comment)
+
     # method for like post notifications
     def like_post_notify(self, post):
         self.like_post.append(post)
@@ -634,7 +613,7 @@ class Notification(PaginatedAPIMixin, db.Model):
             'notify_child_comment_type': self.like_child_comments.count(),
             'notify_follow_type': self.follow_notify.count(),
             'notify_post_comment_type': self.comment_notify.count(),
-            'notify_child_comment_type': self.comment_notify.count(),
+            'notify_cc_child_comment_type': self.child_comment_notify.count(),
             'avatar': user.avatar,
         }
         return data
