@@ -89,10 +89,11 @@ function EditProfile(props){
           "avatar", response.data.avatar)
         // replace previous url
         window.history.replaceState({}, null, response.data.username);
+        // update user details
+        props.update("/user/" + response.data.username)
         // navigate to new url
         navigate("/user/" + response.data.username, { state: true })
-        // update user details
-        props.update()
+        console.log("here")
       }).catch((error) => {
         if (error.response) {
           console.log(error.response)
