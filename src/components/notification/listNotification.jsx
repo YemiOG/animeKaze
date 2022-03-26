@@ -10,6 +10,11 @@ function ListNotification(props) {
 
 	return (
 		<div className="list-notification">
+			<div className="notification-icon">
+				{(props.notifications.notify_post_type || props.notifications.notify_comment_type || props.notifications.notify_child_comment_type)? <Liked /> : null}
+				{props.notifications.notify_follow_type ? <Followed /> : null}
+				{props.notifications.notify_post_comment_type ? <Commented /> : null}
+			</div>
 			<div className="notification-image">
 				<img src={props.notifications.avatar} alt=""/>
 			</div>
@@ -21,6 +26,8 @@ function ListNotification(props) {
 					</Link> 
 					{props.notifications.notify_post_type ? <span> liked your post</span> : null}
 					{(props.notifications.notify_comment_type || props.notifications.notify_child_comment_type) ? <span> liked your comment</span> : null}
+					{props.notifications.notify_follow_type ? <span> followed you</span> : null}
+					{props.notifications.notify_post_comment_type ? <span> commented on your post</span> : null}
 				</div>				
 			</div>
 		</div>
