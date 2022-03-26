@@ -101,6 +101,7 @@ function Profile() {
            },
         }).then((response)=>{
           const data = response.data.user.id
+          console.log(response.data.user)
           const username = response.data.user.username
           if(userId === data){
             setidMatch(true)
@@ -229,7 +230,8 @@ function Profile() {
         setFollowModalHeader('Followings')
     }
 
-    console.log(idMatch)
+    console.log(profile.dob)
+
     return (
       <>
         {(!noUser) ?
@@ -275,7 +277,7 @@ function Profile() {
                     <User fill="191E22"/> {profile.gender ? profile.gender : <span className="noDetail"> ------------------------------- </span>} 
                   </p>
                   <p>
-                    <Dob fill="191E22"/>{profile.dob ? <>Born profile.dob </> : <span className="noDetail"> ------------------------------- </span>}
+                    <Dob fill="191E22"/>{profile.dob ? <>Born {profile.dob} </> : <span className="noDetail"> ------------------------------- </span>}
                   </p>
                   <p>
                     <Locate fill="191E22"/> {profile.location ? profile.location : <span className="noDetail"> ------------------------------- </span>}

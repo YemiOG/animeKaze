@@ -23,18 +23,14 @@ function Posts(props){
   }
 
 	const [comments , setComments] = useState("")
-  const [newComment , setComment] = useState("")
 	const [showComment , setShowComment] = useState(false)
-  const [row , setRow] = useState(1)
 	const [hidePost , setHidePost] = useState(false)
 	const [hideInterestPost , setHideInterestPost] = useState(false)
 	const [showCard , setShowCard] = useState(false)
 	const [liked , setLiked] = useState(fillColor)
 	const [stroke , setStroke] = useState(strokeColor)
-  const {token, removeToken, setAppState}= useContext(UserContext)
 
   const usernamer = window.localStorage.getItem('username')
-  const userId = JSON.parse(window.localStorage.getItem("cuid"))
   const profile = "/user/" + props.poster 
  
     function handleClick(){
@@ -77,7 +73,6 @@ function Posts(props){
         </div>
       )}
     
-  console.log(liked)
 	return (
         <div className="post-card">
           {!hidePost && !hideInterestPost ? <div> 
