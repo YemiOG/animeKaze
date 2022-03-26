@@ -36,20 +36,7 @@ function Posts(props){
   const usernamer = window.localStorage.getItem('username')
   const userId = JSON.parse(window.localStorage.getItem("cuid"))
   const profile = "/user/" + props.poster 
-
-    function handleHeight() {
-          if(row===1) {
-        setRow(3)
-      }else{
-        setRow(1)
-        };
-      }
-
-    function handleChange(event) {
-        const newValue = event.target.value
-        setComment(newValue);
-    }
-
+ 
     function handleClick(){
         props.like(props.id)
         if (liked ==='none'){
@@ -90,6 +77,7 @@ function Posts(props){
         </div>
       )}
     
+  console.log(liked)
 	return (
         <div className="post-card">
           {!hidePost && !hideInterestPost ? <div> 
