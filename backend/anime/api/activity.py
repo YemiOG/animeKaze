@@ -82,7 +82,7 @@ def get_profile_posts(username):
 										username=username)
     return response
 
-@api.route('/notification/posts', methods=['GET'])
+@api.route('/notification/post', methods=['POST'])
 @jwt_required()
 def get_single_post():
 	#Get id of post
@@ -92,11 +92,23 @@ def get_single_post():
 	post = Post.query.filter_by(id=post_id).first_or_404()
 
     # Display user's posts only
-    response = Post.to_dict(post)
+	response = post.to_dict()
 
-	print(response)
+	return response
 
-    return response
+@api.route('/notification/comment', methods=['POST'])
+@jwt_required()
+def get_single_comment():
+	#Get id of post
+	comment_id = request.json.get("cid")
+	print(comment_id)
+	#Get the post by its id
+	comment = Comment.query.filter_by(id=comment_id).first_or_404()
+
+    # Display user's posts only
+	response = comment.to_dict()
+
+	return response
 
 
 @api.route('/home/<username>/posts', methods=['GET'])
