@@ -61,7 +61,7 @@ function DisplayChildComments(props) {
 
 	return (
 		(props.child.comment === props.id ? 
-					<div className="comment-child" tabIndex={1} ref={childComments}>
+					<div className="comment-child" ref={childComments}>
 						<div className="comment-child-1">
 							<div className='profile-image-child'>
 									<img src={props.child.avatar} alt="profile logo"/>
