@@ -1303,8 +1303,17 @@
   border-radius: 50px;
 }
 
+.following{
+  background: rgba(67, 117, 255, 0.8);
+  border: none !important;
+  color:#fff
+}
+/* end follow card */
+
+/* community */
 .community{
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   margin-left: 82px;
   margin-top: 57px;
@@ -1315,18 +1324,7 @@
   background: #eceff1;
   border-radius: 8px;
   height: 652px;
-}
-
-.following{
-  background: rgba(67, 117, 255, 0.8);
-  border: none !important;
-  color:#fff
-}
-/* end follow card */
-
-/* community */
-.community {
-  flex-direction: column;
+  overflow: auto;
 }
 .community .comm1{
   display: flex;
@@ -1358,6 +1356,7 @@
   border-radius: 8px;
   background: #ECEFF1;
   padding: 23px 29px;
+  overflow: auto;
 }
 .notification-cover{
   border-radius: 5px;
@@ -1368,17 +1367,27 @@
   align-items: center;
   padding-left: 8px;
 }
+
 .list-notification{
   display: flex;
   flex-direction: row;
   background: #fff;
   margin-bottom: 10px;
   border-radius: 5px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
+
 .notification-list-cover{
 }
 .notification-list-cover div:last-child{
   border-radius: 5px;
+}
+
+.notification-icon{
+  align-self: center;
+  margin-left: 8px;
+  margin-right: 16px;
 }
 
 .notification-image{
@@ -1387,10 +1396,12 @@
   border-radius: 50%;
   margin-right: 14px;
 }
+
 .notification-image img{
   width: inherit;
   height: inherit;
 }
+
 .notification-details{
   align-self: center;
   font-style: normal;
@@ -1398,6 +1409,7 @@
   font-size: 12px;
   line-height: 14px;
 }
+
 .notification-details .navr-link{
   text-transform: capitalize;
 }
@@ -1710,6 +1722,18 @@
   }
   .home, .explore{
     margin-right: 0;
+  }
+  .notification {
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+  .notification-image {
+    margin-right: 6px;
+    width: 45px;
+    height: 45px;
+  }
+  .notification-icon {
+    margin-right: 8px;
   }
 }
 
