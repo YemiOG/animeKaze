@@ -236,7 +236,7 @@ function Comments(props){
 							<div className="comment-content-2">
 								<Link to={profile}
 									className="navr-link">
-									<span>{comm.fname}</span><span>{comm.lname}</span>@{comm.username}
+									<span>{comm.fname}</span> <span>{comm.lname}</span> @{comm.username}
 								</Link> 
 								<Drop className="drop" />
 							</div>
