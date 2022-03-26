@@ -115,6 +115,9 @@ def explore():
 @api.route('/follow/<username>', methods=['POST'])
 @jwt_required()
 def follow(username):
+	# set current time
+	follow_time = datetime.utcnow()
+
 	# Get current user
 	currentUzer = request.json.get("username", None).lower()
 	currentUser = User.query.filter_by(username=currentUzer).first_or_404()
@@ -122,8 +125,20 @@ def follow(username):
 	user = User.query.filter_by(username=username).first_or_404()
 	if user == currentUser:
 		return bad_request('You cannot follow yourself')
-	currentUser.follow(user)
+	notify = currentUser.follow(user)
 	db.session.commit()
+
+	#create new notification if user is followed
+	if notify == True:
+		new_notf = Notification(timestamps=follow_time, 
+								username= currentUser.username,
+								followed_user_id= user.id,
+								author=currentUser)
+		db.session.add(new_notf)
+		db.session.commit()
+		new_notf.follow_notification(user)
+		db.session.commit()
+
 	response = {"success":'You are now following {}!'.format(username)}
 	return response
 
@@ -138,8 +153,15 @@ def unfollow(username):
 	user = User.query.filter_by(username=username).first_or_404()
 	if user == currentUser:
 		return bad_request('You cannot unfollow yourself')
-	currentUser.unfollow(user)
+	notify = currentUser.unfollow(user)
 	db.session.commit()
+
+	#delete notification if like action is reversed
+	if notify == True:
+		notific = Notification.query.filter_by(user_id = currentUser.id, followed_user_id = user.id ).first_or_404()
+		notific.delete_follow_notification(user)
+		db.session.commit()
+
 	response = {"success":'You have unfollowed {}!'.format(username)}
 	return response
 
@@ -236,6 +258,25 @@ def commenting():
 							author=current_user)
 	db.session.add(new_comment)
 	db.session.commit()
+
+	#create new notification for new comment
+	new_notf = Notification(timestamps=comment_time, 
+							username= current_user.username,
+							post = Posts,
+							comment_post_author_id = Posts.user_id,
+							author=current_user)
+
+	db.session.add(new_notf)
+	db.session.commit()
+	new_notf.comment_post_notification(Posts)
+	db.session.commit()
+
+
+	bro = Notification.query.all()
+	for b in bro:
+		print(b)
+	print("yes")
+
 	response = {"success": True}
 	return response
 
@@ -364,11 +405,6 @@ def likeChildComment(id):
 		notific = Notification.query.filter_by(child_comment_id = id, user_id = user.id).first_or_404()
 		notific.delete_like_ch_comment_notify(comment)
 		db.session.commit()
-
-	bro = Notification.query.all()
-	for b in bro:
-		print(b.child_comment_creator_id)
-	print("yes")
 
 	response = {"success": True}
 	return response
