@@ -67,7 +67,6 @@ def get_followers(uzername):
 	user_data = User.to_collection_dict(user.followers, page, per_page,
                                    'api.get_followers', uzername=uzername)
 
-	print(user_data)
 	# Get the state of the relationship (following or not following)
 	# between logged in user and the user
 	# whose profile page is being viewed ()
