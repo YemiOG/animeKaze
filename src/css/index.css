@@ -1005,7 +1005,7 @@
 
   .comment-cover{
     overflow: auto;
-    height: 300px;
+    max-height: 300px;
     padding-top: 10px;
     border: 2px solid #e5e5e5;
     border-radius: 7px;
