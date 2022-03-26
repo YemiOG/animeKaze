@@ -70,6 +70,7 @@ def search_user():
 
 
 @api.route('/profile/<username>/posts', methods=['GET'])
+@jwt_required()
 def get_profile_posts(username):
 	# get current user
     user = User.query.filter_by(username=username).first_or_404()
@@ -86,15 +87,16 @@ def get_profile_posts(username):
 @jwt_required()
 def get_home_posts(username):
 	# Get current user
-    user = User.query.filter_by(username=username).first_or_404()
-    page = request.args.get('page', 1, type=int)
-    per_page = min(request.args.get('per_page', 10, type=int), 100)
+	user = User.query.filter_by(username=username).first_or_404()
+	page = request.args.get('page', 1, type=int)
+	per_page = min(request.args.get('per_page', 10, type=int), 100)
+	
 
     # Display user's + followed users' posts
-    response = User.to_collection_dict(user.followed_posts(), page, per_page,
+	response = User.to_collection_dict(user.followed_posts(), page, per_page,
                                        'api.get_home_posts',
 									    username=username)
-    return response
+	return response
 
 
 @api.route('/explore', methods=['POST'])
@@ -178,11 +180,11 @@ def like(id):
 	#Get the liked post by its id
 	Post_liked = Post.query.filter_by(id=id).first_or_404()
 
+	# print(Post_liked.liked_by_user)
 	#Check if user has previously liked the picture with the "like_state" function
 	#If true, unlike the post  #If false, like the post
 	notify = Post_liked.like_state(user)
 	db.session.commit()
-
 	#create new notification if post is liked
 	if notify == True:
 		new_notf = Notification(timestamps=like_time, 
@@ -311,11 +313,6 @@ def child_commenting():
 	new_notf.comment_child_notification(comment)
 	db.session.commit()
 
-
-	bro = Notification.query.all()
-	for b in bro:
-		print(b)
-	print("yes")
 	response = {"success": True}
 	return response
 
