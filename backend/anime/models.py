@@ -49,6 +49,22 @@ commentNotification = db.Table('commentNotification',
                                    db.ForeignKey('comment.id'))
                          )
 
+# table for notifications for dropping comment on post
+commentPostNotification = db.Table('commentPostNotification',
+                         db.Column('not_id', db.Integer,
+                                   db.ForeignKey('notification.id')),
+                         db.Column('posts_id', db.Integer,
+                                   db.ForeignKey('post.id'))
+                         )
+
+# table for notifications for following/unfollowing user
+followNotification = db.Table('followNotification',
+                         db.Column('not_id', db.Integer,
+                                   db.ForeignKey('notification.id')),
+                         db.Column('person_id', db.Integer,
+                                   db.ForeignKey('user.id'))
+                         )
+
 # table for notifications for liked child comments
 childCommentNotification = db.Table('childCommentNotification',
                          db.Column('not_id', db.Integer,
@@ -56,6 +72,7 @@ childCommentNotification = db.Table('childCommentNotification',
                          db.Column('child_commnt_id', db.Integer,
                                    db.ForeignKey('childcomment.id'))
                          )
+
 
 class PaginatedAPIMixin(object):
     @staticmethod
@@ -127,10 +144,12 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
+            return True
 
     def unfollow(self, user):
         if self.is_following(user):
             self.followed.remove(user)
+            return True
 
     def is_following(self, user):
         return self.followed.filter(
@@ -140,8 +159,10 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
         notification_list =  db.session.query(Notification).filter(
                                 Notification.user_id != self.id).filter(or_(Notification.post_creator_id == self.id,
                                                                             Notification.comment_creator_id == self.id, 
-                                                                            Notification.child_comment_creator_id == self.id))
-        return notification_list
+                                                                            Notification.child_comment_creator_id == self.id,
+                                                                            Notification.followed_user_id == self.id,
+                                                                            Notification.comment_post_author_id == self.id))
+        return notification_list.order_by(Notification.timestamps.desc())
 
     def followed_posts(self):
         # get count of reported posts by post id
@@ -537,13 +558,33 @@ class Notification(PaginatedAPIMixin, db.Model):
         'ChildComment', secondary=childCommentNotification,
         backref=db.backref('childCommentNotification', lazy='dynamic'), lazy='dynamic')
     child_comment_creator_id = db.Column(db.Integer)
+    follow_notify = db.relationship(
+        'User', secondary=followNotification,
+        backref=db.backref('followNotification', lazy='dynamic'), lazy='dynamic')
+    followed_user_id = db.Column(db.Integer)
+    comment_notify = db.relationship(
+        'Post', secondary=commentPostNotification,
+        backref=db.backref('commentPostNotification', lazy='dynamic'), lazy='dynamic')
+    comment_post_author_id = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
     child_comment_id = db.Column(db.Integer, db.ForeignKey('childcomment.id'))
 
 
-    # method for post notifications
+    # method for follow notifications
+    def follow_notification(self, user):
+        self.follow_notify.append(user)
+
+    def delete_follow_notification(self, user):
+        self.follow_notify.remove(user)
+        db.session.delete(self)
+
+    #method for commentting under posts
+    def comment_post_notification(self, post):
+        self.comment_notify.append(post)
+
+    # method for like post notifications
     def like_post_notify(self, post):
         self.like_post.append(post)
 
@@ -551,7 +592,7 @@ class Notification(PaginatedAPIMixin, db.Model):
         self.like_post.remove(post)
         db.session.delete(self)
 
-    # method for comment notifications
+    # method for like comment notifications
     def like_comment_notify(self, comment):
         self.like_comment.append(comment)
 
@@ -559,7 +600,7 @@ class Notification(PaginatedAPIMixin, db.Model):
         self.like_comment.remove(comment)
         db.session.delete(self)
 
-    # method for child comments notifications
+    # method for like child comments notifications
     def like_ch_comment_notify(self, comment):
         self.like_child_comments.append(comment)
 
@@ -578,6 +619,8 @@ class Notification(PaginatedAPIMixin, db.Model):
             'notify_post_type': self.like_post.count(),
             'notify_comment_type': self.like_comment.count(),
             'notify_child_comment_type': self.like_child_comments.count(),
+            'notify_follow_type': self.follow_notify.count(),
+            'notify_post_comment_type': self.comment_notify.count(),
             'avatar': user.avatar,
         }
         return data
