@@ -27,9 +27,9 @@ function EditProfile(props){
     email:props.email,
     gender: props.gender,
     location: props.location,
-    dob: props.dob,
-    firstname:props.fname,
-    lastname:props.lname,
+    date_of_birth: props.dob,
+    first_name:props.fname,
+    last_name:props.lname,
     twitter:props.twitter,
     instagram:props.instagram,
     facebook:props.facebook,
@@ -82,6 +82,7 @@ function EditProfile(props){
       .then((response) => {
         setShowToast(true)
         // update username in web storage
+        console.log(response.data)
         window.localStorage.setItem(
           "username", response.data.username)
 
@@ -134,11 +135,11 @@ function EditProfile(props){
                 <div className="edit-profile-input">
                   <div>
                     <label htmlFor="firstName">First name</label>
-                    <input id="firstName" type="text" onChange={handleChange} name="firstname"  placeholder="First Name" value={profiler.firstname ? profiler.firstname : ""} />
+                    <input id="firstName" type="text" onChange={handleChange} name="first_name"  placeholder="First Name" value={profiler.first_name ? profiler.firstname : ""} />
                   </div>
                   <div>
                     <label htmlFor="lastName">Last name</label>
-                    <input id="lastName" type="text" onChange={handleChange} name="lastname"  placeholder="Last Name" value={profiler.lastname ? profiler.lastname : ""} />
+                    <input id="lastName" type="text" onChange={handleChange} name="last_name"  placeholder="Last Name" value={profiler.last_name ? profiler.lastname : ""} />
                   </div>
                 </div>
                 <div className="edit-profile-input">
@@ -148,7 +149,7 @@ function EditProfile(props){
                   </div>
                   <div>
                     <label htmlFor="dob"> Birthday</label>
-                    <input id="dob" type="date" onChange={handleChange} name="dob"  placeholder="Date of Birth" value={profiler.dob ? profiler.dob : ""} />
+                    <input id="dob" type="date" onChange={handleChange} name="date_of_birth"  placeholder="Date of Birth" value={profiler.date_of_birth ? profiler.date_of_birth : ""} />
                   </div>
                 </div>
                 <div className="edit-profile-input">
@@ -170,7 +171,7 @@ function EditProfile(props){
                 </div>
                 <div className="bio-profile">
                     <label htmlFor="bio">Bio</label>
-                    <input id="bio" type="text" onChange={handleChange} name="about_me"  placeholder="Anime lover" value={profiler.bio} />
+                    <input id="bio" type="text" onChange={handleChange} name="about_me"  placeholder="Anime lover" value={profiler.about_me ? profiler.about_me : ""} />
                 </div>
                 <div className="edit-profile-input">
                   <div>
