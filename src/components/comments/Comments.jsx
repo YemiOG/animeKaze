@@ -223,9 +223,7 @@ function Comments(props){
 			// onClick={ () => props.show(props.anime)
 		}
 
-		console.log(show)
-
-        return (
+		return (
 			<>
 				<div className="comment-list">
 					<div className="comment-content">

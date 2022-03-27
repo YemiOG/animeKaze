@@ -32,15 +32,20 @@ function ListNotification(props) {
 						{props.notifications.notify_post_type ? <> <span> liked your</span> <span className="main_notify" onClick = {() => setShowPostModal(true)}> post</span> </> : null}
 						{(props.notifications.notify_comment_type || props.notifications.notify_child_comment_type) ? <> <span> liked your</span>  <span className="main_notify" onClick = {() => setShowCommentModal(true)}> comment</span> </>: null}
 						{props.notifications.notify_follow_type ? <span> followed you</span> : null}
-						{props.notifications.notify_post_comment_type ? <> <span> commented on your</span> <span className="main_notify" onClick = {() => setShowPostModal(true)}> post</span> </> : null}
-						{props.notifications.notify_cc_child_comment_type ? <span> replied to your comment</span> : null}
+						{props.notifications.notify_post_comment_type ? <> <span> commented on your</span> <span className="main_notify" onClick = {() => setShowCommentModal(true)}> post</span> </> : null}
+						{props.notifications.notify_cc_child_comment_type ? <> <span> replied to your</span>  <span className="main_notify" onClick = {() => setShowCommentModal(true)}>comment</span> </> : null}
 					</div>				
 				</div>
 			</div>
 			{ (showPostModal && props.notifications.post) ? <PostNotification display={showPostModal} show={setShowPostModal} 
 																postId={props.notifications.post} /> : null}
-			{ (showCommentModal && props.notifications.comment) ? <CommentNotification display={showCommentModal} show={setShowCommentModal} 
-																commentId={props.notifications.comment} /> : null}
+			{ (showCommentModal && props.notifications.comment && (props.notifications.notify_comment_type || props.notifications.notify_child_comment_type)) ? <CommentNotification display={showCommentModal} show={setShowCommentModal} 
+																commentId={props.notifications.comment} like={true} /> : null}
+			{ (showCommentModal && props.notifications.notify_post_comment_type) ? <CommentNotification display={showCommentModal} show={setShowCommentModal} 
+																commentId={props.notifications.comment} like={false} /> : null}
+			{ (showCommentModal && props.notifications.notify_cc_child_comment_type) ? <CommentNotification display={showCommentModal} show={setShowCommentModal} 
+																commentId={props.notifications.comment} childCommentId={props.notifications.child_comment} like={false} /> : null}
+
 		</>
 	);
   }
