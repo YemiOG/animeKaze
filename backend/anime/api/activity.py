@@ -82,6 +82,7 @@ def get_profile_posts(username):
 										username=username)
     return response
 
+#get single post 
 @api.route('/notification/post', methods=['POST'])
 @jwt_required()
 def get_single_post():
@@ -96,14 +97,28 @@ def get_single_post():
 
 	return response
 
+#get single comment 
 @api.route('/notification/comment', methods=['POST'])
 @jwt_required()
 def get_single_comment():
 	#Get id of post
 	comment_id = request.json.get("cid")
-	print(comment_id)
 	#Get the post by its id
 	comment = Comment.query.filter_by(id=comment_id).first_or_404()
+
+    # Display user's posts only
+	response = comment.to_dict()
+
+	return response
+
+#get single child comment 
+@api.route('/notification/child_comment', methods=['POST'])
+@jwt_required()
+def get_single_child_comment():
+	#Get id of post
+	comment_id = request.json.get("cid")
+	#Get the post by its id
+	comment = ChildComment.query.filter_by(id=comment_id).first_or_404()
 
     # Display user's posts only
 	response = comment.to_dict()
@@ -293,6 +308,7 @@ def commenting():
 	new_notf = Notification(timestamps=comment_time, 
 							username= current_user.username,
 							post = Posts,
+							comment = new_comment,
 							comment_post_author_id = Posts.user_id,
 							author=current_user)
 
@@ -331,8 +347,9 @@ def child_commenting():
 
 	#create new notification for new comment
 	new_notf = Notification(timestamps=comment_time, 
-							username= current_user.username,
-							comment= comment,
+							username = current_user.username,
+							comment = comment,
+							childcomment = new_comment,
 							child_comment_author_id = comment.user_id,
 							author=current_user)
 
