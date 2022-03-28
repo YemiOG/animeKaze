@@ -99,7 +99,7 @@ function AppRouter() {
 						}
 					<Route path='*' element={<PageNotFound />}/>
 				</Routes> 				
-				{(token && !sideBarDisplay)  && <Trend />}
+				{(token && !sideBarDisplay && !loginLocation)  && <Trend />}
 				{/* <Footer /> */}
 			</div>
 		</UserContext.Provider>
