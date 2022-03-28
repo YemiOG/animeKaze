@@ -111,10 +111,6 @@
   overflow-x: hidden;
 }
 
-.bar-contents{
-    max-width: 178px;
-}
-
 .bar-content{
   margin-top:85px;
   display: flex;
