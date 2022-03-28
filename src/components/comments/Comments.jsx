@@ -22,7 +22,7 @@ function Comments(props){
 	const [submitPossible , setSubmitPossible] = useState(true)
 	const [childComment , setchildComment] = useState(null)
 	const [commentId , setCommentId] = useState(null)
-	const {token, removeToken, setAppState}= useContext(UserContext)
+	const {token, removeToken}= useContext(UserContext)
 	const userId = JSON.parse(window.localStorage.getItem("cuid"))
 	const avatar = window.localStorage.getItem('avatar')
 	const uzername = window.localStorage.getItem('username')

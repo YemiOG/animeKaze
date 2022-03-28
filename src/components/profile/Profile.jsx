@@ -230,8 +230,6 @@ function Profile() {
         setFollowModalHeader('Followings')
     }
 
-    console.log(profile.dob)
-
     return (
       <>
         {(!noUser) ?
