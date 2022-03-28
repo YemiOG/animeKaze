@@ -39,12 +39,14 @@ function ListNotification(props) {
 			</div>
 			{ (showPostModal && props.notifications.post) ? <PostNotification display={showPostModal} show={setShowPostModal} 
 																postId={props.notifications.post} /> : null}
-			{ (showCommentModal && props.notifications.comment && (props.notifications.notify_comment_type || props.notifications.notify_child_comment_type)) ? <CommentNotification display={showCommentModal} show={setShowCommentModal} 
+			{ (showCommentModal && props.notifications.comment  && props.notifications.notify_comment_type) ? <CommentNotification display={showCommentModal} show={setShowCommentModal} 
 																commentId={props.notifications.comment} like={true} /> : null}
+			{ (showCommentModal && props.notifications.child_comment  && props.notifications.notify_child_comment_type) ? <CommentNotification display={showCommentModal} show={setShowCommentModal} 
+																commentId={props.notifications.comment} childCommentId={props.notifications.child_comment} like={true} child={true}/> : null}
 			{ (showCommentModal && props.notifications.notify_post_comment_type) ? <CommentNotification display={showCommentModal} show={setShowCommentModal} 
 																commentId={props.notifications.comment} like={false} /> : null}
 			{ (showCommentModal && props.notifications.notify_cc_child_comment_type) ? <CommentNotification display={showCommentModal} show={setShowCommentModal} 
-																commentId={props.notifications.comment} childCommentId={props.notifications.child_comment} like={false} /> : null}
+																commentId={props.notifications.comment} childCommentId={props.notifications.child_comment} like={false}/> : null}
 
 		</>
 	);
