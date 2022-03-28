@@ -447,6 +447,7 @@ def likeChildComment(id):
 		new_notf = Notification(timestamps=comment_time, 
 								username= user.username,
 								childcomment = comment,
+								comment_id = comment.comment_id,
 								child_comment_creator_id= comment.user_id,
 								author=user)
 		db.session.add(new_notf)
