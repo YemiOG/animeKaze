@@ -116,7 +116,7 @@ function CommentNotification(props) {
 						<img className="post-imager" src={postDetail.image} alt="profile logo"/>
 					</div>
 				</div>
-				<div className={"notify-comment-cover " + (props.like ? '' : 'cover-spacing')}>
+				<div className={"notify-comment-cover " + ((props.like && !props.child ) ? '' : 'cover-spacing')}>
 					<div className="comment-list">
 						<div className="comment-content">
 							<div className='profile-image'>
@@ -131,7 +131,7 @@ function CommentNotification(props) {
 								</div>
 								<div > {commentDetail.content} </div>
 							</div>
-							{ props.like ? <div className="like-comment-cont">
+							{ (props.like && !props.child) ? <div className="like-comment-cont">
 								<Like fill='#2962FF' stroke='#2962FF' className="like-comment-button"/>
 							</div> : null}
 						</div>
