@@ -360,7 +360,6 @@ class Post(PaginatedAPIMixin, db.Model):
     def to_dict(self):
         user= self.get_user(self) 
         liked = self.confirm_like()
-        print(liked)
         data = {
             'id': self.id,
             'content': self.content,
@@ -429,6 +428,7 @@ class Comment(PaginatedAPIMixin, db.Model):
             'likes': self.likes.count(),
             'child': self.comments.count(),
             'user_liked': self.liked_by_user,
+            'post_id': self.post_id
         }
         return data
 
@@ -627,6 +627,9 @@ class Notification(PaginatedAPIMixin, db.Model):
             'notify_post_comment_type': self.comment_notify.count(),
             'notify_cc_child_comment_type': self.child_comment_notify.count(),
             'avatar': user.avatar,
+            'post' : self.post_id,
+            'comment' : self.comment_id,
+            'child_comment' : self.child_comment_id,
         }
         return data
 

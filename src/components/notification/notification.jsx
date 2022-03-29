@@ -40,7 +40,7 @@ function Notification() {
 			console.log(error.response.headers);
 			}
 		  })}
-		  
+
 	return (
 		<div className="notification">
 				<div className="notification-cover">

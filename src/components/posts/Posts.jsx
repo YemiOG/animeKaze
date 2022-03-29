@@ -14,6 +14,9 @@ import { ReactComponent as UnHide } from '../../images/svg/unHide.svg'
 import { ReactComponent as Hidden } from '../../images/svg/hidden.svg'
 
 function Posts(props){
+
+  const {token, removeToken}= useContext(UserContext)
+
   let fillColor= 'none'
   let strokeColor= '#575757'
 
@@ -32,8 +35,9 @@ function Posts(props){
 
   const usernamer = window.localStorage.getItem('username')
   const profile = "/user/" + props.poster 
- 
-    function handleClick(){
+
+     function handleClick(){
+        setShowCard(false)
         props.like(props.id)
         if (liked ==='none'){
           setLiked('#2962FF')
@@ -48,6 +52,29 @@ function Posts(props){
         hidePost === false ? setHidePost(true) : setHidePost(false)
         setShowCard(false)
       }
+
+    function deletePost(){
+        axios({
+          method: "POST",
+          url: '/api/post_delete',
+          data:{
+              pid: props.id,
+             },
+          headers: {
+                Authorization: 'Bearer ' + token
+                }
+          }).then((response)=>{
+            console.log(response)
+            props.reload() // get posts upon deleting post successfully
+          }).catch((error) => {
+            if (error.response) {
+              console.log(error.response)
+              if (error.response.status === 401){
+              removeToken()
+              }
+              }
+       })}
+
     function handleInterest(){
         props.interested(props.id);
         hideInterestPost === false ? setHideInterestPost(true) : setHideInterestPost(false)
@@ -55,6 +82,7 @@ function Posts(props){
       }
     function revealComments(){
       showComment===false ? setShowComment(true) : setShowComment(false)
+      setShowCard(false)
       }
 
     function revealBar(){
@@ -70,6 +98,7 @@ function Posts(props){
             {props.report && <button onClick={handleReport}> <Report stroke="#575757"/> Report </button>}
             {props.unfollow ? <button onClick={() => props.unfollow(props.poster)}> 
                                                             <Unfollow stroke="#575757"/> Unfollow </button> : null}
+            {(usernamer!==props.poster) && <button onClick={deletePost}> <Report stroke="#575757"/> Delete </button>}
         </div>
       )}
     

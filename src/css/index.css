@@ -111,10 +111,6 @@
   overflow-x: hidden;
 }
 
-.bar-contents{
-    max-width: 178px;
-}
-
 .bar-content{
   margin-top:85px;
   display: flex;
@@ -785,7 +781,7 @@
 }
 
 .drop{
-  cursor:pointer
+  cursor:pointer;
 }
 
 .post-list .post-image{
@@ -1005,7 +1001,7 @@
 
   .comment-cover{
     overflow: auto;
-    height: 300px;
+    max-height: 300px;
     padding-top: 10px;
     border: 2px solid #e5e5e5;
     border-radius: 7px;
@@ -1015,7 +1011,6 @@
   .no-comment-cover{
     display: none;
   }
-
   .comment-list{
     padding-right: 5px;
   }
@@ -1413,6 +1408,39 @@
 
 .notification-details .navr-link{
   text-transform: capitalize;
+}
+
+.notify-header{
+  justify-content: flex-end;
+  border-bottom: 2px solid #E5E5E5 !important;
+  margin-bottom: 5px;
+}
+
+.main_notify{
+  font-style: italic;
+  cursor: pointer;
+  text-decoration: underline;
+  }
+
+.notify-comment-cover{
+  padding-top: 10px;
+  border-radius: 7px;
+  margin-bottom: 8px;
+  padding-left: 10px;
+}
+
+.cover-spacing{
+  padding-right: 5px;
+}
+.notify-comment-content-2{
+  margin-bottom: 16.61px;
+  display:flex;
+  justify-content: space-between;
+}
+.notify-comment-child-3{
+  margin-bottom: 16.61px;
+  display:flex;
+  justify-content: space-between;
 }
 /* end notifications */
 

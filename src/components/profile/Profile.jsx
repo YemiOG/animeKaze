@@ -101,7 +101,6 @@ function Profile() {
            },
         }).then((response)=>{
           const data = response.data.user.id
-          console.log(response.data.user)
           const username = response.data.user.username
           if(userId === data){
             setidMatch(true)
@@ -217,6 +216,10 @@ function Profile() {
     function displayEdit() {
       setShowModal(true)
     }
+    function closeModal() {
+      setShowFollowersModal(false) 
+      getProfile(location.pathname)
+    }
 
     function followers() {
         setShowFollowersModal(true)
@@ -229,8 +232,6 @@ function Profile() {
         setFollow(profile.followed)
         setFollowModalHeader('Followings')
     }
-
-    console.log(profile.dob)
 
     return (
       <>
@@ -337,21 +338,21 @@ function Profile() {
               {/* followers list modal */}
               <Modal 
                 show={showFollowersModal} 
-                onHide={() => setShowFollowersModal(false) } >
+                onHide={closeModal} >
 
                 <Modal.Header >
                   <div className="modal-title-cover">
                     <Modal.Title>
                         <p>{followModalHeader}</p>
                         <div className="close-modal-button">
-                          <Close onClick = {() => setShowFollowersModal(false)}/>
+                          <Close onClick = {closeModal}/>
                         </div>
                     </Modal.Title>
                   </div>
                 </Modal.Header>
 
                 <Modal.Body>
-								    <Follow getFlw={follow}/>
+								    <Follow getFlw={follow} changeProfile={getProfile}/>
                 </Modal.Body>
 			        </Modal>
           </div>

@@ -22,7 +22,7 @@ function Comments(props){
 	const [submitPossible , setSubmitPossible] = useState(true)
 	const [childComment , setchildComment] = useState(null)
 	const [commentId , setCommentId] = useState(null)
-	const {token, removeToken, setAppState}= useContext(UserContext)
+	const {token, removeToken}= useContext(UserContext)
 	const userId = JSON.parse(window.localStorage.getItem("cuid"))
 	const avatar = window.localStorage.getItem('avatar')
 	const uzername = window.localStorage.getItem('username')
@@ -159,6 +159,28 @@ function Comments(props){
 		setchildCommentForm(false)
 	  }
 
+	function deleteComment(id){
+        axios({
+          method: "POST",
+          url: '/api/comment_delete',
+          data:{
+              pid: id,
+             },
+          headers: {
+                Authorization: 'Bearer ' + token
+                }
+          }).then((response)=>{
+            console.log(response)
+            props.reload() // get posts upon deleting post successfully
+          }).catch((error) => {
+            if (error.response) {
+              console.log(error.response)
+              if (error.response.status === 401){
+              removeToken()
+              }
+              }
+       })}
+
 	function handleLikeComment(id){
 		axios({
 			method: "POST",
@@ -196,6 +218,7 @@ function Comments(props){
 		const [liked , setLiked] = useState(fillColor)
 		const [stroke , setStroke] = useState(strokeColor)
 		const [show, setShow] = useState(false)
+		const [showCard , setShowCard] = useState(false)
 		
 		function likeComment(){
 			comm.like(comm.id)
@@ -215,6 +238,10 @@ function Comments(props){
 			comm.submit(id)
 			comm.reply(true);
 		}
+
+		function revealBar(){
+			showCard===false ? setShowCard(true) : setShowCard(false);
+			}
 		
 		function getComment(){
 			getChildComments(comm.id);
@@ -223,9 +250,16 @@ function Comments(props){
 			// onClick={ () => props.show(props.anime)
 		}
 
-		console.log(show)
+		function SideCard(){
 
-        return (
+			return (
+			  <div className="side-card">
+				  {(uzername!==props.postr) && <button onClick={deleteComment}>  Delete </button>}
+			  </div>
+			)}
+
+
+		return (
 			<>
 				<div className="comment-list">
 					<div className="comment-content">
@@ -238,13 +272,14 @@ function Comments(props){
 									className="navr-link">
 									<span>{comm.fname}</span> <span>{comm.lname}</span> @{comm.username}
 								</Link> 
-								<Drop className="drop" />
+								{(uzername!==props.postr) && <Drop className="drop" onClick={revealBar}/>}
 							</div>
 							<div > {comm.content} </div>
 						</div>
 						<div className="like-comment-cont">
 							<Like fill={liked} stroke={stroke} className="like-comment-button" onClick={likeComment}/>
 						</div>
+						{showCard && <SideCard />}
 					</div>
 					{!comm.topComment && 
 						<div className="comment-list-bottom">
