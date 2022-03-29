@@ -1365,18 +1365,52 @@
 
 .list-notification{
   display: flex;
-  flex-direction: row;
   background: #fff;
+  justify-content: space-between;
   margin-bottom: 10px;
   border-radius: 5px;
   padding-top: 8px;
   padding-bottom: 8px;
+  font-family: 'Rubik';
+  font-style: normal;
 }
 
-.notification-list-cover{
+.list-notification1{
+  display: flex;
 }
+
+.list-notification .notification-flw-btn{
+  background: rgba(67, 117, 255, 0.75);
+  border-radius: 8px;
+  margin-right: 8px;
+  padding: 12px 18px;
+  border: none;
+  height: 33px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 13px;
+}
+.list-notification .notification-flwd-btn{
+  background: rgb(236 239 241);
+  border-radius: 8px;
+  margin-right: 8px;
+  padding: 12px 18px;
+  border: none;
+  height: 33px;
+  display: flex;
+  align-items: center;
+  color: #575757;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 13px;
+}
+
 .notification-list-cover div:last-child{
   border-radius: 5px;
+  align-items: center;
 }
 
 .notification-icon{
