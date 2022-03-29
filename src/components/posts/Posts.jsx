@@ -10,6 +10,7 @@ import { ReactComponent as Drop } from '../../images/svg/dropdown.svg'
 import { ReactComponent as Interest } from '../../images/svg/interest.svg'
 import { ReactComponent as Report } from '../../images/svg/report.svg'
 import { ReactComponent as Unfollow } from '../../images/svg/unfollow.svg'
+import { ReactComponent as Delete } from '../../images/svg/delete.svg'
 import { ReactComponent as UnHide } from '../../images/svg/unHide.svg'
 import { ReactComponent as Hidden } from '../../images/svg/hidden.svg'
 
@@ -30,6 +31,7 @@ function Posts(props){
 	const [hidePost , setHidePost] = useState(false)
 	const [hideInterestPost , setHideInterestPost] = useState(false)
 	const [showCard , setShowCard] = useState(false)
+	const [deleteCard , setDeleteCard] = useState(false)
 	const [liked , setLiked] = useState(fillColor)
 	const [stroke , setStroke] = useState(strokeColor)
 
@@ -87,6 +89,11 @@ function Posts(props){
 
     function revealBar(){
       showCard===false ? setShowCard(true) : setShowCard(false);
+      deleteCard===true && setDeleteCard(false)
+      }
+
+    function revealDelete(){
+      deleteCard===false ? setDeleteCard(true) : setDeleteCard(false);
       }
 
 
@@ -98,7 +105,7 @@ function Posts(props){
             {props.report && <button onClick={handleReport}> <Report stroke="#575757"/> Report </button>}
             {props.unfollow ? <button onClick={() => props.unfollow(props.poster)}> 
                                                             <Unfollow stroke="#575757"/> Unfollow </button> : null}
-            {(usernamer!==props.poster) && <button onClick={deletePost}> <Report stroke="#575757"/> Delete </button>}
+            {(usernamer!==props.poster) && <button onClick={revealDelete}> <Delete stroke="#575757"/> Delete </button>}
         </div>
       )}
     
@@ -119,6 +126,14 @@ function Posts(props){
                   {(usernamer!==props.poster) && <Drop className="drop" onClick={revealBar}/>}
                 </div>
                 {showCard && <SideCard />}
+                {deleteCard && <div className="delete-side-card"> 
+                  <p>Delete This Post</p>
+                  <p>This action is irreversible</p>
+                  <div className="confirm-delete">
+                    <button onClick={revealDelete}> Cancel </button>
+                    <button onClick={deletePost}> Delete </button>
+                  </div>
+                            </div>}
                 <div className="post-content"> {props.content} </div>
               
                 {/* <div className="post-image" style={{backgroundImage: `url(${props.image})`}}> */}
