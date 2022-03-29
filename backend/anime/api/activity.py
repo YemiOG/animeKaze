@@ -175,14 +175,21 @@ def follow(username):
 
 	#create new notification if user is followed
 	if notify == True:
+		follow_state = user.is_following(currentUser)
 		new_notf = Notification(timestamps=follow_time, 
 								username= currentUser.username,
 								followed_user_id= user.id,
+								followed_by_user = follow_state,
 								author=currentUser)
 		db.session.add(new_notf)
 		db.session.commit()
 		new_notf.follow_notification(user)
 		db.session.commit()
+
+		notific = Notification.query.filter_by(user_id = user.id, followed_user_id = currentUser.id ).first()
+		if notific is not None and notific.followed_by_user is False:
+			notific.followed_by_user = True
+			db.session.commit()
 
 	response = {"success":'You are now following {}!'.format(username)}
 	return response
@@ -206,6 +213,11 @@ def unfollow(username):
 		notific = Notification.query.filter_by(user_id = currentUser.id, followed_user_id = user.id ).first_or_404()
 		notific.delete_follow_notification(user)
 		db.session.commit()
+
+		notification = Notification.query.filter_by(user_id = user.id, followed_user_id = currentUser.id ).first()
+		if notification is not None and notification.followed_by_user is True:
+			notification.followed_by_user = False
+			db.session.commit()
 
 	response = {"success":'You have unfollowed {}!'.format(username)}
 	return response
