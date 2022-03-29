@@ -570,6 +570,7 @@ class Notification(PaginatedAPIMixin, db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
     child_comment_id = db.Column(db.Integer, db.ForeignKey('childcomment.id'))
+    followed_by_user= db.Column(db.Boolean, unique=False, default=False)
 
 
     # method for follow notifications
@@ -630,6 +631,7 @@ class Notification(PaginatedAPIMixin, db.Model):
             'post' : self.post_id,
             'comment' : self.comment_id,
             'child_comment' : self.child_comment_id,
+            'follow_state' : self.followed_by_user
         }
         return data
 
