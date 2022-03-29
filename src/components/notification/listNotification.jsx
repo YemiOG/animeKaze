@@ -93,14 +93,14 @@ function ListNotification(props) {
 						</div>
 					</div>	
 				</div>	
-				{props.notifications.follow_state ? 
+				{ props.notifications.notify_follow_type ? (props.notifications.follow_state ? 
 					<button className="notification-flwd-btn" onClick={unfollowUser}>
 						Followed
 					</button>
 					:
 					<button className="notification-flw-btn" onClick={followUser}>
 						Follow back
-					</button>}			
+					</button>) : null}			
 			</div>
 			{ (showPostModal && props.notifications.post) ? <PostNotification display={showPostModal} show={setShowPostModal} 
 																postId={props.notifications.post} /> : null}

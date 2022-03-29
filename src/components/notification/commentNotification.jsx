@@ -125,7 +125,7 @@ function CommentNotification(props) {
 							<div className="comment-content-1">
 								<div className="notify-comment-content-2">
 									<div className="navr-link">
-										<span>{commentDetail.fname}</span> <span>{commentDetail.lname}</span> @{commentDetail.username}
+										<span>{commentDetail.fname}</span> <span>{commentDetail.lname}</span> @{commentDetail.poster}
 									</div> 
 									<Drop className="drop" />
 								</div>
