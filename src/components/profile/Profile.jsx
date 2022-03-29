@@ -164,7 +164,7 @@ function Profile() {
         })  
     }
 
-  function unfollowUser(event) {
+  function unfollowUser() {
         axios({
           method: "POST",
           url:"/api/unfollow/" + uzer,
@@ -187,7 +187,6 @@ function Profile() {
             }
             }
         })  
-        event.preventDefault()
     }
 
     function handlePost(id) { 
