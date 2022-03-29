@@ -11,6 +11,7 @@ import DisplayChildComments from './ChildComments'
 import { ReactComponent as Drop } from '../../images/svg/dropdown.svg'
 import { ReactComponent as Like } from '../../images/svg/like.svg'
 import { ReactComponent as Close } from '../../images/svg/closeButton.svg'
+import { ReactComponent as Delete } from '../../images/svg/delete.svg'
 
 function Comments(props){
 
