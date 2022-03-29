@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
-import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/userContext';
 
 // local imports
@@ -41,6 +40,7 @@ function Notification() {
 			}
 		  })}
 
+	console.log(notifier)
 	return (
 		<div className="notification">
 				<div className="notification-cover">
@@ -48,10 +48,13 @@ function Notification() {
 					Notification
 				</div>
 				<div className="notification-list-cover">
-					{notifier && notifier.map( lists => <ListNotification 
+					{notifier.length > 0 ? notifier.map( lists => <ListNotification 
 															key={lists.id}
 															notifications={lists} /> 
-														)}
+														)
+						: <div>
+							No notification yet
+						</div>}
 				</div>
 				</div>
 		</div>
