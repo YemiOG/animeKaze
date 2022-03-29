@@ -40,7 +40,6 @@ function Notification() {
 			}
 		  })}
 
-	console.log(notifier)
 	return (
 		<div className="notification">
 				<div className="notification-cover">
@@ -50,7 +49,8 @@ function Notification() {
 				<div className="notification-list-cover">
 					{notifier.length > 0 ? notifier.map( lists => <ListNotification 
 															key={lists.id}
-															notifications={lists} /> 
+															notifications={lists} 
+															reload={getNotifications}/> 
 														)
 						: <div>
 							No notification yet
