@@ -56,7 +56,7 @@ function Posts(props){
     function deletePost(){
         axios({
           method: "POST",
-          url: '/api/postdelete',
+          url: '/api/post_delete',
           data:{
               pid: props.id,
              },
