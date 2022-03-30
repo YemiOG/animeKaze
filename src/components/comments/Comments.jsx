@@ -172,7 +172,7 @@ function Comments(props){
                 }
           }).then((response)=>{
             console.log(response)
-            props.reload() // get posts upon deleting post successfully
+				getComments()
           }).catch((error) => {
             if (error.response) {
               console.log(error.response)
@@ -240,6 +240,10 @@ function Comments(props){
 			comm.reply(true);
 		}
 
+		function removeComment(){
+			comm.delete(comm.id)
+		}
+
 		function revealBar(){
 			showCard===false ? setShowCard(true) : setShowCard(false);
 			}
@@ -250,14 +254,12 @@ function Comments(props){
 			setShow(true)
 			// onClick={ () => props.show(props.anime)
 		}
-		console.log(uzername)
-		console.log(comm.username)
 
 		function SideCard(){
 
 			return (
 			  <div className="side-card">
-				<button onClick={deleteComment}>  <Delete stroke="#575757"/> Delete </button>
+				<button onClick={removeComment}>  <Delete stroke="#575757"/> Delete </button>
 			  </div>
 			)}
 
@@ -346,7 +348,7 @@ function Comments(props){
 																	likeCount={comments.likes} like={handleLikeComment} username={comments.poster} 
 																	child= {comments.child} reply={setchildCommentForm} submit={setCommentId} 
 																	userLiked={comments.user_liked} fname={comments.fname} lname={comments.lname}
-																	avatar={comments.avatar}
+																	avatar={comments.avatar} delete={deleteComment}
 																	/>)
 													: null}
 					</div>
