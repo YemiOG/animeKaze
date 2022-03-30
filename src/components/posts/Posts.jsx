@@ -101,11 +101,13 @@ function Posts(props){
 
       return (
         <div className="side-card">
-            {props.interested && <button onClick={handleInterest}> <Interest stroke="#2c2c2c"/> Not interested </button>}
-            {props.report && <button onClick={handleReport}> <Report stroke="#575757"/> Report </button>}
-            {props.unfollow ? <button onClick={() => props.unfollow(props.poster)}> 
-                                                            <Unfollow stroke="#575757"/> Unfollow </button> : null}
-            {(usernamer!==props.poster) && <button onClick={revealDelete}> <Delete stroke="#575757"/> Delete </button>}
+            {usernamer!==props.poster  ? <>
+              {props.interested && <button onClick={handleInterest}> <Interest stroke="#2c2c2c"/> Not interested </button>}
+              {props.report && <button onClick={handleReport}> <Report stroke="#575757"/> Report </button>}
+              {props.unfollow ? <button onClick={() => props.unfollow(props.poster)}> 
+                                                              <Unfollow stroke="#575757"/> Unfollow </button> : null} </>
+                                                            :
+            <button onClick={revealDelete}> <Delete stroke="#575757"/> Delete </button> }
         </div>
       )}
     
@@ -123,7 +125,7 @@ function Posts(props){
                       <span>{props.fname}</span> <span>{props.lname}</span> @{props.poster}
                     </Link> 
                   </div>
-                  {(usernamer!==props.poster) && <Drop className="drop" onClick={revealBar}/>}
+                   <Drop className="drop" onClick={revealBar}/>
                 </div>
                 {showCard && <SideCard />}
                 {deleteCard && <div className="delete-side-card"> 
