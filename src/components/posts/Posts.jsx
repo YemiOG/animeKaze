@@ -66,8 +66,8 @@ function Posts(props){
                 Authorization: 'Bearer ' + token
                 }
           }).then((response)=>{
-            console.log(response)
-            props.reload() // get posts upon deleting post successfully
+            props.reload && props.reload() // get posts upon deleting post successfully
+            props.refresh && props.refresh(true) // get posts for profile page upon deleting post successfully
           }).catch((error) => {
             if (error.response) {
               console.log(error.response)
@@ -129,11 +129,11 @@ function Posts(props){
                 </div>
                 {showCard && <SideCard />}
                 {deleteCard && <div className="delete-side-card"> 
-                  <p>Delete This Post</p>
-                  <p>This action is irreversible</p>
-                  <div className="confirm-delete">
-                    <button onClick={revealDelete}> Cancel </button>
-                    <button onClick={deletePost}> Delete </button>
+                    <p>Delete This Post</p>
+                    <p>This action is irreversible</p>
+                    <div className="confirm-delete">
+                      <button onClick={revealDelete}> Cancel </button>
+                      <button onClick={deletePost}> Delete </button>
                   </div>
                             </div>}
                 <div className="post-content"> {props.content} </div>
