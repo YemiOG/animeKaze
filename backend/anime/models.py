@@ -423,6 +423,27 @@ class Comment(PaginatedAPIMixin, db.Model):
             post_liked = False
         return post_liked
 
+    def delete_comment(self):
+        # get related child comments
+        related_ccomments = ChildComment.query.filter_by(comment_id=self.id).all()
+        for com in related_ccomments:
+            #Delete all liked child comments
+            delete_child_comments= delete(likedChildComments).where(
+                likedChildComments.c.comment_id == com.id)
+            db.session.execute(delete_child_comments)
+            #delete child comments
+            db.session.delete(com)
+
+        #delete likes on comment
+        delete_comment= delete(likedComments).where(
+            likedComments.c.comment_id == self.id)
+        db.session.execute(delete_comment)
+
+        #delete comment
+        db.session.delete(self)
+
+        return True
+
     def to_dict(self):
         user= self.get_user(self) 
         liked = self.confirm_like()
@@ -484,6 +505,15 @@ class ChildComment(PaginatedAPIMixin, db.Model):
     def get_user(self, user):
         return db.session.query(User).filter_by(id=user.user_id).first()
 
+    def confirm_like(self):
+        user_email = get_jwt_identity()
+        user = db.session.query(User).filter_by(email=user_email).first()
+        if self.likes.filter(likedChildComments.c.liker_id == user.id).count() > 0:
+            post_liked = True
+        else:
+            post_liked = False
+        return post_liked
+
     def delete_child_comment(self):
 
         #delete likes on child comment
@@ -498,6 +528,7 @@ class ChildComment(PaginatedAPIMixin, db.Model):
 
     def to_dict(self):
         user= self.get_user(self) 
+        liked = self.confirm_like()
         data = {
             'id': self.id,
             'content': self.content,
@@ -507,7 +538,7 @@ class ChildComment(PaginatedAPIMixin, db.Model):
             'lname': user.last_name,
             'avatar': user.avatar,
             'likes': self.likes.count(),
-            'user_liked': self.liked_by_user,
+            'user_liked': liked,
         }
         return data
 
