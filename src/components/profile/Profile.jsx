@@ -31,6 +31,7 @@ function Profile() {
     const {token, removeToken} = useContext(UserContext);
     const [idMatch, setidMatch] = useState(false)
     const [following, setFollowing] = useState(false)
+    const [reload, setReload] = useState(false)
     const [noUser, setNoUser] = useState(false)
     const [posts, setPosts] = useState("")
     const [follow, setFollow] = useState("")
@@ -62,12 +63,14 @@ function Profile() {
     const userId = JSON.parse(window.localStorage.getItem("cuid"))
     const uzer = location.pathname.split("/")[2]
 
+    console.log(reload)
+
     useEffect(() => {
         getProfile(location.pathname)
         return () => {
           setidMatch({})
         };
-    },[uzer, usernamer])
+    },[uzer, usernamer, reload])
 
     function getPosts(uzername){
       axios({
@@ -308,7 +311,7 @@ function Profile() {
                 {idMatch && <CreatePost/>}
                 <div className="profile-posts">
                   {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} 
-                                                  report={null} userLiked={posts.user_liked} avatar={posts.avatar} poster={posts.poster} 
+                                                  report={null} userLiked={posts.user_liked} avatar={posts.avatar} poster={posts.poster} refresh={setReload} reload={null}
                                                   fname={posts.fname} lname={posts.lname}/>)}
                 </div>
               </div>

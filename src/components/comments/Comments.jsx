@@ -172,7 +172,7 @@ function Comments(props){
                 }
           }).then((response)=>{
             console.log(response)
-				getComments()
+			getComments()
           }).catch((error) => {
             if (error.response) {
               console.log(error.response)
