@@ -73,7 +73,7 @@ function DisplayChildComments(props) {
 												className="navr-link">
 												<span>{props.child.fname}</span><span>{props.child.lname}</span>@{props.child.poster}
 											</Link> 
-											<Drop className="drop" />
+											{props.child.poster === uzername && <Drop className="drop" />}
 										</div>
 										<div > {props.child.content} </div>
 									</div>
