@@ -165,7 +165,7 @@ function Comments(props){
           method: "POST",
           url: '/api/comment_delete',
           data:{
-              pid: id,
+              cid: id,
              },
           headers: {
                 Authorization: 'Bearer ' + token
