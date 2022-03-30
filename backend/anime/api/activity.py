@@ -134,6 +134,14 @@ def get_home_posts(username):
 	page = request.args.get('page', 1, type=int)
 	per_page = min(request.args.get('per_page', 10, type=int), 100)
 	
+	bro = Comment.query.all()
+	print(bro)
+	for b in bro:
+		print(b.likes.all())
+	bro = ChildComment.query.all()
+	print(bro)
+	for b in bro:
+		print(b.likes.all())
 
     # Display user's + followed users' posts
 	response = User.to_collection_dict(user.followed_posts(), page, per_page,
@@ -497,6 +505,37 @@ def notify():
                                        'api.notify')
 	return response
 
+@api.route('/comment_delete', methods=['POST'])
+@jwt_required()
+def delete_comment():
+	# Get comment id from request
+	cid = request.json.get('cid')
+
+	#get the child comment by id
+	comment = Comment.query.filter_by(id=cid).first_or_404()
+
+	# bro = ChildComment.query.all()
+	# print(bro)
+	# for b in bro:
+	# 	print(b.likes.all())
+	
+	# delete child comment
+	status = comment.delete_comment()
+	db.session.commit()
+
+	bro = Comment.query.all()
+	print(bro)
+	for b in bro:
+		print(b.likes.all())
+	bro = ChildComment.query.all()
+	print(bro)
+	for b in bro:
+		print(b.likes.all())
+
+	response = {"success": status}
+	status_code = 200
+	return response, status_code
+
 @api.route('/cc_comment_delete', methods=['POST'])
 @jwt_required()
 def delete_child_comment():
@@ -506,18 +545,9 @@ def delete_child_comment():
 	#get the child comment by id
 	child_comment = ChildComment.query.filter_by(id=cc_id).first_or_404()
 	
-	bro = ChildComment.query.all()
-	print(bro)
-	for b in bro:
-		print(b.likes.all())
-
 	# delete child comment
 	status = child_comment.delete_child_comment()
-
-	# bro = ChildComment.query.all()
-
-	# for b in bro:
-	# 	print(b.likes)
+	db.session.commit()
 
 	response = {"success": status}
 	status_code = 200
