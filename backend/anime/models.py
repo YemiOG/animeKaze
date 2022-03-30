@@ -476,6 +476,11 @@ class ChildComment(PaginatedAPIMixin, db.Model):
     def get_user(self, user):
         return db.session.query(User).filter_by(id=user.user_id).first()
 
+    def delete_child_comment():
+
+        print(child_comments)
+        return True
+
     def to_dict(self):
         user= self.get_user(self) 
         data = {
