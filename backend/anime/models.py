@@ -355,6 +355,33 @@ class Post(PaginatedAPIMixin, db.Model):
             post_liked = False
         return post_liked
 
+    def delete_post(self):
+        # get related comments
+        related_comments = Comment.query.filter_by(post_id=self.id).all()
+        
+        for com in related_comments:
+            # get related child comments
+            related_ccomments = ChildComment.query.filter_by(comment_id=com.id).all()
+            #Delete all liked child comments
+            for ccom in related_ccomments:
+                delete_child_comments= delete(likedChildComments).where(
+                    likedChildComments.c.comment_id == ccom.id)
+                db.session.execute(delete_child_comments)
+                #delete child comments
+                db.session.delete(ccom)
+
+            #delete likes on comment
+            delete_comment= delete(likedComments).where(
+                likedComments.c.comment_id == com.id)
+            db.session.execute(delete_comment)
+            #delete comments
+            db.session.delete(com)
+
+        #delete post
+        db.session.delete(self)
+
+        return True
+
     def to_dict(self):
         user= self.get_user(self) 
         liked = self.confirm_like()
@@ -426,6 +453,7 @@ class Comment(PaginatedAPIMixin, db.Model):
     def delete_comment(self):
         # get related child comments
         related_ccomments = ChildComment.query.filter_by(comment_id=self.id).all()
+        
         for com in related_ccomments:
             #Delete all liked child comments
             delete_child_comments= delete(likedChildComments).where(
