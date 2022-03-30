@@ -240,6 +240,7 @@ def like(id):
 	#If true, unlike the post  #If false, like the post
 	notify = Post_liked.like_state(user)
 	db.session.commit()
+	
 	#create new notification if post is liked
 	if notify == True:
 		new_notf = Notification(timestamps=like_time, 
@@ -374,6 +375,7 @@ def child_commenting():
 	return response
 
 @api.route('/post/comments', methods=['POST'])
+@jwt_required()
 def get_comments():	
 	#get postId from POST request
 	post_id = request.json.get('pid')	
@@ -387,6 +389,7 @@ def get_comments():
 	return response
 
 @api.route('/comment/comments', methods=['POST'])
+@jwt_required()
 def get_child_comments():	
 	#get id of the comment from POST request
 	comment_id = request.json.get('cid')	
@@ -499,13 +502,26 @@ def notify():
 def delete_child_comment():
 	# Get child comment id from request
 	cc_id = request.json.get('cid')
+	# Get user  id from request
+	uid = request.json.get('uid')
 
 	#get the child comment by id
-	child_comment = ChildComment.query.filter_by(id=cc_id)
+	child_comment = ChildComment.query.filter_by(id=cc_id).first_or_404()
+	
+	bro = ChildComment.query.all()
+	print(bro)
+	for b in bro:
+		print(b.likes.all())
 
 	# delete child comment
-	child_comment.delete_child_comment()
-	# response = {"success": status}
-	# status_code = 200
-	# return response, status_code
+	status = child_comment.delete_child_comment()
+
+	# bro = ChildComment.query.all()
+
+	# for b in bro:
+	# 	print(b.likes)
+
+	response = {"success": status}
+	status_code = 200
+	return response, status_code
 
