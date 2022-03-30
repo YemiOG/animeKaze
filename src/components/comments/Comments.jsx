@@ -250,12 +250,14 @@ function Comments(props){
 			setShow(true)
 			// onClick={ () => props.show(props.anime)
 		}
+		console.log(uzername)
+		console.log(comm.username)
 
 		function SideCard(){
 
 			return (
 			  <div className="side-card">
-				  {(uzername!==props.postr) && <button onClick={deleteComment}>  Delete </button>}
+				<button onClick={deleteComment}>  <Delete stroke="#575757"/> Delete </button>
 			  </div>
 			)}
 
@@ -273,7 +275,7 @@ function Comments(props){
 									className="navr-link">
 									<span>{comm.fname}</span> <span>{comm.lname}</span> @{comm.username}
 								</Link> 
-								{(uzername!==props.postr) && <Drop className="drop" onClick={revealBar}/>}
+								{uzername===comm.username && <Drop className="drop" onClick={revealBar}/>}
 							</div>
 							<div > {comm.content} </div>
 						</div>
