@@ -482,11 +482,6 @@ def notify():
 	#set time action was made 
 	action_time = datetime.utcnow() 
 	
-	# #get comment, userId and postId from POST request
-	# comment = request.json.get('content')
-	# user_id = request.json.get('uid')
-	# post_id = request.json.get('pid')
-
 	# Get current user
 	uzer = request.json.get("username").lower()
 	user = User.query.filter_by(username=uzer).first_or_404()
@@ -498,3 +493,19 @@ def notify():
 	response = User.to_collection_dict(user.get_notifications(), page, per_page,
                                        'api.notify')
 	return response
+
+@api.route('/cc_comment_delete', methods=['POST'])
+@jwt_required()
+def delete_child_comment():
+	# Get child comment id from request
+	cc_id = request.json.get('cid')
+
+	#get the child comment by id
+	child_comment = ChildComment.query.filter_by(id=cc_id)
+
+	# delete child comment
+	child_comment.delete_child_comment()
+	# response = {"success": status}
+	# status_code = 200
+	# return response, status_code
+
