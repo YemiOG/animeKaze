@@ -317,11 +317,9 @@ class Post(PaginatedAPIMixin, db.Model):
     def like_state(self, user):
         if not self.liked(user):
             self.likes.append(user)
-            setattr(self, 'liked_by_user', True)
             return True
         else:
             self.likes.remove(user)
-            setattr(self, 'liked_by_user', False)
             return False
 
     def liked(self, user):
@@ -415,9 +413,19 @@ class Comment(PaginatedAPIMixin, db.Model):
     
     def get_user(self,user):
         return db.session.query(User).filter_by(id=user.user_id).first()
-        
+    
+    def confirm_like(self):
+        user_email = get_jwt_identity()
+        user = db.session.query(User).filter_by(email=user_email).first()
+        if self.likes.filter(likedComments.c.liker_id == user.id).count() > 0:
+            post_liked = True
+        else:
+            post_liked = False
+        return post_liked
+
     def to_dict(self):
         user= self.get_user(self) 
+        liked = self.confirm_like()
         data = {
             'id': self.id,
             'content': self.content,
@@ -427,7 +435,7 @@ class Comment(PaginatedAPIMixin, db.Model):
             'avatar': user.avatar,
             'likes': self.likes.count(),
             'child': self.comments.count(),
-            'user_liked': self.liked_by_user,
+            'user_liked': liked,
             'post_id': self.post_id
         }
         return data
@@ -476,9 +484,16 @@ class ChildComment(PaginatedAPIMixin, db.Model):
     def get_user(self, user):
         return db.session.query(User).filter_by(id=user.user_id).first()
 
-    def delete_child_comment():
+    def delete_child_comment(self):
 
-        print(child_comments)
+        #delete likes on child comment
+        delete_child_comments= delete(likedChildComments).where(
+            likedChildComments.c.comment_id == self.id)
+        db.session.execute(delete_child_comments)
+
+        #delete comment
+        db.session.delete(self)
+
         return True
 
     def to_dict(self):
