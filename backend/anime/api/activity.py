@@ -502,8 +502,6 @@ def notify():
 def delete_child_comment():
 	# Get child comment id from request
 	cc_id = request.json.get('cid')
-	# Get user  id from request
-	uid = request.json.get('uid')
 
 	#get the child comment by id
 	child_comment = ChildComment.query.filter_by(id=cc_id).first_or_404()
