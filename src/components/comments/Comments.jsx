@@ -171,7 +171,6 @@ function Comments(props){
                 Authorization: 'Bearer ' + token
                 }
           }).then((response)=>{
-            console.log(response)
 			getComments()
           }).catch((error) => {
             if (error.response) {
@@ -303,7 +302,7 @@ function Comments(props){
 					): null }
 				</div>
 				{(childComment && displayChildComment && comm.child > 0 ) ? (childComment.map(child => <DisplayChildComments key={child.id} child={child} id={comm.id}
-								childComments={getChildComments}
+								childComments={getChildComments} comments={getComments}
 				/>
 				)) : null}
 			</>
