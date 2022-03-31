@@ -163,7 +163,7 @@ function Comments(props){
 	function deleteComment(id){
         axios({
           method: "POST",
-          url: '/api/comment_delete',
+          url: '/api/comment-delete',
           data:{
               cid: id,
              },
