@@ -58,7 +58,7 @@ commentPostNotification = db.Table('commentPostNotification',
                                    db.ForeignKey('post.id'))
                          )
 
-# table for notifications for dropping comment on post
+# table for notifications for dropping comment on comments
 commentChildNotification = db.Table('commentChildNotification',
                          db.Column('not_id', db.Integer,
                                    db.ForeignKey('notification.id')),
@@ -543,6 +543,16 @@ class ChildComment(PaginatedAPIMixin, db.Model):
         return post_liked
 
     def delete_child_comment(self):
+
+        #delete notifications created for child comment
+        notifications= Notification.query.filter_by(child_comment_id=self.id).all()
+
+        delete_child_nots= delete(childCommentNotification).where(
+            childCommentNotification.c.child_commnt_id == self.id)
+        db.session.execute(delete_child_nots)
+
+        for notify in notifications:
+            db.session.delete(notify)
 
         #delete likes on child comment
         delete_child_comments= delete(likedChildComments).where(
