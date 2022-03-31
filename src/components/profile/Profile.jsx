@@ -310,9 +310,10 @@ function Profile() {
               <div className="post-detail">
                 {idMatch && <CreatePost/>}
                 <div className="profile-posts">
-                  {posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} 
+                  {posts.length > 0 ? posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} image={posts.image} like={handlePost} interested={null} 
                                                   report={null} userLiked={posts.user_liked} avatar={posts.avatar} poster={posts.poster} refresh={setReload} reload={null}
-                                                  fname={posts.fname} lname={posts.lname}/>)}
+                                                  fname={posts.fname} lname={posts.lname}/>)
+                    	: <div className="no-post"> No post yet </div>}
                 </div>
               </div>
               <Modal 

@@ -135,7 +135,6 @@ function Home(){
 		})
 	  }
 
-		
     return (
 		<div className="home">
 			<div className="top-title">
@@ -143,10 +142,11 @@ function Home(){
 			</div>
 			<div className="home-page">
 				<CreatePost post={getPosts}/>
-				{posts && posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} 
+				{posts.length > 0 ? posts.map(posts => <Posts key={posts.id} id={posts.id} content={posts.content} likeCount={posts.likes} 
 													image={posts.image} like={handlePost} interested={null} reload={getPosts}
 													report={reportPost} userLiked={posts.user_liked} avatar={posts.avatar} 
-													poster={posts.poster} fname={posts.fname} lname={posts.lname} unfollow={unfollowUser}/>)}
+													poster={posts.poster} fname={posts.fname} lname={posts.lname} unfollow={unfollowUser}/>)
+					: <div className="no-post"> No post yet </div>}
 			</div>
         </div>
     )
