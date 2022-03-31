@@ -477,6 +477,8 @@
   margin-top: 57px;
   width: 615px;
   position: relative;
+  max-height: 652px;
+  overflow: auto;
 }
 
 .profile-page, .community, .notification{
@@ -613,7 +615,17 @@
   border: 1px solid #C4C4C4;
   box-sizing: border-box;
   border-radius: 16px;
-    /* width: 319px; */
+}
+
+.no-post{
+  background: #ECEFF1;
+  border: 1px solid #C4C4C4;
+  box-sizing: border-box;
+  border-radius: 16px;
+  flex-grow: 1;
+  margin-top: 24px;
+  padding: 12px;
+  text-align: center;
 }
 
 .post-top{
@@ -1359,12 +1371,11 @@
   margin-left: 82px;
   margin-top: 57px;
   width: 100%;
-  height: 100%;
   padding: 23px 30px;
   position: relative;
   background: #eceff1;
   border-radius: 8px;
-  height: 652px;
+  max-height: 652px;
   overflow: auto;
 }
 .community .comm1{
@@ -1393,7 +1404,7 @@
   margin-left: 82px;
   margin-top: 57px;
   width: 100%;
-  height: 652px;
+  max-height: 652px;
   border-radius: 8px;
   background: #ECEFF1;
   padding: 23px 29px;
@@ -2024,6 +2035,9 @@
    .create-post{
     background: #ffffff;
     margin-bottom: 15px;
+   }
+   .no-post{
+    background: #ffffff;
    }
     .post-card {
     background: #ffffff;
