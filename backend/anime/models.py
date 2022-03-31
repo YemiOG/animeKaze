@@ -356,10 +356,39 @@ class Post(PaginatedAPIMixin, db.Model):
         return post_liked
 
     def delete_post(self):
+
+        #delete notifications created for comment
+        notifications= Notification.query.filter_by(post_id=self.id).all()
+
+        delete_comment_nots= delete(commentPostNotification).where(
+            commentPostNotification.c.posts_id == self.id) 
+        db.session.execute(delete_comment_nots)
+
+        delete_post_nots= delete(postNotification).where(
+            postNotification.c.posts_id == self.id)
+        db.session.execute(delete_post_nots)
+
+        for notify in notifications:
+            db.session.delete(notify)
+
         # get related comments
         related_comments = Comment.query.filter_by(post_id=self.id).all()
         
         for com in related_comments:
+            #delete notifications created for comment
+            notifications= Notification.query.filter_by(comment_id=com.id).all()
+
+            delete_ccomment_nots= delete(commentChildNotification).where(
+                commentChildNotification.c.commnt_id == com.id) 
+            db.session.execute(delete_ccomment_nots)
+
+            delete_comment_nots= delete(commentNotification).where(
+                commentNotification.c.commnt_id == com.id)
+            db.session.execute(delete_comment_nots)
+
+            for notify in notifications:
+                db.session.delete(notify)
+
             # get related child comments
             related_ccomments = ChildComment.query.filter_by(comment_id=com.id).all()
             #Delete all liked child comments
@@ -451,6 +480,21 @@ class Comment(PaginatedAPIMixin, db.Model):
         return post_liked
 
     def delete_comment(self):
+
+        #delete notifications created for comment
+        notifications= Notification.query.filter_by(comment_id=self.id).all()
+
+        delete_ccomment_nots= delete(commentChildNotification).where(
+            commentChildNotification.c.commnt_id == self.id) 
+        db.session.execute(delete_ccomment_nots)
+
+        delete_comment_nots= delete(commentNotification).where(
+            commentNotification.c.commnt_id == self.id)
+        db.session.execute(delete_comment_nots)
+
+        for notify in notifications:
+            db.session.delete(notify)
+
         # get related child comments
         related_ccomments = ChildComment.query.filter_by(comment_id=self.id).all()
         
