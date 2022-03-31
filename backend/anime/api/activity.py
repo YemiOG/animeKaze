@@ -497,7 +497,7 @@ def notify():
                                        'api.notify')
 	return response
 
-@api.route('/post_delete', methods=['POST'])
+@api.route('/post-delete', methods=['POST'])
 @jwt_required()
 def deleting_post():
 	# Get post id from request
@@ -508,13 +508,13 @@ def deleting_post():
 	
 	# delete post
 	status = post.delete_post()
-	# db.session.commit()
+	db.session.commit()
 
 	response = {"success": status}
 	status_code = 200
 	return response, status_code
 
-@api.route('/comment_delete', methods=['POST'])
+@api.route('/comment-delete', methods=['POST'])
 @jwt_required()
 def deleting_comment():
 	# Get comment id from request
