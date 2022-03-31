@@ -505,10 +505,10 @@ def deleting_post():
 
 	#get the post by id
 	post = Post.query.filter_by(id=pid).first_or_404()
-
+	
 	# delete post
 	status = post.delete_post()
-	db.session.commit()
+	# db.session.commit()
 
 	response = {"success": status}
 	status_code = 200
@@ -522,7 +522,7 @@ def deleting_comment():
 
 	#get the comment by its id
 	comment = Comment.query.filter_by(id=cid).first_or_404()
-	
+		
 	# delete comment
 	status = comment.delete_comment()
 	db.session.commit()

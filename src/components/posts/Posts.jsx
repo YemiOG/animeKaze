@@ -66,6 +66,8 @@ function Posts(props){
                 Authorization: 'Bearer ' + token
                 }
           }).then((response)=>{
+            setShowCard(false)
+            setDeleteCard(false)
             props.reload && props.reload() // get posts upon deleting post successfully
             props.refresh && props.refresh(true) // get posts for profile page upon deleting post successfully
           }).catch((error) => {
