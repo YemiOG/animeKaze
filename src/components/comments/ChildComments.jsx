@@ -72,7 +72,8 @@ function DisplayChildComments(props) {
                 }
           }).then((response)=>{
             console.log(response)
-            props.childComments(props.id) // get posts upon deleting post successfully
+            props.childComments(props.id)
+			props.comments() // get comments upon deleting post successfully
           }).catch((error) => {
             if (error.response) {
               console.log(error.response)
