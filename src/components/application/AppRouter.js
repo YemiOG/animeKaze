@@ -8,6 +8,7 @@ import Explore from "../explore/Explore"
 import Base from "../Basepage"
 import Trend from "../trendingAnime/trending"
 import Header from "../topBottom/Header"
+import Settings from "../settings/settings"
 import Footer from "../topBottom/Footer"
 import Sidebar from "../sideBar/SideBar"
 
