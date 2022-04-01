@@ -26,6 +26,7 @@ function Notification() {
 			Authorization: 'Bearer ' + token
 		  }
 		  }).then((response)=>{
+			  	console.table(response.data.items)
 				setNotifier(response.data.items)
 		  // setAppState({ loading: false });
 		  }).catch((error) => {
@@ -41,20 +42,20 @@ function Notification() {
 
 	return (
 		<div className="notification">
-				<div className="notification-cover">
-				<div className="notification-title">
+				<div className="top-title">
 					Notification
 				</div>
-				<div className="notification-list-cover">
-					{notifier.length > 0 ? notifier.map( lists => <ListNotification 
-															key={lists.id}
-															notifications={lists} 
-															reload={getNotifications}/> 
-														)
-						: <div>
-							No notification yet
-						</div>}
-				</div>
+				<div className="notification-cover">
+					<div className="notification-list-cover">
+						{notifier.length > 0 ? notifier.map(lists => <ListNotification 
+																key={lists.id}
+																notifications={lists} 
+																reload={getNotifications}/> 
+															)
+							: <div>
+								No notification yet
+							</div>}
+					</div>
 				</div>
 		</div>
 	);
