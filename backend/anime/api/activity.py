@@ -235,29 +235,29 @@ def like(id):
 	#Get the liked post by its id
 	Post_liked = Post.query.filter_by(id=id).first_or_404()
 
-	# print(Post_liked.liked_by_user)
 	#Check if user has previously liked the picture with the "like_state" function
 	#If true, unlike the post  #If false, like the post
 	notify = Post_liked.like_state(user)
 	db.session.commit()
 	
 	#create new notification if post is liked
-	if notify == True:
-		new_notf = Notification(timestamps=like_time, 
-								username= user.username,
-								post = Post_liked,
-								post_creator_id= Post_liked.user_id,
-								author=user)
-		db.session.add(new_notf)
-		db.session.commit()
-		new_notf.like_post_notify(Post_liked)
-		db.session.commit()
+	if Post_liked.user_id != user.id:
+		if notify == True:
+			new_notf = Notification(timestamps=like_time, 
+									username= user.username,
+									post = Post_liked,
+									post_creator_id= Post_liked.user_id,
+									author=user)
+			db.session.add(new_notf)
+			db.session.commit()
+			new_notf.like_post_notify(Post_liked)
+			db.session.commit()
 
-	#delete notification if like action is reversed
-	elif notify == False:
-		notific = Notification.query.filter_by(post_id = id, user_id = user.id).first_or_404()
-		notific.delete_like_post_notify(Post_liked)
-		db.session.commit()
+		#delete notification if like action is reversed
+		elif notify == False:
+			notific = Notification.query.filter_by(post_id = id, user_id = user.id).first_or_404()
+			notific.delete_like_post_notify(Post_liked)
+			db.session.commit()
 
 	response = {"success": True}
 	return response
@@ -419,24 +419,25 @@ def likeComment(id):
 	#Then like or unlike based on the response to the check
 	notify = Comment_liked.like_comment_state(user)
 	db.session.commit()
+	
+	if Comment_liked.user_id != user.id:
+		#create new notification if comment is liked
+		if notify == True:
+			new_notf = Notification(timestamps=comment_time, 
+									username= user.username,
+									comment = Comment_liked,
+									comment_creator_id= Comment_liked.user_id,
+									author=user)
+			db.session.add(new_notf)
+			db.session.commit()
+			new_notf.like_comment_notify(Comment_liked)
+			db.session.commit()
 
-	#create new notification if comment is liked
-	if notify == True:
-		new_notf = Notification(timestamps=comment_time, 
-								username= user.username,
-								comment = Comment_liked,
-								comment_creator_id= Comment_liked.user_id,
-								author=user)
-		db.session.add(new_notf)
-		db.session.commit()
-		new_notf.like_comment_notify(Comment_liked)
-		db.session.commit()
-
-	#delete notification if like action is reversed
-	elif notify == False:
-		notific = Notification.query.filter_by(comment_id = id, user_id = user.id).first_or_404()
-		notific.delete_like_comment_notify(Comment_liked)
-		db.session.commit()
+		#delete notification if like action is reversed
+		elif notify == False:
+			notific = Notification.query.filter_by(comment_id = id, user_id = user.id).first_or_404()
+			notific.delete_like_comment_notify(Comment_liked)
+			db.session.commit()
 
 	response = {"success": True}
 	return response
@@ -457,24 +458,25 @@ def likeChildComment(id):
 	notify = comment.like_child_comment(user)
 	db.session.commit()
 
-	#create new notification if comment is liked
-	if notify == True:
-		new_notf = Notification(timestamps=comment_time, 
-								username= user.username,
-								childcomment = comment,
-								comment_id = comment.comment_id,
-								child_comment_creator_id= comment.user_id,
-								author=user)
-		db.session.add(new_notf)
-		db.session.commit()
-		new_notf.like_ch_comment_notify(comment)
-		db.session.commit()
+	if comment.user_id != user.id:
+		#create new notification if comment is liked
+		if notify == True:
+			new_notf = Notification(timestamps=comment_time, 
+									username= user.username,
+									childcomment = comment,
+									comment_id = comment.comment_id,
+									child_comment_creator_id= comment.user_id,
+									author=user)
+			db.session.add(new_notf)
+			db.session.commit()
+			new_notf.like_ch_comment_notify(comment)
+			db.session.commit()
 
-	#delete notification if like action is reversed
-	elif notify == False:
-		notific = Notification.query.filter_by(child_comment_id = id, user_id = user.id).first_or_404()
-		notific.delete_like_ch_comment_notify(comment)
-		db.session.commit()
+		#delete notification if like action is reversed
+		elif notify == False:
+			notific = Notification.query.filter_by(child_comment_id = id, user_id = user.id).first_or_404()
+			notific.delete_like_ch_comment_notify(comment)
+			db.session.commit()
 
 	response = {"success": True}
 	return response
