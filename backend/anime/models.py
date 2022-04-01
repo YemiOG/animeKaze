@@ -125,7 +125,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
     comment = db.relationship('Comment', backref='author', lazy='dynamic')
     child_comment = db.relationship('ChildComment', backref='author',
                                     lazy='dynamic')
-    Notification = db.relationship('Notification', backref='author',
+    notification = db.relationship('Notification', backref='author',
                                     lazy='dynamic')
     about_me = db.Column(db.String(140))
     gender = db.Column(db.String(140))
@@ -172,6 +172,7 @@ class User(PaginatedAPIMixin, db.Model, UserMixin):
                                                                             Notification.followed_user_id == self.id,
                                                                             Notification.comment_post_author_id == self.id,
                                                                             Notification.child_comment_author_id  == self.id ))
+
         return notification_list.order_by(Notification.timestamps.desc())
 
     def followed_posts(self):
@@ -629,18 +630,87 @@ def delete_account(user_id):
     user_posts = Post.query.filter_by(user_id=user_id)
     user_comments = Comment.query.filter_by(user_id=user_id)
     user_child_comments = ChildComment.query.filter_by(user_id=user_id)
+    username = User.query.filter_by(id=user_id).first()
+    follow_notif = Notification.query.filter_by(user_id=user_id).all()
+    notif = Notification.query.filter_by(username=username.username).all()
+    delete_follow_nots= delete(followNotification).where(
+            followNotification.c.person_id == user_id) 
+    db.session.execute(delete_follow_nots)
+
+    # clear followers table
+    delete_follower= delete(followers).where(
+            followers.c.follower_id == user_id)
+    db.session.execute(delete_follower) 
+
+    delete_following= delete(followers).where(
+            followers.c.followed_id == user_id)
+    db.session.execute(delete_following)  
+
+    #clear posts table
+    for flw in follow_notif:
+        db.session.delete(flw)
+    for fl in notif:
+        db.session.delete(fl)
+
+    flw_notify = Notification.query.filter_by(followed_user_id=user_id).all()
+    for flw in flw_notify:
+       db.session.delete(flw)
 
     for p in user_posts.all():
+        #delete notifications created for comment
+        notifications= Notification.query.filter_by(post_id=p.id).all()
+        delete_comment_nots= delete(commentPostNotification).where(
+            commentPostNotification.c.posts_id == p.id) 
+        db.session.execute(delete_comment_nots)
+
+        delete_post_nots= delete(postNotification).where(
+            postNotification.c.posts_id == p.id)
+        db.session.execute(delete_post_nots)
+
+        for notify in notifications:
+            db.session.delete(notify)
+
         related_comments = Comment.query.filter_by(post_id=p.id)
         for c in related_comments:
+            #delete notifications created for comment
+            notification= Notification.query.filter_by(comment_id=c.id).all()
+            delete_ccomment_nots= delete(commentChildNotification).where(
+                commentChildNotification.c.commnt_id == c.id) 
+            db.session.execute(delete_ccomment_nots)
+
+            delete_comment_nots= delete(commentNotification).where(
+                commentNotification.c.commnt_id == c.id)
+            db.session.execute(delete_comment_nots)
+
+            for notify in notification:
+                db.session.delete(notify)
+
+            # get related child comments
+            related_ccomments = ChildComment.query.filter_by(comment_id=c.id).all()
+            #Delete all liked child comments
+            for ccom in related_ccomments:
+                delete_child_comments= delete(likedChildComments).where(
+                    likedChildComments.c.comment_id == ccom.id)
+                db.session.execute(delete_child_comments)
+                #delete child comments
+                db.session.delete(ccom)
+
+            #delete likes on comment
+            delete_comment= delete(likedComments).where(
+                likedComments.c.comment_id == c.id)
+            db.session.execute(delete_comment)
+
             child_comments = ChildComment.query.filter_by(comment_id=c.id)
             if child_comments.all():
                 child_comments.delete()
                 db.session.commit()
         related_comments.delete()
         db.session.commit()
-
+        
     for com in user_comments.all():
+        notificatn= Notification.query.filter_by(comment_id=com.id).all()
+        for notfy in notificatn:
+            db.session.delete(notfy)
         child_comments = ChildComment.query.filter_by(comment_id=com.id)
         if child_comments.all():
             child_comments.delete()
