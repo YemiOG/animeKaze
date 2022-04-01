@@ -479,6 +479,7 @@
   position: relative;
   max-height: 652px;
   overflow: auto;
+  min-height: 500px;
 }
 
 .profile-page, .community, .notification{
@@ -1371,13 +1372,17 @@
   margin-left: 82px;
   margin-top: 57px;
   width: 100%;
-  padding: 23px 30px;
   position: relative;
+}
+
+.community-cover{
   background: #eceff1;
   border-radius: 8px;
   max-height: 652px;
   overflow: auto;
+  padding: 23px 30px;
 }
+
 .community .comm1{
   display: flex;
   justify-content: space-between;
@@ -1404,14 +1409,15 @@
   margin-left: 82px;
   margin-top: 57px;
   width: 100%;
+  
+}
+.notification-cover{
+  border-radius: 5px;
   max-height: 652px;
   border-radius: 8px;
   background: #ECEFF1;
   padding: 23px 29px;
   overflow: auto;
-}
-.notification-cover{
-  border-radius: 5px;
 }
 .notification-title{
   display: flex;
@@ -1883,12 +1889,12 @@
       margin-left: 62px;
   }
 
-  .create-post {
+  /* .create-post {
     width:300px
   }
   .post-card {
     width:300px
-  }
+  } */
   .post-list .post-image {
     width:revert
   }
