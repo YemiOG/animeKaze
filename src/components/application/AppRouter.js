@@ -94,6 +94,12 @@ function AppRouter() {
 									<Home />
 								</AuthedRoute>
 								} />
+					<Route exact path="/settings" 
+						element={
+								<AuthedRoute >
+									<Settings />
+								</AuthedRoute>
+								} />
 					{profileLocation &&
 						<Route exact path={`${location.pathname}`} element={<Profile />} />
 						}
