@@ -1208,12 +1208,47 @@
   }
 
   .top-search .search-form .container-page{
+    min-height: 100px;
     background: #eceff1;
     width: 260px;
     border-radius: 8px;
     z-index: 1000;
     position: absolute;
     margin-top: 5px;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+  }
+  .top-search .search-form .container-page p{
+    margin-bottom: 0;
+  }
+  .user-list{
+    background: #ffffff;
+    width: inherit;
+    border-radius: 8px;
+    display: flex;
+    height: 30px;
+  }
+  .user-list a{
+    display: flex;
+    flex-direction: column;
+  }
+
+
+  .user-list h1{
+    color: #767677;
+    font-family: 'Rubik';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 12px;
+    margin-bottom: 0;
+  }
+
+  .user-list .profile-image{
+    width:30px;
+    height:30px;
+    display: flex;
   }
 /* end search */
 
