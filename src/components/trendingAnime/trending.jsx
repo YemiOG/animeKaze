@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal'
 
 // local imports
+import Search from "../search/Search"
 import Card from "./animeCard"
 import animes from "./animes"
 import { ReactComponent as Close } from '../../images/svg/closeButton.svg'
@@ -18,8 +19,11 @@ function Trend(){
 	}
 
 	return(
-		<>
+		<>            
 			<div className="anime-trends">
+				<div className="top-search">
+					<Search />
+				</div>
 				<div className="trending-anime">
 					<div className="caption">
 						Trending Animations
