@@ -26,7 +26,6 @@ function Notification() {
 			Authorization: 'Bearer ' + token
 		  }
 		  }).then((response)=>{
-			  	console.table(response.data.items)
 				setNotifier(response.data.items)
 		  // setAppState({ loading: false });
 		  }).catch((error) => {
