@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect, useRef} from 'react'
 import { Link } from 'react-router-dom'
 import axios from "axios";
 import UserNotFound from '../error/userNotFound'
@@ -8,6 +8,18 @@ function Search() {
     const [searchs , setNewSearch] = useState("")
     const [searchresult , setNewSearchResult] = useState("")
 	const [noUser, setNoUser] = useState(false)
+
+    function removeDiv(){
+        console.log("here")
+        setNewSearchResult(null)
+        setNoUser(false)
+    }
+    
+    const notFoundDiv = useRef(null);
+    
+    useEffect(()=>{
+        notFoundDiv.current && notFoundDiv.current.focus();
+      }, []);
 
     function handleChange(event) {
         const newValue = event.target.value
@@ -25,6 +37,7 @@ function Search() {
 			    }
 		  }).then((response)=>{
 			const data = response.data.items
+            console.log(data)
             (response.data.items[0] ?
 			(setNewSearchResult(response.data.items),
             setNoUser(false))
@@ -45,11 +58,17 @@ function Search() {
     function Display(props) {
 		const profile = "/user/" + props.username
         return (
-            <Link to={profile} className="navr-link">
-                    <h1>{props.username}</h1>
-                    <h1>{props.f_name}</h1>
-                    <h1>{props.l_name}</h1>
-			</Link> 
+            <div className="user-list">
+            	<div className='profile-image'>
+					<img src={props.avatar} alt="profile logo"/>
+				</div>
+                <Link to={profile} className="navr-link">
+                    <div className="fullname">
+                        <span>{props.fname} </span> <span> {props.lname}</span>
+                    </div>
+                    <h1>@{props.username}</h1>
+                </Link> 
+            </div>
 		)
     }
     
@@ -63,18 +82,22 @@ function Search() {
                             placeholder="Search for anything here"
                             value={searchs}
                             onChange={handleChange}
-                            onFocus= {() => setNoUser(false)}/>
+                            onFocus= {removeDiv}/>
                         <button
                             className="pull-xs-right search-btn"
                             type="submit">
                             <img src={IconSearch} alt=""/>
                         </button>
-                </form>
-				{searchresult[0] ? searchresult.map(search => <Display key={search.id} f_name={search.firstname} 
-                                                              l_name={search.lastname} username={search.username} />)
-                                                    :
-                                    (noUser ? <UserNotFound notFound={setNoUser}/> : null )
-                }
+                </form>         
+                    {searchresult && <div className="container-page" tabIndex={1} onBlur= {removeDiv} ref={notFoundDiv} autoFocus>
+                        {searchresult[0] && searchresult.map(search => <Display key={search.id} f_name={search.firstname} 
+                                                                            l_name={search.lastname} username={search.username} 
+                                                                            avatar={search.avatar} fname={search.firstname} 
+                                                                            lname={search.lastname}
+                                                                            />)}
+
+                    </div>}
+                    {noUser ? <UserNotFound notFound={setNoUser}/> : null}
             </div>
         );
 }
