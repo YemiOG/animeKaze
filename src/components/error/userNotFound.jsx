@@ -16,7 +16,6 @@ function UserNotFound(props) {
     <div className="container-page" tabIndex={1} onBlur= {removeDiv} ref={notFoundDiv}>
       <div className="">
           <div className="">
-             <h1>Not Found</h1>
              <p>Sorry! User not found</p>
           </div>
       </div>
