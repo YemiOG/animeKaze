@@ -11,6 +11,7 @@ import DisplayChildComments from './ChildComments'
 import { ReactComponent as Drop } from '../../images/svg/dropdown.svg'
 import { ReactComponent as Like } from '../../images/svg/like.svg'
 import { ReactComponent as Close } from '../../images/svg/closeButton.svg'
+import { ReactComponent as Delete } from '../../images/svg/delete.svg'
 
 function Comments(props){
 
@@ -162,16 +163,15 @@ function Comments(props){
 	function deleteComment(id){
         axios({
           method: "POST",
-          url: '/api/comment_delete',
+          url: '/api/comment-delete',
           data:{
-              pid: id,
+              cid: id,
              },
           headers: {
                 Authorization: 'Bearer ' + token
                 }
           }).then((response)=>{
-            console.log(response)
-            props.reload() // get posts upon deleting post successfully
+			getComments()
           }).catch((error) => {
             if (error.response) {
               console.log(error.response)
@@ -239,6 +239,10 @@ function Comments(props){
 			comm.reply(true);
 		}
 
+		function removeComment(){
+			comm.delete(comm.id)
+		}
+
 		function revealBar(){
 			showCard===false ? setShowCard(true) : setShowCard(false);
 			}
@@ -254,7 +258,7 @@ function Comments(props){
 
 			return (
 			  <div className="side-card">
-				  {(uzername!==props.postr) && <button onClick={deleteComment}>  Delete </button>}
+				<button onClick={removeComment}>  <Delete stroke="#575757"/> Delete </button>
 			  </div>
 			)}
 
@@ -272,7 +276,7 @@ function Comments(props){
 									className="navr-link">
 									<span>{comm.fname}</span> <span>{comm.lname}</span> @{comm.username}
 								</Link> 
-								{(uzername!==props.postr) && <Drop className="drop" onClick={revealBar}/>}
+								{uzername===comm.username && <Drop className="drop" onClick={revealBar}/>}
 							</div>
 							<div > {comm.content} </div>
 						</div>
@@ -298,7 +302,7 @@ function Comments(props){
 					): null }
 				</div>
 				{(childComment && displayChildComment && comm.child > 0 ) ? (childComment.map(child => <DisplayChildComments key={child.id} child={child} id={comm.id}
-								childComments={getChildComments}
+								childComments={getChildComments} comments={getComments}
 				/>
 				)) : null}
 			</>
@@ -343,7 +347,7 @@ function Comments(props){
 																	likeCount={comments.likes} like={handleLikeComment} username={comments.poster} 
 																	child= {comments.child} reply={setchildCommentForm} submit={setCommentId} 
 																	userLiked={comments.user_liked} fname={comments.fname} lname={comments.lname}
-																	avatar={comments.avatar}
+																	avatar={comments.avatar} delete={deleteComment}
 																	/>)
 													: null}
 					</div>

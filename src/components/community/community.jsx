@@ -9,9 +9,8 @@ function Community() {
 	const FollowLoading = Loading(FollowList);
 
 	const username = window.localStorage.getItem('username')
-	const {token, removeToken, setAppState}= useContext(UserContext);
+	const {token, removeToken}= useContext(UserContext);
 	const [buttonState, setButtonState] = useState(true)
-	const [changeCount, setChangeCount] = useState(false)
 	const [flwcount, setFlwCount] = useState({
 		followers:"",
 		followed:""
@@ -123,21 +122,26 @@ function Community() {
 
 	return (
 		<div className="community">
-			<div className="community-control">
-                <button onClick= {getfollowers} className= {buttonState ? 'following' : ""} disabled={buttonState ? true : false}>
-					<span> {flwcount.followed} </span> {(flwcount.followed> 1) ? <span> Followers </span> : <span> Follower </span>}
-                </button>
-				<button onClick= {getfollowed}  className= {!buttonState ? 'following' : ""} disabled={!buttonState ? true : false}>
-					<span> {flwcount.followers} </span> {(flwcount.followers > 1) ? <span> Followings </span> : <span> Following </span>}
-                </button>
+			<div className="top-title">
+					Community
 			</div>
-			<div className="comm1">
-				{follows.flwrs && follows.flwrs.map( (lists,index) => <FollowLoading 
-																			key={lists.id} 
-																			isFollowing={following[index]} 
-																			setFollowing={getfollowers} 
-																			follow={lists} change={getFollowLink} 
-																			/> )}
+			<div className="community-cover">
+				<div className="community-control">
+					<button onClick= {getfollowers} className= {buttonState ? 'following' : ""} disabled={buttonState ? true : false}>
+						<span> {flwcount.followed} </span> {(flwcount.followed> 1) ? <span> Followers </span> : <span> Follower </span>}
+					</button>
+					<button onClick= {getfollowed}  className= {!buttonState ? 'following' : ""} disabled={!buttonState ? true : false}>
+						<span> {flwcount.followers} </span> {(flwcount.followers > 1) ? <span> Followings </span> : <span> Following </span>}
+					</button>
+				</div>
+				<div className="comm1">
+					{follows.flwrs && follows.flwrs.map( (lists,index) => <FollowLoading 
+																				key={lists.id} 
+																				isFollowing={following[index]} 
+																				setFollowing={getfollowers} 
+																				follow={lists} change={getFollowLink} 
+																				/> )}
+				</div>
 			</div>
 		</div>
 	);

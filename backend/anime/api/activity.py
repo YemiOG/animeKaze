@@ -175,14 +175,21 @@ def follow(username):
 
 	#create new notification if user is followed
 	if notify == True:
+		follow_state = user.is_following(currentUser)
 		new_notf = Notification(timestamps=follow_time, 
 								username= currentUser.username,
 								followed_user_id= user.id,
+								followed_by_user = follow_state,
 								author=currentUser)
 		db.session.add(new_notf)
 		db.session.commit()
 		new_notf.follow_notification(user)
 		db.session.commit()
+
+		notific = Notification.query.filter_by(user_id = user.id, followed_user_id = currentUser.id ).first()
+		if notific is not None and notific.followed_by_user is False:
+			notific.followed_by_user = True
+			db.session.commit()
 
 	response = {"success":'You are now following {}!'.format(username)}
 	return response
@@ -207,6 +214,11 @@ def unfollow(username):
 		notific.delete_follow_notification(user)
 		db.session.commit()
 
+		notification = Notification.query.filter_by(user_id = user.id, followed_user_id = currentUser.id ).first()
+		if notification is not None and notification.followed_by_user is True:
+			notification.followed_by_user = False
+			db.session.commit()
+
 	response = {"success":'You have unfollowed {}!'.format(username)}
 	return response
 
@@ -223,28 +235,29 @@ def like(id):
 	#Get the liked post by its id
 	Post_liked = Post.query.filter_by(id=id).first_or_404()
 
-	# print(Post_liked.liked_by_user)
 	#Check if user has previously liked the picture with the "like_state" function
 	#If true, unlike the post  #If false, like the post
 	notify = Post_liked.like_state(user)
 	db.session.commit()
+	
 	#create new notification if post is liked
-	if notify == True:
-		new_notf = Notification(timestamps=like_time, 
-								username= user.username,
-								post = Post_liked,
-								post_creator_id= Post_liked.user_id,
-								author=user)
-		db.session.add(new_notf)
-		db.session.commit()
-		new_notf.like_post_notify(Post_liked)
-		db.session.commit()
+	if Post_liked.user_id != user.id:
+		if notify == True:
+			new_notf = Notification(timestamps=like_time, 
+									username= user.username,
+									post = Post_liked,
+									post_creator_id= Post_liked.user_id,
+									author=user)
+			db.session.add(new_notf)
+			db.session.commit()
+			new_notf.like_post_notify(Post_liked)
+			db.session.commit()
 
-	#delete notification if like action is reversed
-	elif notify == False:
-		notific = Notification.query.filter_by(post_id = id, user_id = user.id).first_or_404()
-		notific.delete_like_post_notify(Post_liked)
-		db.session.commit()
+		#delete notification if like action is reversed
+		elif notify == False:
+			notific = Notification.query.filter_by(post_id = id, user_id = user.id).first_or_404()
+			notific.delete_like_post_notify(Post_liked)
+			db.session.commit()
 
 	response = {"success": True}
 	return response
@@ -362,6 +375,7 @@ def child_commenting():
 	return response
 
 @api.route('/post/comments', methods=['POST'])
+@jwt_required()
 def get_comments():	
 	#get postId from POST request
 	post_id = request.json.get('pid')	
@@ -375,6 +389,7 @@ def get_comments():
 	return response
 
 @api.route('/comment/comments', methods=['POST'])
+@jwt_required()
 def get_child_comments():	
 	#get id of the comment from POST request
 	comment_id = request.json.get('cid')	
@@ -404,24 +419,25 @@ def likeComment(id):
 	#Then like or unlike based on the response to the check
 	notify = Comment_liked.like_comment_state(user)
 	db.session.commit()
+	
+	if Comment_liked.user_id != user.id:
+		#create new notification if comment is liked
+		if notify == True:
+			new_notf = Notification(timestamps=comment_time, 
+									username= user.username,
+									comment = Comment_liked,
+									comment_creator_id= Comment_liked.user_id,
+									author=user)
+			db.session.add(new_notf)
+			db.session.commit()
+			new_notf.like_comment_notify(Comment_liked)
+			db.session.commit()
 
-	#create new notification if comment is liked
-	if notify == True:
-		new_notf = Notification(timestamps=comment_time, 
-								username= user.username,
-								comment = Comment_liked,
-								comment_creator_id= Comment_liked.user_id,
-								author=user)
-		db.session.add(new_notf)
-		db.session.commit()
-		new_notf.like_comment_notify(Comment_liked)
-		db.session.commit()
-
-	#delete notification if like action is reversed
-	elif notify == False:
-		notific = Notification.query.filter_by(comment_id = id, user_id = user.id).first_or_404()
-		notific.delete_like_comment_notify(Comment_liked)
-		db.session.commit()
+		#delete notification if like action is reversed
+		elif notify == False:
+			notific = Notification.query.filter_by(comment_id = id, user_id = user.id).first_or_404()
+			notific.delete_like_comment_notify(Comment_liked)
+			db.session.commit()
 
 	response = {"success": True}
 	return response
@@ -442,24 +458,25 @@ def likeChildComment(id):
 	notify = comment.like_child_comment(user)
 	db.session.commit()
 
-	#create new notification if comment is liked
-	if notify == True:
-		new_notf = Notification(timestamps=comment_time, 
-								username= user.username,
-								childcomment = comment,
-								comment_id = comment.comment_id,
-								child_comment_creator_id= comment.user_id,
-								author=user)
-		db.session.add(new_notf)
-		db.session.commit()
-		new_notf.like_ch_comment_notify(comment)
-		db.session.commit()
+	if comment.user_id != user.id:
+		#create new notification if comment is liked
+		if notify == True:
+			new_notf = Notification(timestamps=comment_time, 
+									username= user.username,
+									childcomment = comment,
+									comment_id = comment.comment_id,
+									child_comment_creator_id= comment.user_id,
+									author=user)
+			db.session.add(new_notf)
+			db.session.commit()
+			new_notf.like_ch_comment_notify(comment)
+			db.session.commit()
 
-	#delete notification if like action is reversed
-	elif notify == False:
-		notific = Notification.query.filter_by(child_comment_id = id, user_id = user.id).first_or_404()
-		notific.delete_like_ch_comment_notify(comment)
-		db.session.commit()
+		#delete notification if like action is reversed
+		elif notify == False:
+			notific = Notification.query.filter_by(child_comment_id = id, user_id = user.id).first_or_404()
+			notific.delete_like_ch_comment_notify(comment)
+			db.session.commit()
 
 	response = {"success": True}
 	return response
@@ -470,11 +487,6 @@ def notify():
 	#set time action was made 
 	action_time = datetime.utcnow() 
 	
-	# #get comment, userId and postId from POST request
-	# comment = request.json.get('content')
-	# user_id = request.json.get('uid')
-	# post_id = request.json.get('pid')
-
 	# Get current user
 	uzer = request.json.get("username").lower()
 	user = User.query.filter_by(username=uzer).first_or_404()
@@ -486,3 +498,55 @@ def notify():
 	response = User.to_collection_dict(user.get_notifications(), page, per_page,
                                        'api.notify')
 	return response
+
+@api.route('/post-delete', methods=['POST'])
+@jwt_required()
+def deleting_post():
+	# Get post id from request
+	pid = request.json.get('pid')
+
+	#get the post by id
+	post = Post.query.filter_by(id=pid).first_or_404()
+	
+	# delete post
+	status = post.delete_post()
+	db.session.commit()
+
+	response = {"success": status}
+	status_code = 200
+	return response, status_code
+
+@api.route('/comment-delete', methods=['POST'])
+@jwt_required()
+def deleting_comment():
+	# Get comment id from request
+	cid = request.json.get('cid')
+
+	#get the comment by its id
+	comment = Comment.query.filter_by(id=cid).first_or_404()
+		
+	# delete comment
+	status = comment.delete_comment()
+	db.session.commit()
+
+	response = {"success": status}
+	status_code = 200
+	return response, status_code
+
+@api.route('/cc_comment_delete', methods=['POST'])
+@jwt_required()
+def deleting_child_comment():
+	# Get child comment id from request
+	cc_id = request.json.get('cid')
+
+	#get the child comment by id
+	child_comment = ChildComment.query.filter_by(id=cc_id).first_or_404()
+	
+	# delete child comment
+	status = child_comment.delete_child_comment()
+	db.session.commit()
+
+	response = {"success": status}
+	status_code = 200
+	return response, status_code
+

@@ -1,7 +1,8 @@
 import { useContext, useState } from 'react'
 import { UserContext } from '../contexts/userContext'
 import { useNavigate } from 'react-router';
-import Search from "../search/Search"
+
+
 import Trend from "../trendingAnime/trendingHeader"
 import logo from '../../images/logo.png'
 import Modal from 'react-bootstrap/Modal'
@@ -32,9 +33,6 @@ function Header(props) {
             </div>
             <div className="trend-icon" onClick={() => setShowModal(true)}>
               <TrendIcon />
-            </div>
-            <div className="top-search">
-              <Search />
             </div>
         </div>
         {(!token && token !== "" && token !== undefined) ? 

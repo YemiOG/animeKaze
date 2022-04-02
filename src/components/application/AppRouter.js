@@ -7,8 +7,8 @@ import Home from "../Homepage"
 import Explore from "../explore/Explore"
 import Base from "../Basepage"
 import Trend from "../trendingAnime/trending"
-import Header from "../topBottom/Header"
-import Footer from "../topBottom/Footer"
+import Header from "../Header/Header"
+import Settings from "../settings/settings"
 import Sidebar from "../sideBar/SideBar"
 
 // import CurrentUser from "./getUser"
@@ -35,9 +35,10 @@ import PageNotFound from '../error/pageNotFound'
 function AppRouter() {
 
 	const location = useLocation();
+	console.log(location.pathname)
 	const profileLocation = location.pathname.includes('user') && !location.pathname.includes('follow')
-	const sideBarDisplay = location.pathname.includes('notification') || location.pathname.includes('community') || location.pathname.includes('user') 
-	const loginLocation = location.pathname.includes('login') || location.pathname.includes('register')
+	const trendDisplay= location.pathname.includes('home') || location.pathname.includes('explore') 
+	const sideBarDisplay = location.pathname === "/settings" || location.pathname === "/profile" || location.pathname === "/notifications" || location.pathname === "/community" || location.pathname === "/home" 
 
 	// console.log(sideBarDisplay)
 	// console.log(location.pathname)
@@ -64,7 +65,7 @@ function AppRouter() {
 		<UserContext.Provider value={{token, userInfo, appState, setAppState, setUserInfo, removeToken, setToken}}>
 			<Header />
 			<div className='App'>
-				{!loginLocation && <Sidebar/> }
+				{sideBarDisplay && <Sidebar/> }
 				{/* {console.log(userInfo.uzer)} */}
 				{console.log(location.pathname)}
 				{/* username: {userInfo.currentUser} */}
@@ -94,12 +95,18 @@ function AppRouter() {
 									<Home />
 								</AuthedRoute>
 								} />
+					<Route exact path="/settings" 
+						element={
+								<AuthedRoute >
+									<Settings />
+								</AuthedRoute>
+								} />
 					{profileLocation &&
 						<Route exact path={`${location.pathname}`} element={<Profile />} />
 						}
 					<Route path='*' element={<PageNotFound />}/>
 				</Routes> 				
-				{(token && !sideBarDisplay && !loginLocation)  && <Trend />}
+				{(token && trendDisplay)  && <Trend />}
 				{/* <Footer /> */}
 			</div>
 		</UserContext.Provider>

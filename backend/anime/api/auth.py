@@ -24,20 +24,20 @@ def refresh_expiring_jwts(response):
 
 @api.route('/createuser', methods=['POST'])
 def create_user():
-	data = request.get_json() or {}
-	if data['username'] == '' or data['email'] == '' or data['password'] == '':
-		return bad_request('Please make sure all fields are filled in correctly')
-	if User.query.filter_by(email=data['email'].lower()).first():
-		return bad_request('email address already registered')
-	if User.query.filter_by(username=data['username'].lower()).first():
-		return bad_request('username already exists')
-	user = User()
-	user.from_dict(data, new_user=True)
-	db.session.add(user)
-	db.session.commit()
-	response = user.to_dict()
-	status_code = 201
-	return response, status_code
+    data = request.get_json() or {}
+    if data['username'] == '' or data['email'] == '' or data['password'] == '':
+        return bad_request('Please make sure all fields are filled in correctly')
+    if User.query.filter_by(email=data['email'].lower()).first():
+        return bad_request('email address already registered')
+    if User.query.filter_by(username=data['username'].lower()).first():
+        return bad_request('username already exists')
+    user = User()
+    user.from_dict(data, new_user=True)
+    db.session.add(user)
+    db.session.commit()
+    response = user.to_dict()
+    status_code = 201
+    return response, status_code
 
 @api.route("/token", methods=["POST"])
 def create_token():

@@ -1,7 +1,7 @@
 from . import api
 from flask import request, jsonify
 from flask_jwt_extended import jwt_required
-from ..models import User, delete_account
+from ..models import User, delete_account, Notification
 from .. import db
 from .errors import bad_request
 from cloudinary.uploader import upload
@@ -164,17 +164,18 @@ def update(uzername):
 	response = user.to_dict()
 	return response
 
-@api.route('/deleteuser/<id>', methods=['DELETE'])
+@api.route('/delete-user/<id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(id):
 	data = request.get_json()
-	# Confirm that the user trying to delete the account is the owner of the account
+	# Confirm that the user trying to delete the 
+	# account is the owner of the account
 	if int(id) != data['uid']:
 		return bad_request('unauthorized')
 
 	user_id = data['uid']
 
-	#delete all the data for this user
+	# delete all the data for this user
 	status = delete_account(user_id)
 
 	response = {"success": status}

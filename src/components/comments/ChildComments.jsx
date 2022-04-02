@@ -5,7 +5,7 @@ import { UserContext } from '../contexts/userContext';
 
 import { ReactComponent as Drop } from '../../images/svg/dropdown.svg'
 import { ReactComponent as Like } from '../../images/svg/like.svg'
-
+import { ReactComponent as Delete } from '../../images/svg/delete.svg'
 
 function DisplayChildComments(props) {
 
@@ -27,6 +27,7 @@ function DisplayChildComments(props) {
 	
 	const [childStroke , setChildStroke] = useState(strokeColor)
 	const [childLiked , setChildLiked] = useState(fillColor)
+	const [showCard , setShowCard] = useState(false)
 	const {token, removeToken, setAppState}= useContext(UserContext)
 	const uzername = window.localStorage.getItem('username')
 
@@ -59,6 +60,40 @@ function DisplayChildComments(props) {
 		  })
 	}
 
+	function deleteComment(){
+        axios({
+          method: "POST",
+          url: '/api/cc_comment_delete',
+          data:{
+              cid: props.child.id,
+             },
+          headers: {
+                Authorization: 'Bearer ' + token
+                }
+          }).then((response)=>{
+            console.log(response)
+            props.childComments(props.id)
+			props.comments() // get comments upon deleting post successfully
+          }).catch((error) => {
+            if (error.response) {
+              console.log(error.response)
+              if (error.response.status === 401){
+              removeToken()
+              }
+              }
+       })}
+
+	function revealBar(){
+		showCard===false ? setShowCard(true) : setShowCard(false);
+		}
+	
+	function SideCard(){
+		return (
+		  <div className="side-card">
+			<button onClick={deleteComment}>  <Delete stroke="#575757"/> Delete </button>
+		  </div>
+		)}
+
 	return (
 		(props.child.comment === props.id ? 
 					<div className="comment-child" ref={childComments}>
@@ -73,9 +108,10 @@ function DisplayChildComments(props) {
 												className="navr-link">
 												<span>{props.child.fname}</span><span>{props.child.lname}</span>@{props.child.poster}
 											</Link> 
-											<Drop className="drop" />
+											{props.child.poster === uzername && <Drop className="drop" onClick={revealBar}/>}
 										</div>
 										<div > {props.child.content} </div>
+										{showCard && <SideCard />}
 									</div>
 									<div className="like-child-comment-cont">
 										<Like fill={childLiked} stroke={childStroke} className="like-comment-button" onClick={() => likeChildComment(props.child.id)}/>
