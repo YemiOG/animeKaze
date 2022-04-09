@@ -3,6 +3,9 @@
   padding: 0;
   box-sizing: border-box;
 }
+html {
+  font-size: 62.5%;
+}
 body {
   height: 100vh;
   width: 100%;
@@ -16,13 +19,13 @@ body {
 header {
   font-style: normal;
   font-weight: bold;
-  font-size: 24px;
-  line-height: 25px;
+  font-size: 2.4rem;
+  line-height: 2.5rem;
   letter-spacing: -0.08em;
   text-transform: uppercase;
   display: flex;
   justify-content: space-between;
-  padding: 40px;
+  padding: 4rem;
 
   color: #333333;
 }
@@ -30,35 +33,35 @@ main {
   display: grid;
   grid-template-rows: 2fr, 1fr, 0.5fr;
   grid-template-columns: 1fr, 1fr, 0.5fr;
-  row-gap: 80px;
-  padding-left: 40px;
+  row-gap: 8rem;
+  padding-left: 4rem;
   width: 50%;
 }
 h1 {
-  width: 656px;
-  height: 190px;
-  right: 735px;
-  top: 165px;
+  width: 65.6rem;
+  height: 19rem;
+  right: 73.5rem;
+  top: 16.5rem;
 
   font-family: "Space Mono", monospace;
   font-style: normal;
   font-weight: bold;
-  font-size: 64px;
-  line-height: 95px;
+  font-size: 6.4rem;
+  line-height: 9.5rem;
   letter-spacing: -0.035em;
   color: #333333;
 }
 p {
-  width: 381px;
-  height: 108px;
-  right: 935px;
-  top: 391px;
+  width: 38.1rem;
+  height: 10.8rem;
+  right: 93.5rem;
+  top: 39.1rem;
 
   font-family: "Space Mono", monospace;
   font-style: normal;
   font-weight: normal;
-  font-size: 24px;
-  line-height: 36px;
+  font-size: 2.4rem;
+  line-height: 3.6rem;
   letter-spacing: -0.035em;
 
   /* Gray 2 */
@@ -70,8 +73,8 @@ button {
   font-family: "Space Mono", monospace;
   font-style: normal;
   font-weight: bold;
-  font-size: 15px;
-  line-height: 21px;
+  font-size: 1.5rem;
+  line-height: 2.1rem;
   border: none;
   border-radius: 9px;
   width: 30%;
@@ -81,5 +84,5 @@ button {
   color: #ffffff;
   background: #333333;
   display: inline-block;
-  padding: 16px 32px;
+  padding: 1.6rem 3.2rem;
 }
